@@ -28,9 +28,9 @@ jobs:
         run: npm install
 
       - name: Generate Prisma Client
-        run: npx prisma generate
+        run: npx prisma generate --schema src/infrastructure/prisma/schema.prisma
         env:
-          DATABASE_URL: mysql://localhost:3306/test
+          DATABASE_URL: file:./test.db
 
       - name: Build
         run: npm run build
