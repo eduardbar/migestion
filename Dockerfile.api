@@ -1,0 +1,28 @@
+# Use Node.js 20 Alpine
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY packages/api/package.json ./packages/api/
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source code
+COPY packages/api ./packages/api
+
+# Generate Prisma client
+COPY packages/api/src/infrastructure/prisma ./packages/api/src/infrastructure/prisma
+RUN npm install -g prisma && cd packages/api && npx prisma generate
+
+# Build TypeScript
+RUN npm install -g typescript && cd packages/api && npx tsc
+
+# Expose port
+EXPOSE 8080
+
+# Start application
+CMD ["node", "packages/api/dist/server.js"]

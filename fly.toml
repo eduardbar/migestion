@@ -1,0 +1,26 @@
+# fly.toml - Fly.io Configuration for MiGestion
+
+app = "migestion-api"
+primary_region = "iad"
+
+[build]
+  builder = "heroku/buildpacks:20"
+
+[build.args]
+  NODE_ENV = "production"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  protocol = "tcp"
+
+[[services.ports]]
+  handlers = ["http"]
+  port = 8080
+
+[deploy]
+  release_command = "cd packages/api && npx prisma migrate deploy"
