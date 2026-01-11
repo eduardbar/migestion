@@ -1,0 +1,38 @@
+{
+  "name": "migestion",
+  "version": "1.0.0",
+  "description": "SaaS CRM multi-empresa para negocios locales",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:api": "npm run dev --workspace=@migestion/api",
+    "dev:web": "npm run dev --workspace=@migestion/web",
+    "build": "npm run build --workspaces --if-present",
+    "build:api": "npm run build --workspace=@migestion/api",
+    "build:web": "npm run build --workspace=@migestion/web",
+    "test": "npm run test --workspaces --if-present",
+    "test:api": "npm run test --workspace=@migestion/api",
+    "test:web": "npm run test --workspace=@migestion/web",
+    "test:e2e": "npm run test:e2e --workspace=@migestion/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,json,css}\"",
+    "db:generate": "npm run db:generate --workspace=@migestion/api",
+    "db:migrate": "npm run db:migrate --workspace=@migestion/api",
+    "db:seed": "npm run db:seed --workspace=@migestion/api",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "clean": "rimraf node_modules packages/*/node_modules packages/*/dist"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
