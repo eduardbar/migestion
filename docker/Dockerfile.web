@@ -1,0 +1,22 @@
+# ─────────────────────────────────────────
+# MiGestion Web - Development Dockerfile
+# ─────────────────────────────────────────
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY packages/web/package*.json ./packages/web/
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY packages/web ./packages/web
+
+WORKDIR /app/packages/web
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

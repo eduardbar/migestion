@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # ─────────────────────────────────────────
+  # MySQL Database
+  # ─────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: migestion-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${DB_NAME:-migestion}
+      MYSQL_USER: ${DB_USER:-migestion}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-migestion123}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=caching_sha2_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - migestion-network
+
+  # ─────────────────────────────────────────
+  # Redis Cache
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: migestion-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - migestion-network
+
+  # ─────────────────────────────────────────
+  # API Backend (Development)
+  # ─────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: migestion-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: mysql://${DB_USER:-migestion}:${DB_PASSWORD:-migestion123}@db:3306/${DB_NAME:-migestion}
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-access-secret-change-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-in-production}
+    volumes:
+      - ./packages/api:/app/packages/api
+      - /app/packages/api/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - migestion-network
+
+  # ─────────────────────────────────────────
+  # Web Frontend (Development)
+  # ─────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    container_name: migestion-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-5173}:5173"
+    environment:
+      VITE_API_URL: http://localhost:${API_PORT:-3000}
+    volumes:
+      - ./packages/web:/app/packages/web
+      - /app/packages/web/node_modules
+    depends_on:
+      - api
+    networks:
+      - migestion-network
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  migestion-network:
+    driver: bridge
