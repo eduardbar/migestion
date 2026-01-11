@@ -27,6 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: mysql://localhost:3306/test
+
       - name: Build
         run: npm run build
         continue-on-error: true
