@@ -10,11 +10,8 @@ env:
   NODE_VERSION: '20.x'
 
 jobs:
-  # ─────────────────────────────────────────
-  # Backend Tests and Build
-  # ─────────────────────────────────────────
   backend:
-    name: Backend
+    name: Backend Build
     runs-on: ubuntu-latest
     
     defaults:
@@ -39,9 +36,6 @@ jobs:
         run: npm run build
         continue-on-error: true
 
-  # ─────────────────────────────────────────
-  # Frontend Build
-  # ─────────────────────────────────────────
   frontend:
     name: Frontend Build
     runs-on: ubuntu-latest
