@@ -18,7 +18,7 @@ async function tableExists(tableName: string): Promise<boolean> {
         AND table_name = ${tableName}
       )
     `;
-    return Boolean(result && result[0] && result[0].exists);
+    return Boolean(result && result[0] && typeof result[0].exists === 'boolean');
   } catch (error) {
     return false;
   }
