@@ -23,19 +23,18 @@ The table `public.users` does not exist in current database.
    REDIS_URL=rediss://default:AY72AAIncDIwYjRhNjgwMjg4ZWM0YjM5OWU3NmY3Njg0ZmUxZGJmZXAyMzY1OTg@neutral-javelin-36598.upstash.io:6379
    ```
 
-3. **Configura el script de build:**
-   - Ve a: Settings → Build & Deploy
-   - Cambia el **Build Command** a (usa Prisma directamente):
+3. **Configura el script de build (IMPORTANTE - usa esto):**
+
+   Ve a: Settings → Build & Deploy
+   - Cambia el **Build Command** EXACTAMENTE a:
+
    ```
-   npm install && npx prisma migrate deploy --schema=./packages/api/src/infrastructure/prisma/schema.prisma && npm run build:api
+   npm install && npx prisma migrate deploy --schema=./packages/api/src/infrastructure/prisma/schema.prisma && cd packages/api && npm run build
    ```
-   **Opción alternativa (si lo anterior falla):**
-   ```
-   npm install && npm run build:api
-   ```
-4. **Forzar deploy manual (IMPORTANTE):**
+
+4. **Forzar deploy manual (CRÍTICO):**
    - Ve a: Manual Deploy → **Deploy latest commit**
-   - Esto forzará a Render a usar el código más reciente sin caché
+   - ¡Esto forzará a Render a usar el código más reciente sin caché!
 
 ### Opción 2: Ejecutar migración manual desde terminal
 
