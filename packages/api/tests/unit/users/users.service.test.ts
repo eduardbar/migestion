@@ -1,5 +1,5 @@
 // Mock Prisma client BEFORE importing user modules
-jest.mock('@/infrastructure/prisma/client', () => ({
+jest.mock('../../../src/infrastructure/prisma/client', () => ({
   prisma: {
     user: {
       create: jest.fn(),
@@ -17,18 +17,27 @@ jest.mock('@/infrastructure/prisma/client', () => ({
     refreshToken: {
       deleteMany: jest.fn(),
     },
-    $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn({
-      user: {
-        delete: jest.fn(),
-      },
-      client: {
-        updateMany: jest.fn(),
-      },
-      refreshToken: {
-        deleteMany: jest.fn(),
-      },
-    })),
+    $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) =>
+      fn({
+        user: {
+          delete: jest.fn(),
+        },
+        client: {
+          updateMany: jest.fn(),
+        },
+        refreshToken: {
+          deleteMany: jest.fn(),
+        },
+      })
+    ),
   },
+}));
+
+// Mock password utilities
+jest.mock('../../../src/shared/utils/password', () => ({
+  hashPassword: jest.fn().mockResolvedValue('hashed-password'),
+  verifyPassword: jest.fn(),
+  comparePassword: jest.fn(),
 }));
 
 // Mock password utilities
@@ -38,14 +47,14 @@ jest.mock('@/shared/utils/password', () => ({
   comparePassword: jest.fn(),
 }));
 
-import * as usersService from '@/modules/users/users.service';
-import * as usersRepository from '@/modules/users/users.repository';
-import { verifyPassword } from '@/shared/utils/password';
-import { AppError } from '@/shared/errors';
-import { ROLES } from '@/config/constants';
+import * as usersService from '../../../src/modules/users/users.service';
+import * as usersRepository from '../../../src/modules/users/users.repository';
+import { verifyPassword } from '../../../src/shared/utils/password';
+import { AppError } from '../../../src/shared/errors';
+import { ROLES } from '../../../src/config/constants';
 
 // Mock the repository
-jest.mock('@/modules/users/users.repository');
+jest.mock('../../../src/modules/users/users.repository');
 
 const mockUsersRepository = usersRepository as jest.Mocked<typeof usersRepository>;
 const mockVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>;
@@ -53,10 +62,7 @@ const mockVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPa
 /**
  * Helper to verify AppError with specific code
  */
-async function expectAppError(
-  promise: Promise<unknown>,
-  expectedCode: string
-): Promise<void> {
+async function expectAppError(promise: Promise<unknown>, expectedCode: string): Promise<void> {
   try {
     await promise;
     fail('Should have thrown an error');
@@ -116,10 +122,7 @@ describe('UsersService', () => {
     it('should throw NOT_FOUND if user does not exist', async () => {
       mockUsersRepository.findById.mockResolvedValue(null);
 
-      await expectAppError(
-        usersService.getById(tenantId, 'non-existent'),
-        'NOT_FOUND'
-      );
+      await expectAppError(usersService.getById(tenantId, 'non-existent'), 'NOT_FOUND');
     });
   });
 
@@ -213,12 +216,7 @@ describe('UsersService', () => {
         status: 'pending',
       });
 
-      const result = await usersService.invite(
-        tenantId,
-        actorId,
-        ROLES.ADMIN,
-        inviteInput
-      );
+      const result = await usersService.invite(tenantId, actorId, ROLES.ADMIN, inviteInput);
 
       expect(result.email).toBe('new@company.com');
       expect(mockUsersRepository.create).toHaveBeenCalledWith(
@@ -309,10 +307,7 @@ describe('UsersService', () => {
 
       await usersService.changePassword(tenantId, actorId, passwordInput);
 
-      expect(mockUsersRepository.updatePassword).toHaveBeenCalledWith(
-        actorId,
-        'hashed-password'
-      );
+      expect(mockUsersRepository.updatePassword).toHaveBeenCalledWith(actorId, 'hashed-password');
     });
 
     it('should throw INVALID_PASSWORD if current password is wrong', async () => {
@@ -530,7 +525,7 @@ describe('UsersService', () => {
 
     it('should throw NOT_FOUND if target user does not exist', async () => {
       mockUsersRepository.exists
-        .mockResolvedValueOnce(true)  // source exists
+        .mockResolvedValueOnce(true) // source exists
         .mockResolvedValueOnce(false); // target does not exist
 
       await expectAppError(
