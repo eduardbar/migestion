@@ -28,23 +28,22 @@ export default defineConfig({
         // Manual chunk splitting for optimal caching and smaller initial load
         manualChunks(id) {
           // React core
-          if (id.includes('node_modules/react/') || 
-              id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/react-router-dom/')) {
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-router-dom/')
+          ) {
             return 'vendor-react';
-          }
-          // Charts (large dependency)
-          if (id.includes('node_modules/recharts/') || 
-              id.includes('node_modules/d3-')) {
-            return 'vendor-charts';
           }
           // React Query
           if (id.includes('node_modules/@tanstack/')) {
             return 'vendor-query';
           }
           // Socket.IO
-          if (id.includes('node_modules/socket.io-client/') ||
-              id.includes('node_modules/engine.io-')) {
+          if (
+            id.includes('node_modules/socket.io-client/') ||
+            id.includes('node_modules/engine.io-')
+          ) {
             return 'vendor-socket';
           }
           // Icons
@@ -52,8 +51,7 @@ export default defineConfig({
             return 'vendor-icons';
           }
           // State management & utilities
-          if (id.includes('node_modules/zustand/') ||
-              id.includes('node_modules/date-fns/')) {
+          if (id.includes('node_modules/zustand/') || id.includes('node_modules/date-fns/')) {
             return 'vendor-utils';
           }
         },
