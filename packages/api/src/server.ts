@@ -5,6 +5,10 @@ import { logger } from './shared/utils/logger.js';
 import { disconnectDatabase } from './infrastructure/prisma/client.js';
 import { connectRedis, disconnectRedis } from './infrastructure/redis/index.js';
 import { initializeSocketIO, shutdownSocketIO } from './infrastructure/socket/index.js';
+import {
+  checkDatabaseConnection,
+  ensureDatabaseSchema,
+} from './infrastructure/prisma/schema-check.js';
 
 /**
  * Server entry point.
@@ -28,6 +32,16 @@ initializeSocketIO(httpServer);
 
 // Start server and connect to Redis
 async function startServer(): Promise<void> {
+  // Check database connection and schema
+  const dbConnected = await checkDatabaseConnection();
+  if (!dbConnected) {
+    logger.error('Database connection failed, cannot start server');
+    process.exit(1);
+  }
+
+  // Ensure tables exist (for Render Web Services without Console access)
+  await ensureDatabaseSchema();
+
   // Connect to Redis (non-blocking, graceful degradation)
   await connectRedis();
 
@@ -44,7 +58,7 @@ async function startServer(): Promise<void> {
   });
 }
 
-startServer().catch((error) => {
+startServer().catch(error => {
   logger.error('Failed to start server', { error });
   process.exit(1);
 });
@@ -60,11 +74,7 @@ async function gracefulShutdown(signal: string): Promise<void> {
 
     try {
       // Shutdown in parallel
-      await Promise.all([
-        shutdownSocketIO(),
-        disconnectRedis(),
-        disconnectDatabase(),
-      ]);
+      await Promise.all([shutdownSocketIO(), disconnectRedis(), disconnectDatabase()]);
 
       logger.info('All connections closed');
       process.exit(0);
@@ -87,12 +97,12 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // ─────────────────────────────────────────
 // Uncaught Exception Handling
 // ─────────────────────────────────────────
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', error => {
   logger.error('Uncaught exception', { error });
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', reason => {
   logger.error('Unhandled rejection', { reason });
   process.exit(1);
 });
