@@ -20,7 +20,7 @@ The table `public.users` does not exist in current database.
    JWT_ACCESS_SECRET=tu_secreto_de_32_caracteres_o_mas
    JWT_REFRESH_SECRET=tu_secreto_de_32_caracteres_o_mas_diferente
    WEB_URL=https://migestion-web.vercel.app
-   REDIS_URL=redis://localhost:6379
+   REDIS_URL=rediss://default:AY72AAIncDIwYjRhNjgwMjg4ZWM0YjM5OWU3NmY3Njg0ZmUxZGJmZXAyMzY1OTg@neutral-javelin-36598.upstash.io:6379
    ```
 
 3. **Configura el script de build:**
