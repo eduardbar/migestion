@@ -34,7 +34,6 @@ test.describe('Clients CRUD', () => {
   test.beforeEach(async ({ page }) => {
     // Clear state
     await page.context().clearCookies();
-    await page.evaluate(() => localStorage.clear());
 
     // Register a new tenant for each test to ensure clean state
     const timestamp = Date.now();
@@ -45,7 +44,10 @@ test.describe('Clients CRUD', () => {
     await page.goto('/register');
     await page.getByLabel(/nombre de empresa/i).fill(uniqueName);
     await page.getByLabel(/slug/i).fill(uniqueSlug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
+    await page
+      .getByLabel(/nombre/i)
+      .first()
+      .fill(TEST_USER.firstName);
     await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
     await page.getByLabel(/email/i).fill(uniqueEmail);
     await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
@@ -82,7 +84,7 @@ test.describe('Clients CRUD', () => {
 
     // Should show empty state message
     await expect(page.getByText(/no clients found/i)).toBeVisible();
-    
+
     // Should show add client button in empty state
     await expect(page.getByRole('button', { name: /add client/i })).toBeVisible();
   });
@@ -127,7 +129,9 @@ test.describe('Clients CRUD', () => {
     await page.getByRole('button', { name: /create client/i }).click();
 
     // Modal should close
-    await expect(page.getByRole('heading', { name: /new client/i })).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole('heading', { name: /new client/i })).not.toBeVisible({
+      timeout: 5000,
+    });
 
     // Client should appear in the table
     await expect(page.getByText(TEST_CLIENT.companyName)).toBeVisible();
@@ -179,7 +183,9 @@ test.describe('Clients CRUD', () => {
     await page.getByRole('button', { name: /save changes/i }).click();
 
     // Modal should close
-    await expect(page.getByRole('heading', { name: /edit client/i })).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole('heading', { name: /edit client/i })).not.toBeVisible({
+      timeout: 5000,
+    });
 
     // Updated name should appear
     await expect(page.getByText(newCompanyName)).toBeVisible();
@@ -271,7 +277,7 @@ test.describe('Clients CRUD', () => {
 
     // Should show only matching client
     await expect(page.getByText('Alpha Corp')).toBeVisible();
-    
+
     // Other clients should not be visible (wait for search debounce)
     await page.waitForTimeout(500);
   });

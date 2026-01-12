@@ -20,7 +20,6 @@ test.describe('Navigation', () => {
   test.beforeEach(async ({ page }) => {
     // Clear state
     await page.context().clearCookies();
-    await page.evaluate(() => localStorage.clear());
 
     // Register a new tenant
     const timestamp = Date.now();
@@ -31,7 +30,10 @@ test.describe('Navigation', () => {
     await page.goto('/register');
     await page.getByLabel(/nombre de empresa/i).fill(uniqueName);
     await page.getByLabel(/slug/i).fill(uniqueSlug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
+    await page
+      .getByLabel(/nombre/i)
+      .first()
+      .fill(TEST_USER.firstName);
     await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
     await page.getByLabel(/email/i).fill(uniqueEmail);
     await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
@@ -76,7 +78,7 @@ test.describe('Navigation', () => {
   test('should navigate to interactions page', async ({ page }) => {
     // Look for interactions link (may be named differently)
     const interactionsLink = page.getByRole('link', { name: /interactions|interacciones/i });
-    
+
     if (await interactionsLink.isVisible()) {
       await interactionsLink.click();
       await expect(page).toHaveURL(/\/interactions/);
@@ -86,7 +88,7 @@ test.describe('Navigation', () => {
   test('should navigate to team page', async ({ page }) => {
     // Look for team link
     const teamLink = page.getByRole('link', { name: /team|equipo/i });
-    
+
     if (await teamLink.isVisible()) {
       await teamLink.click();
       await expect(page).toHaveURL(/\/team/);
@@ -96,7 +98,7 @@ test.describe('Navigation', () => {
   test('should navigate to settings page', async ({ page }) => {
     // Look for settings link
     const settingsLink = page.getByRole('link', { name: /settings|configuración/i });
-    
+
     if (await settingsLink.isVisible()) {
       await settingsLink.click();
       await expect(page).toHaveURL(/\/settings/);
@@ -106,7 +108,7 @@ test.describe('Navigation', () => {
   test('should navigate to notifications page', async ({ page }) => {
     // Look for notifications link or bell icon
     const notificationsLink = page.getByRole('link', { name: /notifications|notificaciones/i });
-    
+
     if (await notificationsLink.isVisible()) {
       await notificationsLink.click();
       await expect(page).toHaveURL(/\/notifications/);
@@ -116,7 +118,7 @@ test.describe('Navigation', () => {
   test('should navigate to audit page (admin only)', async ({ page }) => {
     // Look for audit link (admin only)
     const auditLink = page.getByRole('link', { name: /audit|auditoría/i });
-    
+
     if (await auditLink.isVisible()) {
       await auditLink.click();
       await expect(page).toHaveURL(/\/audit/);
@@ -130,14 +132,14 @@ test.describe('Navigation', () => {
   test('should highlight active navigation item', async ({ page }) => {
     // Dashboard should be active by default
     const dashboardLink = page.getByRole('link', { name: /dashboard/i });
-    
+
     // The active state is typically indicated by a class or aria attribute
     // Check for active styling (specific implementation may vary)
     await expect(dashboardLink).toBeVisible();
-    
+
     // Navigate to clients
     await page.getByRole('link', { name: /clients/i }).click();
-    
+
     // Clients link should now be active
     await expect(page).toHaveURL(/\/clients/);
   });
@@ -168,7 +170,7 @@ test.describe('Navigation', () => {
     const currentUrl = page.url();
     const is404 = await page.getByText(/404|not found|página no encontrada/i).isVisible();
     const isDashboard = currentUrl.includes('/dashboard');
-    
+
     expect(is404 || isDashboard).toBeTruthy();
   });
 
@@ -182,11 +184,14 @@ test.describe('Navigation', () => {
 
     // Mobile menu button should be visible (hamburger icon)
     const menuButton = page.locator('[data-testid="mobile-menu-button"]');
-    const hamburgerIcon = page.locator('button').filter({ has: page.locator('svg') }).first();
-    
+    const hamburgerIcon = page
+      .locator('button')
+      .filter({ has: page.locator('svg') })
+      .first();
+
     // Either a dedicated mobile menu button or hamburger should exist
-    const mobileMenuExists = await menuButton.isVisible() || await hamburgerIcon.isVisible();
-    
+    const mobileMenuExists = (await menuButton.isVisible()) || (await hamburgerIcon.isVisible());
+
     // On mobile, sidebar might be hidden initially
     // This test validates the mobile UI adapts correctly
     expect(mobileMenuExists || true).toBeTruthy(); // Graceful pass if no mobile menu

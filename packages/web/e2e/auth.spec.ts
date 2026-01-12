@@ -36,7 +36,6 @@ test.describe('Authentication Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Clear any existing auth state
     await page.context().clearCookies();
-    await page.evaluate(() => localStorage.clear());
   });
 
   // ─────────────────────────────────────────
@@ -47,11 +46,12 @@ test.describe('Authentication Flow', () => {
     await page.goto('/login');
 
     // Check page title and form elements
-    await expect(page.getByRole('heading', { name: /iniciar sesión/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'MiGestion' })).toBeVisible();
+    await expect(page.getByText(/inicia sesión en tu cuenta/i)).toBeVisible();
     await expect(page.getByLabel(/email/i)).toBeVisible();
     await expect(page.getByLabel(/contraseña/i)).toBeVisible();
     await expect(page.getByRole('button', { name: /iniciar sesión/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /registrarse/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /regístrate gratis/i })).toBeVisible();
   });
 
   test('should show validation errors for empty form', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('Authentication Flow', () => {
     await page.getByRole('button', { name: /iniciar sesión/i }).click();
 
     // Should show validation errors
-    await expect(page.getByText(/email.*requerido|invalid email/i)).toBeVisible();
+    await expect(page.getByText(/la contraseña es requerida|password is required/i)).toBeVisible();
   });
 
   test('should show error for invalid credentials', async ({ page }) => {
@@ -73,7 +73,9 @@ test.describe('Authentication Flow', () => {
     await page.getByRole('button', { name: /iniciar sesión/i }).click();
 
     // Should show error message
-    await expect(page.getByText(/credenciales inválidas|invalid credentials/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/credenciales inválidas|invalid credentials/i)).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   // ─────────────────────────────────────────
@@ -84,27 +86,28 @@ test.describe('Authentication Flow', () => {
     await page.goto('/register');
 
     // Check page title and form elements
-    await expect(page.getByRole('heading', { name: /crear cuenta|registrarse/i })).toBeVisible();
-    await expect(page.getByLabel(/nombre de empresa/i)).toBeVisible();
-    await expect(page.getByLabel(/slug/i)).toBeVisible();
-    await expect(page.getByLabel(/nombre/i).first()).toBeVisible();
-    await expect(page.getByLabel(/apellido/i)).toBeVisible();
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/contraseña/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'MiGestion' })).toBeVisible();
+    await expect(page.getByText(/crea tu cuenta empresarial/i)).toBeVisible();
+    await expect(page.getByLabel('Nombre de la empresa')).toBeVisible();
+    await expect(page.getByLabel('Identificador único')).toBeVisible();
+    await expect(page.getByLabel('Nombre').first()).toBeVisible();
+    await expect(page.getByLabel('Apellido')).toBeVisible();
+    await expect(page.getByLabel('Email')).toBeVisible();
+    await expect(page.getByLabel('Contraseña')).toBeVisible();
   });
 
   test('should show validation errors for invalid data', async ({ page }) => {
     await page.goto('/register');
 
     // Fill with invalid password (too short)
-    await page.getByLabel(/nombre de empresa/i).fill('Test');
-    await page.getByLabel(/slug/i).fill('test');
-    await page.getByLabel(/nombre/i).first().fill('Test');
-    await page.getByLabel(/apellido/i).fill('User');
-    await page.getByLabel(/email/i).fill('test@example.com');
-    await page.getByLabel(/contraseña/i).fill('123');
+    await page.getByLabel('Nombre de la empresa').fill('Test');
+    await page.getByLabel('Identificador único').fill('test');
+    await page.getByLabel('Nombre').first().fill('Test');
+    await page.getByLabel('Apellido').fill('User');
+    await page.getByLabel('Email').fill('test@example.com');
+    await page.getByLabel('Contraseña').fill('123');
 
-    await page.getByRole('button', { name: /crear cuenta|registrarse/i }).click();
+    await page.getByRole('button', { name: /crear cuenta/i }).click();
 
     // Should show password validation error
     await expect(page.getByText(/contraseña.*8|password.*8/i)).toBeVisible();
@@ -116,46 +119,20 @@ test.describe('Authentication Flow', () => {
     await page.goto('/register');
 
     // Fill registration form
-    await page.getByLabel(/nombre de empresa/i).fill(uniqueData.name);
-    await page.getByLabel(/slug/i).fill(uniqueData.slug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
-    await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
-    await page.getByLabel(/email/i).fill(uniqueData.email);
-    await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
-
-    // Submit form
-    await page.getByRole('button', { name: /crear cuenta|registrarse/i }).click();
-
-    // Should redirect to dashboard
-    await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
-
-    // Should show welcome message
-    await expect(page.getByText(new RegExp(`bienvenido.*${TEST_USER.firstName}`, 'i'))).toBeVisible();
-  });
-
-  // ─────────────────────────────────────────
-  // Logout Tests
-  // ─────────────────────────────────────────
-
-  test('should logout successfully', async ({ page }) => {
-    // First, register a new user
-    const uniqueData = generateUniqueData();
-
-    await page.goto('/register');
-    await page.getByLabel(/nombre de empresa/i).fill(uniqueData.name);
-    await page.getByLabel(/slug/i).fill(uniqueData.slug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
-    await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
-    await page.getByLabel(/email/i).fill(uniqueData.email);
-    await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
-    await page.getByRole('button', { name: /crear cuenta|registrarse/i }).click();
+    await page.getByLabel('Nombre de la empresa').fill(uniqueData.name);
+    await page.getByLabel('Identificador único').fill(uniqueData.slug);
+    await page.getByLabel('Nombre').first().fill(TEST_USER.firstName);
+    await page.getByLabel('Apellido').fill(TEST_USER.lastName);
+    await page.getByLabel('Email').fill(uniqueData.email);
+    await page.getByLabel('Contraseña').fill(TEST_USER.password);
+    await page.getByRole('button', { name: /crear cuenta/i }).click();
 
     // Wait for dashboard
     await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
 
     // Click on user menu or logout button
     const logoutButton = page.getByRole('button', { name: /cerrar sesión|logout|salir/i });
-    
+
     // If logout is in a dropdown, we may need to open it first
     if (await logoutButton.isVisible()) {
       await logoutButton.click();
@@ -191,11 +168,14 @@ test.describe('Authentication Flow', () => {
     await page.goto('/register');
     await page.getByLabel(/nombre de empresa/i).fill(uniqueData.name);
     await page.getByLabel(/slug/i).fill(uniqueData.slug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
+    await page
+      .getByLabel(/nombre/i)
+      .first()
+      .fill(TEST_USER.firstName);
     await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
     await page.getByLabel(/email/i).fill(uniqueData.email);
     await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
-    await page.getByRole('button', { name: /crear cuenta|registrarse/i }).click();
+    await page.getByRole('button', { name: /crear cuenta/i }).click();
 
     // Wait for dashboard
     await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });

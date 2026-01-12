@@ -20,7 +20,6 @@ test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
     // Clear state
     await page.context().clearCookies();
-    await page.evaluate(() => localStorage.clear());
 
     // Register a new tenant
     const timestamp = Date.now();
@@ -31,7 +30,10 @@ test.describe('Dashboard', () => {
     await page.goto('/register');
     await page.getByLabel(/nombre de empresa/i).fill(uniqueName);
     await page.getByLabel(/slug/i).fill(uniqueSlug);
-    await page.getByLabel(/nombre/i).first().fill(TEST_USER.firstName);
+    await page
+      .getByLabel(/nombre/i)
+      .first()
+      .fill(TEST_USER.firstName);
     await page.getByLabel(/apellido/i).fill(TEST_USER.lastName);
     await page.getByLabel(/email/i).fill(uniqueEmail);
     await page.getByLabel(/contraseña/i).fill(TEST_USER.password);
@@ -47,7 +49,9 @@ test.describe('Dashboard', () => {
 
   test('should display dashboard with welcome message', async ({ page }) => {
     // Welcome message should include user's first name
-    await expect(page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))).toBeVisible();
+    await expect(
+      page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))
+    ).toBeVisible();
   });
 
   test('should display KPI cards', async ({ page }) => {
@@ -108,7 +112,9 @@ test.describe('Dashboard', () => {
     await expect(page).toHaveURL(/\/dashboard/);
 
     // Welcome message should still be visible
-    await expect(page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))).toBeVisible();
+    await expect(
+      page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))
+    ).toBeVisible();
   });
 
   // ─────────────────────────────────────────
@@ -120,7 +126,9 @@ test.describe('Dashboard', () => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     // Core elements should still be visible
-    await expect(page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))).toBeVisible();
+    await expect(
+      page.getByText(new RegExp(`Bienvenido.*${TEST_USER.firstName}`, 'i'))
+    ).toBeVisible();
     await expect(page.getByText(/Total Clientes/i)).toBeVisible();
   });
 
@@ -141,14 +149,14 @@ test.describe('Dashboard', () => {
   test('should load dashboard within acceptable time', async ({ page }) => {
     // Measure time to load dashboard
     const startTime = Date.now();
-    
+
     await page.goto('/dashboard');
-    
+
     // Wait for main content to be visible
     await expect(page.getByText(/Bienvenido/i)).toBeVisible();
-    
+
     const loadTime = Date.now() - startTime;
-    
+
     // Dashboard should load within 5 seconds
     expect(loadTime).toBeLessThan(5000);
   });
