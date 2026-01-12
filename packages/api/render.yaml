@@ -3,8 +3,8 @@ services:
     name: migestion-api
     env: node
     plan: free
-    buildCommand: npm install && npx prisma generate --schema=./src/infrastructure/prisma/schema.prisma && npm run build
-    startCommand: npx prisma db push --schema=./src/infrastructure/prisma/schema.prisma --accept-data-loss && npm run start
+    buildCommand: npm install && npx prisma generate --schema=./src/infrastructure/prisma/schema.prisma && npx prisma db push --schema=./src/infrastructure/prisma/schema.prisma --accept-data-loss && npm run build
+    startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
