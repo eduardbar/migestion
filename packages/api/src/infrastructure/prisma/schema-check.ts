@@ -6,19 +6,29 @@
 import { prisma } from './client.js';
 import { logger } from '../../shared/utils/logger.js';
 
+interface ExistsResult {
+  exists: boolean;
+}
+
+interface QueryResult {
+  rows: ExistsResult[];
+}
+
 /**
  * Check if a table exists in the database
  */
 async function tableExists(tableName: string): Promise<boolean> {
   try {
-    const result = await prisma.$queryRawUnsafe`
+    const query = `
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
-        AND table_name = ${tableName}
+        AND table_name = $1
       )
     `;
-    return Boolean(result && result[0] && typeof result[0].exists === 'boolean');
+    const result = (await prisma.$queryRawUnsafe<QueryResult>(query, [tableName])) as QueryResult;
+    const row = result.rows[0];
+    return Boolean(row && typeof row.exists === 'boolean' && row.exists);
   } catch (error) {
     return false;
   }
