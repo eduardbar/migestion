@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: MiGestion API
+  description: API Reference for MiGestion SaaS CRM
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@migestion.com
+servers:
+  - url: https://migestion-api.onrender.com/api
+    description: Production Server
+  - url: http://localhost:3000/api
+    description: Development Server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: string
+          example: INTERNAL_ERROR
+        message:
+          type: string
+          example: An unexpected error occurred
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [owner, admin, manager, user]
+paths:
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
