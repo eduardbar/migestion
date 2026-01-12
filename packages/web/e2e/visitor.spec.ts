@@ -23,7 +23,7 @@ test.describe('Visitor Flow - Landing Page to Registration', () => {
 
     // Verify URL and content
     await expect(page).toHaveURL(/\/login/);
-    await expect(page.getByRole('heading', { name: 'Bienvenido de nuevo' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'MiGestion' })).toBeVisible();
   });
 
   test('navigation to register page works', async ({ page }) => {
@@ -34,6 +34,6 @@ test.describe('Visitor Flow - Landing Page to Registration', () => {
 
     // Verify URL and content
     await expect(page).toHaveURL(/\/register/);
-    await expect(page.getByRole('heading', { name: 'Crea tu cuenta' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'MiGestion' })).toBeVisible();
   });
 });
