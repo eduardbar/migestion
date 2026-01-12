@@ -169,9 +169,7 @@ function KPICard({ title, value, change, subtitle, loading }: KPICardProps) {
               {change}% vs periodo anterior
             </p>
           )}
-          {subtitle && !change && (
-            <p className="text-xs text-neutral-400 mt-2">{subtitle}</p>
-          )}
+          {subtitle && !change && <p className="text-xs text-neutral-400 mt-2">{subtitle}</p>}
         </>
       )}
     </Card>
@@ -240,9 +238,7 @@ function StatusPieChart({ data, loading }: StatusPieChartProps) {
           <Legend
             verticalAlign="bottom"
             height={36}
-            formatter={(value) => (
-              <span className="text-sm text-neutral-600">{value}</span>
-            )}
+            formatter={value => <span className="text-sm text-neutral-600">{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>
@@ -273,7 +269,7 @@ function ActivityChart({ data, loading }: ActivityChartProps) {
   }
 
   // Format dates for display
-  const formattedData = data.map((item) => ({
+  const formattedData = data.map(item => ({
     ...item,
     dateLabel: new Date(item.date).toLocaleDateString('es-ES', {
       day: '2-digit',
@@ -284,10 +280,7 @@ function ActivityChart({ data, loading }: ActivityChartProps) {
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          data={formattedData}
-          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-        >
+        <AreaChart data={formattedData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorClients" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -305,11 +298,7 @@ function ActivityChart({ data, loading }: ActivityChartProps) {
             tickLine={false}
             axisLine={{ stroke: '#e5e7eb' }}
           />
-          <YAxis
-            tick={{ fontSize: 12, fill: '#6b7280' }}
-            tickLine={false}
-            axisLine={false}
-          />
+          <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={{
               backgroundColor: '#fff',
@@ -317,7 +306,7 @@ function ActivityChart({ data, loading }: ActivityChartProps) {
               borderRadius: '0.5rem',
               fontSize: '0.875rem',
             }}
-            labelFormatter={(label) => label}
+            labelFormatter={label => label}
           />
           <Area
             type="monotone"
@@ -340,9 +329,7 @@ function ActivityChart({ data, loading }: ActivityChartProps) {
           <Legend
             verticalAlign="top"
             height={36}
-            formatter={(value) => (
-              <span className="text-sm text-neutral-600">{value}</span>
-            )}
+            formatter={value => <span className="text-sm text-neutral-600">{value}</span>}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -372,10 +359,11 @@ function TopClientsChart({ data, loading }: TopClientsChartProps) {
     );
   }
 
-  const chartData = data.map((client) => ({
-    name: client.companyName.length > 15
-      ? client.companyName.substring(0, 15) + '...'
-      : client.companyName,
+  const chartData = data.map(client => ({
+    name:
+      client.companyName.length > 15
+        ? client.companyName.substring(0, 15) + '...'
+        : client.companyName,
     interacciones: client.interactionCount,
     fullName: client.companyName,
   }));
@@ -388,7 +376,12 @@ function TopClientsChart({ data, loading }: TopClientsChartProps) {
           layout="vertical"
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={true} vertical={false} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#e5e7eb"
+            horizontal={true}
+            vertical={false}
+          />
           <XAxis
             type="number"
             tick={{ fontSize: 12, fill: '#6b7280' }}
@@ -410,10 +403,7 @@ function TopClientsChart({ data, loading }: TopClientsChartProps) {
               borderRadius: '0.5rem',
               fontSize: '0.875rem',
             }}
-            formatter={(value: number, name: string) => [
-              value.toLocaleString('es-ES'),
-              name,
-            ]}
+            formatter={(value: number, name: string) => [value.toLocaleString('es-ES'), name]}
             labelFormatter={(_, payload) => {
               if (payload && payload[0]) {
                 return payload[0].payload.fullName;
@@ -421,12 +411,7 @@ function TopClientsChart({ data, loading }: TopClientsChartProps) {
               return '';
             }}
           />
-          <Bar
-            dataKey="interacciones"
-            name="Interacciones"
-            fill="#3b82f6"
-            radius={[0, 4, 4, 0]}
-          />
+          <Bar dataKey="interacciones" name="Interacciones" fill="#3b82f6" radius={[0, 4, 4, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -478,13 +463,9 @@ function RecentActivity({ interactions, loading }: RecentActivityProps) {
         >
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-neutral-200 rounded-full flex items-center justify-center">
-              <span className="text-xs text-neutral-600">
-                {type.charAt(0).toUpperCase()}
-              </span>
+              <span className="text-xs text-neutral-600">{type.charAt(0).toUpperCase()}</span>
             </div>
-            <span className="text-sm text-neutral-700">
-              {INTERACTION_LABELS[type] || type}
-            </span>
+            <span className="text-sm text-neutral-700">{INTERACTION_LABELS[type] || type}</span>
           </div>
           <span className="text-sm font-medium text-neutral-900">
             {count.toLocaleString('es-ES')}
@@ -507,21 +488,15 @@ export function DashboardPage() {
 
   // Calculate active percentage
   const activePercentage = dashboard?.clients.total
-    ? Math.round(
-        ((dashboard.clients.byStatus.active || 0) / dashboard.clients.total) * 100
-      )
+    ? Math.round(((dashboard.clients.byStatus.active || 0) / dashboard.clients.total) * 100)
     : 0;
 
   return (
     <div className="space-y-6">
       {/* Welcome header */}
       <div>
-        <h1 className="text-2xl font-semibold text-neutral-900">
-          Bienvenido, {user?.firstName}
-        </h1>
-        <p className="text-neutral-500 mt-1">
-          Panel de control de {tenant?.name}
-        </p>
+        <h1 className="text-2xl font-semibold text-neutral-900">Bienvenido, {user?.firstName}</h1>
+        <p className="text-neutral-500 mt-1">Panel de control de {tenant?.name}</p>
       </div>
 
       {/* KPI Cards */}
@@ -557,9 +532,7 @@ export function DashboardPage() {
         {/* Activity timeline chart */}
         <Card padding="none">
           <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="font-semibold text-neutral-900">
-              Actividad (Ultimos 30 dias)
-            </h2>
+            <h2 className="font-semibold text-neutral-900">Actividad (Ultimos 30 dias)</h2>
           </div>
           <div className="p-4">
             <ActivityChart data={activity?.data || []} loading={activityLoading} />
@@ -569,15 +542,10 @@ export function DashboardPage() {
         {/* Client status distribution */}
         <Card padding="none">
           <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="font-semibold text-neutral-900">
-              Distribucion de Clientes
-            </h2>
+            <h2 className="font-semibold text-neutral-900">Distribucion de Clientes</h2>
           </div>
           <div className="p-4">
-            <StatusPieChart
-              data={dashboard?.clients.byStatus || {}}
-              loading={dashboardLoading}
-            />
+            <StatusPieChart data={dashboard?.clients.byStatus || {}} loading={dashboardLoading} />
           </div>
         </Card>
       </div>
@@ -587,24 +555,17 @@ export function DashboardPage() {
         {/* Top clients */}
         <Card padding="none">
           <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="font-semibold text-neutral-900">
-              Top Clientes por Actividad
-            </h2>
+            <h2 className="font-semibold text-neutral-900">Top Clientes por Actividad</h2>
           </div>
           <div className="p-4">
-            <TopClientsChart
-              data={topClients?.clients || []}
-              loading={topClientsLoading}
-            />
+            <TopClientsChart data={topClients?.clients || []} loading={topClientsLoading} />
           </div>
         </Card>
 
         {/* Interaction types */}
         <Card padding="none">
           <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="font-semibold text-neutral-900">
-              Tipos de Interaccion
-            </h2>
+            <h2 className="font-semibold text-neutral-900">Tipos de Interaccion</h2>
           </div>
           <div className="p-6">
             <RecentActivity
@@ -620,11 +581,7 @@ export function DashboardPage() {
         <Card className="p-5">
           <p className="text-sm text-neutral-500">Equipo Total</p>
           <p className="text-2xl font-semibold text-neutral-900 mt-1">
-            {dashboardLoading ? (
-              <Spinner size="sm" />
-            ) : (
-              dashboard?.team.total || 0
-            )}
+            {dashboardLoading ? <Spinner size="sm" /> : dashboard?.team.total || 0}
           </p>
           <p className="text-xs text-neutral-400 mt-2">Miembros del equipo</p>
         </Card>
@@ -632,15 +589,9 @@ export function DashboardPage() {
         <Card className="p-5">
           <p className="text-sm text-neutral-500">Usuarios Activos</p>
           <p className="text-2xl font-semibold text-neutral-900 mt-1">
-            {dashboardLoading ? (
-              <Spinner size="sm" />
-            ) : (
-              dashboard?.team.active || 0
-            )}
+            {dashboardLoading ? <Spinner size="sm" /> : dashboard?.team.active || 0}
           </p>
-          <p className="text-xs text-neutral-400 mt-2">
-            Activos en los ultimos 7 dias
-          </p>
+          <p className="text-xs text-neutral-400 mt-2">Activos en los ultimos 7 dias</p>
         </Card>
 
         <Card className="p-5">

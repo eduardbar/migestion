@@ -11,7 +11,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 
-const LandingPage: React.FC = () => {
+export const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
       {/* Navbar */}
