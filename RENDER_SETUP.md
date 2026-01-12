@@ -25,10 +25,17 @@ The table `public.users` does not exist in current database.
 
 3. **Configura el script de build:**
    - Ve a: Settings → Build & Deploy
-   - Cambia el **Build Command** a:
+   - Cambia el **Build Command** a (usa Prisma directamente):
    ```
-   npm install && npm run db:migrate:prod && npm run build
+   npm install && npx prisma migrate deploy --schema=./packages/api/src/infrastructure/prisma/schema.prisma && npm run build:api
    ```
+   **Opción alternativa (si lo anterior falla):**
+   ```
+   npm install && npm run build:api
+   ```
+4. **Forzar deploy manual (IMPORTANTE):**
+   - Ve a: Manual Deploy → **Deploy latest commit**
+   - Esto forzará a Render a usar el código más reciente sin caché
 
 ### Opción 2: Ejecutar migración manual desde terminal
 
