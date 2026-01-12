@@ -15,33 +15,29 @@ import { LoginPage, RegisterPage } from '@/pages/auth';
 // Lazy-loaded pages (code splitting)
 // ─────────────────────────────────────────
 
-const DashboardPage = lazy(() => 
+const LandingPage = lazy(() => import('@/pages/landing').then(m => ({ default: m.LandingPage })));
+
+const DashboardPage = lazy(() =>
   import('@/pages/dashboard').then(m => ({ default: m.DashboardPage }))
 );
 
-const ClientsPage = lazy(() => 
-  import('@/pages/clients').then(m => ({ default: m.ClientsPage }))
-);
+const ClientsPage = lazy(() => import('@/pages/clients').then(m => ({ default: m.ClientsPage })));
 
-const InteractionsPage = lazy(() => 
+const InteractionsPage = lazy(() =>
   import('@/pages/interactions').then(m => ({ default: m.InteractionsPage }))
 );
 
-const ReportsPage = lazy(() => 
-  import('@/pages/reports').then(m => ({ default: m.ReportsPage }))
-);
+const ReportsPage = lazy(() => import('@/pages/reports').then(m => ({ default: m.ReportsPage })));
 
-const SettingsPage = lazy(() => 
+const SettingsPage = lazy(() =>
   import('@/pages/settings').then(m => ({ default: m.SettingsPage }))
 );
 
-const NotificationsPage = lazy(() => 
+const NotificationsPage = lazy(() =>
   import('@/pages/notifications').then(m => ({ default: m.NotificationsPage }))
 );
 
-const AuditPage = lazy(() => 
-  import('@/pages/audit').then(m => ({ default: m.AuditPage }))
-);
+const AuditPage = lazy(() => import('@/pages/audit').then(m => ({ default: m.AuditPage })));
 
 // ─────────────────────────────────────────
 // Loading Fallback Component
@@ -123,6 +119,18 @@ export default function App() {
     <SocketProvider>
       <BrowserRouter>
         <Routes>
+          {/* Landing route - Public */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Suspense fallback={<PageLoader />}>
+                  <LandingPage />
+                </Suspense>
+              </PublicRoute>
+            }
+          />
+
           {/* Public routes */}
           <Route
             path={ROUTES.LOGIN}
@@ -215,11 +223,8 @@ export default function App() {
             />
           </Route>
 
-          {/* Redirect root to dashboard or login */}
-          <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.DASHBOARD} replace />} />
-
           {/* 404 - redirect to dashboard */}
-          <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </SocketProvider>
