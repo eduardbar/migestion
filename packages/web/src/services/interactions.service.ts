@@ -42,7 +42,9 @@ export interface UpdateInteractionInput {
 
 export interface InteractionStats {
   total: number;
-  byType: Record<InteractionType, number>;
+  byType: { type: string; count: number }[];
+  byUser: { userId: string; userName: string; count: number }[];
+  lastWeek: number;
   recentCount: number;
 }
 
@@ -57,7 +59,7 @@ export async function getInteractions(
   params: InteractionListParams = {}
 ): Promise<InteractionListResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
   if (params.clientId) searchParams.set('clientId', params.clientId);
@@ -70,7 +72,7 @@ export async function getInteractions(
 
   const query = searchParams.toString();
   const endpoint = `/interactions${query ? `?${query}` : ''}`;
-  
+
   return api.get<InteractionListResponse>(endpoint);
 }
 
@@ -89,13 +91,13 @@ export async function getClientTimeline(
   params: { page?: number; limit?: number } = {}
 ): Promise<InteractionListResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
 
   const query = searchParams.toString();
   const endpoint = `/clients/${clientId}/interactions${query ? `?${query}` : ''}`;
-  
+
   return api.get<InteractionListResponse>(endpoint);
 }
 

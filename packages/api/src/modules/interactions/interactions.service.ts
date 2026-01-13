@@ -129,6 +129,7 @@ export async function getStats(tenantId: string): Promise<InteractionStatsDto> {
     byUser,
     total,
     lastWeek: lastWeekCount,
+    recentCount: 0,
   };
 }
 
