@@ -43,8 +43,6 @@ export interface UpdateInteractionInput {
 export interface InteractionStats {
   total: number;
   byType: { type: string; count: number }[];
-  byUser: { userId: string; userName: string; count: number }[];
-  lastWeek: number;
   recentCount: number;
 }
 
