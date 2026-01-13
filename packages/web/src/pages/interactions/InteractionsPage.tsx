@@ -175,7 +175,7 @@ export function InteractionsPage() {
   };
 
   const truncateNotes = (notes: string | null, maxLength: number = 100) => {
-    if (!notes) return '—';
+    if (!notes || typeof notes !== 'string') return '—';
     if (notes.length <= maxLength) return notes;
     return notes.substring(0, maxLength) + '...';
   };
@@ -317,24 +317,13 @@ export function InteractionsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      {interaction.user ? (
-                        <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
-                          {interaction.user.firstName ? interaction.user.firstName.charAt(0) : ''}
-                          {interaction.user.lastName ? interaction.user.lastName.charAt(0) : ''}
-                        </div>
-                      ) : (
-                        <div className="h-6 w-6 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-600">
-                          ?
-                        </div>
-                      )}
+                      <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
+                        {interaction.user?.firstName && interaction.user.lastName
+                          ? `${interaction.user.firstName.charAt(0)}${interaction.user.lastName.charAt(0)}`
+                          : '?'}
+                      </div>
                       <span className="text-sm text-neutral-600">
-                        {interaction.user ? (
-                          <>
-                            {interaction.user.firstName} {interaction.user.lastName}
-                          </>
-                        ) : (
-                          <span className="text-neutral-400">Unknown User</span>
-                        )}
+                        {interaction.user?.firstName || ''} {interaction.user?.lastName || ''}
                       </span>
                     </div>
                   </TableCell>
