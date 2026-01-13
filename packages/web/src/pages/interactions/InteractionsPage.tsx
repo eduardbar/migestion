@@ -174,10 +174,10 @@ export function InteractionsPage() {
     });
   };
 
-  const truncateNotes = (notes: string | null, maxLength: number = 100) => {
-    if (!notes || typeof notes !== 'string') return '—';
-    if (notes.length <= maxLength) return notes;
-    return notes.substring(0, maxLength) + '...';
+  const truncateNotes = (notes: string | null) => {
+    if (!notes) return '—';
+    if (notes.length <= 100) return notes;
+    return notes.slice(0, 100) + '...';
   };
 
   return (
