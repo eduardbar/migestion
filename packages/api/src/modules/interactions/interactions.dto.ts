@@ -108,6 +108,7 @@ export interface InteractionStatsDto {
   byUser: { userId: string; userName: string; count: number }[];
   total: number;
   lastWeek: number;
+  recentCount: number;
 }
 
 // ─────────────────────────────────────────
@@ -171,9 +172,7 @@ export function toInteractionWithRelationsDto(
 /**
  * Maps an Interaction to a TimelineItemDto.
  */
-export function toTimelineItemDto(
-  interaction: Interaction & { user: User }
-): TimelineItemDto {
+export function toTimelineItemDto(interaction: Interaction & { user: User }): TimelineItemDto {
   return {
     id: interaction.id,
     type: interaction.type,
