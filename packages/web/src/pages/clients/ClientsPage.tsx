@@ -162,6 +162,8 @@ export function ClientsPage() {
     ...segments.map(s => ({ value: s, label: s })),
   ];
 
+  const activeFiltersCount = [filters.status, filters.segment].filter(Boolean).length;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -192,9 +194,9 @@ export function ClientsPage() {
             <Button variant="secondary" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
-              {(filters.status || filters.segment) && (
+              {activeFiltersCount > 0 && (
                 <span className="ml-2 h-5 w-5 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center">
-                  {[filters.status, filters.segment].filter(Boolean).length}
+                  {activeFiltersCount}
                 </span>
               )}
             </Button>
