@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MessageSquare, 
-  Pencil, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Filter,
+  MessageSquare,
+  Pencil,
+  Trash2,
   X,
   Phone,
   Mail,
@@ -62,7 +62,10 @@ const TYPE_ICONS: Record<InteractionType, React.ReactNode> = {
   task: <CheckSquare className="h-4 w-4" />,
 };
 
-const TYPE_BADGE_VARIANTS: Record<InteractionType, 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'> = {
+const TYPE_BADGE_VARIANTS: Record<
+  InteractionType,
+  'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'
+> = {
   call: 'primary',
   email: 'info',
   meeting: 'success',
@@ -101,7 +104,7 @@ export function InteractionsPage() {
 
   // Table hooks
   const { sortConfig, handleSort } = useTableSort(
-    filters.sortBy, 
+    filters.sortBy,
     filters.sortOrder as 'asc' | 'desc'
   );
 
@@ -124,7 +127,7 @@ export function InteractionsPage() {
 
   // Handlers
   const handleTypeFilter = (type: string) => {
-    setFilters({ type: type as InteractionType || undefined });
+    setFilters({ type: (type as InteractionType) || undefined });
   };
 
   const openCreateModal = () => {
@@ -183,9 +186,7 @@ export function InteractionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-900">Interactions</h1>
-          <p className="text-sm text-neutral-500 mt-1">
-            Activity log and communication history
-          </p>
+          <p className="text-sm text-neutral-500 mt-1">Activity log and communication history</p>
         </div>
         <Button onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
@@ -223,14 +224,11 @@ export function InteractionsPage() {
               <Input
                 placeholder="Search interactions..."
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={e => setSearchValue(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Button 
-              variant="secondary" 
-              onClick={() => setShowFilters(!showFilters)}
-            >
+            <Button variant="secondary" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
               {filters.type && (
@@ -247,16 +245,12 @@ export function InteractionsPage() {
                 <Select
                   options={TYPE_OPTIONS}
                   value={filters.type || ''}
-                  onChange={(e) => handleTypeFilter(e.target.value)}
+                  onChange={e => handleTypeFilter(e.target.value)}
                   placeholder="Type"
                 />
               </div>
               {filters.type && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setFilters({ type: undefined })}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setFilters({ type: undefined })}>
                   <X className="h-4 w-4 mr-1" />
                   Clear filters
                 </Button>
@@ -271,23 +265,13 @@ export function InteractionsPage() {
         <Table loading={isLoading}>
           <TableHeader>
             <TableRow>
-              <TableHead 
-                sortable 
-                sortKey="type" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="type" currentSort={sortConfig} onSort={handleSort}>
                 Type
               </TableHead>
               <TableHead>Client</TableHead>
               <TableHead>Notes</TableHead>
               <TableHead>Created By</TableHead>
-              <TableHead 
-                sortable 
-                sortKey="createdAt" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="createdAt" currentSort={sortConfig} onSort={handleSort}>
                 Date
               </TableHead>
               <TableHead className="w-16" />
@@ -301,8 +285,8 @@ export function InteractionsPage() {
                 title="No interactions found"
                 description={
                   filters.type
-                    ? "Try adjusting your filters"
-                    : "Get started by logging your first interaction"
+                    ? 'Try adjusting your filters'
+                    : 'Get started by logging your first interaction'
                 }
                 action={
                   !filters.type && (
@@ -314,13 +298,11 @@ export function InteractionsPage() {
                 }
               />
             ) : (
-              interactions.map((interaction) => (
+              interactions.map(interaction => (
                 <TableRow key={interaction.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <span className="text-neutral-400">
-                        {TYPE_ICONS[interaction.type]}
-                      </span>
+                      <span className="text-neutral-400">{TYPE_ICONS[interaction.type]}</span>
                       <Badge variant={TYPE_BADGE_VARIANTS[interaction.type]}>
                         {interaction.type.charAt(0).toUpperCase() + interaction.type.slice(1)}
                       </Badge>
@@ -336,10 +318,11 @@ export function InteractionsPage() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
-                        {interaction.user.firstName[0]}{interaction.user.lastName[0]}
+                        {interaction.user?.firstName?.charAt(0) || '?'}
+                        {interaction.user?.lastName?.charAt(0) || '?'}
                       </div>
                       <span className="text-sm text-neutral-600">
-                        {interaction.user.firstName} {interaction.user.lastName}
+                        {interaction.user?.firstName || ''} {interaction.user?.lastName || ''}
                       </span>
                     </div>
                   </TableCell>
@@ -348,15 +331,11 @@ export function InteractionsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => openEditModal(interaction)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openEditModal(interaction)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         onClick={() => openDeleteDialog(interaction)}
                       >
@@ -388,7 +367,7 @@ export function InteractionsPage() {
       <InteractionFormModal
         open={isCreateModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           await createInteraction(data);
           closeModals();
         }}
@@ -401,7 +380,7 @@ export function InteractionsPage() {
       <InteractionFormModal
         open={isEditModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           if (selectedInteraction) {
             await updateInteraction(selectedInteraction.id, {
               type: data.type,
@@ -480,7 +459,7 @@ function InteractionFormModal({
   }, [open, interaction]);
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -498,7 +477,7 @@ function InteractionFormModal({
     { value: 'task', label: 'Task' },
   ];
 
-  const clientOptions = clients.map((c) => ({
+  const clientOptions = clients.map(c => ({
     value: c.id,
     label: c.companyName,
   }));
@@ -509,18 +488,15 @@ function InteractionFormModal({
         <ModalHeader>
           <ModalTitle>{isEditing ? 'Edit Interaction' : 'New Interaction'}</ModalTitle>
           <ModalDescription>
-            {isEditing 
+            {isEditing
               ? 'Update the interaction details below.'
-              : 'Log a new interaction with a client.'
-            }
+              : 'Log a new interaction with a client.'}
           </ModalDescription>
         </ModalHeader>
 
         <ModalBody className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">
-              {error}
-            </div>
+            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">{error}</div>
           )}
 
           {!isEditing && (
@@ -528,7 +504,7 @@ function InteractionFormModal({
               label="Client"
               options={clientOptions}
               value={formData.clientId}
-              onChange={(e) => handleChange('clientId', e.target.value)}
+              onChange={e => handleChange('clientId', e.target.value)}
               required
             />
           )}
@@ -537,18 +513,16 @@ function InteractionFormModal({
             label="Type"
             options={typeOptions}
             value={formData.type}
-            onChange={(e) => handleChange('type', e.target.value as InteractionType)}
+            onChange={e => handleChange('type', e.target.value as InteractionType)}
           />
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-neutral-700">
-              Notes
-            </label>
+            <label className="block text-sm font-medium text-neutral-700">Notes</label>
             <textarea
               className="w-full px-3 py-2 text-sm rounded border border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:border-primary-500 focus:ring-primary-500 hover:border-neutral-400 transition-colors duration-150 resize-none"
               rows={4}
               value={formData.notes}
-              onChange={(e) => handleChange('notes', e.target.value)}
+              onChange={e => handleChange('notes', e.target.value)}
               placeholder="Add notes about this interaction..."
             />
           </div>

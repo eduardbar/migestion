@@ -77,7 +77,10 @@ export function ClientsPage() {
   const [selectedClientForAction, setSelectedClientForAction] = useState<Client | null>(null);
 
   // Table hooks
-  const { sortConfig, handleSort } = useTableSort(filters.sortBy, filters.sortOrder as 'asc' | 'desc');
+  const { sortConfig, handleSort } = useTableSort(
+    filters.sortBy,
+    filters.sortOrder as 'asc' | 'desc'
+  );
   const selection = useTableSelection(clients);
 
   // Initial data fetch
@@ -91,7 +94,12 @@ export function ClientsPage() {
   useEffect(() => {
     if (sortConfig.key && sortConfig.direction) {
       setFilters({
-        sortBy: sortConfig.key as 'companyName' | 'contactName' | 'createdAt' | 'updatedAt' | 'status',
+        sortBy: sortConfig.key as
+          | 'companyName'
+          | 'contactName'
+          | 'createdAt'
+          | 'updatedAt'
+          | 'status',
         sortOrder: sortConfig.direction,
       });
     }
@@ -109,7 +117,7 @@ export function ClientsPage() {
 
   // Handlers
   const handleStatusFilter = (status: string) => {
-    setFilters({ status: status as ClientStatus || undefined });
+    setFilters({ status: (status as ClientStatus) || undefined });
   };
 
   const handleSegmentFilter = (segment: string) => {
@@ -151,7 +159,7 @@ export function ClientsPage() {
 
   const segmentOptions = [
     { value: '', label: 'All segments' },
-    ...segments.map((s) => ({ value: s, label: s })),
+    ...segments.map(s => ({ value: s, label: s })),
   ];
 
   return (
@@ -160,9 +168,7 @@ export function ClientsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-900">Clients</h1>
-          <p className="text-sm text-neutral-500 mt-1">
-            Manage your client portfolio
-          </p>
+          <p className="text-sm text-neutral-500 mt-1">Manage your client portfolio</p>
         </div>
         <Button onClick={openCreateModal}>
           <Plus className="h-4 w-4 mr-2" />
@@ -179,14 +185,11 @@ export function ClientsPage() {
               <Input
                 placeholder="Search clients..."
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={e => setSearchValue(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Button 
-              variant="secondary" 
-              onClick={() => setShowFilters(!showFilters)}
-            >
+            <Button variant="secondary" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
               {(filters.status || filters.segment) && (
@@ -203,7 +206,7 @@ export function ClientsPage() {
                 <Select
                   options={CLIENT_STATUS_OPTIONS}
                   value={filters.status || ''}
-                  onChange={(e) => handleStatusFilter(e.target.value)}
+                  onChange={e => handleStatusFilter(e.target.value)}
                   placeholder="Status"
                 />
               </div>
@@ -211,13 +214,13 @@ export function ClientsPage() {
                 <Select
                   options={segmentOptions}
                   value={filters.segment || ''}
-                  onChange={(e) => handleSegmentFilter(e.target.value)}
+                  onChange={e => handleSegmentFilter(e.target.value)}
                   placeholder="Segment"
                 />
               </div>
               {(filters.status || filters.segment) && (
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => setFilters({ status: undefined, segment: undefined })}
                 >
@@ -235,7 +238,8 @@ export function ClientsPage() {
         <Card className="p-4 bg-primary-50 border-primary-200">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-primary-700">
-              {selection.selectedIds.size} client{selection.selectedIds.size > 1 ? 's' : ''} selected
+              {selection.selectedIds.size} client{selection.selectedIds.size > 1 ? 's' : ''}{' '}
+              selected
             </span>
             <div className="flex gap-2">
               <Button variant="secondary" size="sm" onClick={selection.clearSelection}>
@@ -258,17 +262,17 @@ export function ClientsPage() {
                   onChange={selection.toggleAll}
                 />
               </TableHead>
-              <TableHead 
-                sortable 
-                sortKey="companyName" 
+              <TableHead
+                sortable
+                sortKey="companyName"
                 currentSort={sortConfig}
                 onSort={handleSort}
               >
                 Company
               </TableHead>
-              <TableHead 
-                sortable 
-                sortKey="contactName" 
+              <TableHead
+                sortable
+                sortKey="contactName"
                 currentSort={sortConfig}
                 onSort={handleSort}
               >
@@ -276,12 +280,7 @@ export function ClientsPage() {
               </TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead 
-                sortable 
-                sortKey="status" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="status" currentSort={sortConfig} onSort={handleSort}>
                 Status
               </TableHead>
               <TableHead>Segment</TableHead>
@@ -297,11 +296,13 @@ export function ClientsPage() {
                 title="No clients found"
                 description={
                   filters.search || filters.status || filters.segment
-                    ? "Try adjusting your search or filters"
-                    : "Get started by adding your first client"
+                    ? 'Try adjusting your search or filters'
+                    : 'Get started by adding your first client'
                 }
                 action={
-                  !filters.search && !filters.status && !filters.segment && (
+                  !filters.search &&
+                  !filters.status &&
+                  !filters.segment && (
                     <Button onClick={openCreateModal}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add Client
@@ -310,12 +311,8 @@ export function ClientsPage() {
                 }
               />
             ) : (
-              clients.map((client) => (
-                <TableRow 
-                  key={client.id}
-                  selected={selection.isSelected(client.id)}
-                  clickable
-                >
+              clients.map(client => (
+                <TableRow key={client.id} selected={selection.isSelected(client.id)} clickable>
                   <TableCell>
                     <TableCheckbox
                       checked={selection.isSelected(client.id)}
@@ -331,25 +328,16 @@ export function ClientsPage() {
                   </TableCell>
                   <TableCell className="text-neutral-500">{client.segment || '—'}</TableCell>
                   <TableCell className="text-neutral-500">
-                    {client.assignedTo 
+                    {client.assignedTo?.firstName && client.assignedTo?.lastName
                       ? `${client.assignedTo.firstName} ${client.assignedTo.lastName}`
-                      : '—'
-                    }
+                      : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => openEditModal(client)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openEditModal(client)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => openDeleteDialog(client)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openDeleteDialog(client)}>
                         <Trash2 className="h-4 w-4 text-error-500" />
                       </Button>
                     </div>
@@ -378,7 +366,7 @@ export function ClientsPage() {
       <ClientFormModal
         open={isCreateModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           await createClient(data);
           closeModals();
         }}
@@ -390,7 +378,7 @@ export function ClientsPage() {
       <ClientFormModal
         open={isEditModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           if (selectedClientForAction) {
             await updateClient(selectedClientForAction.id, data);
             closeModals();
@@ -478,7 +466,7 @@ function ClientFormModal({
   }, [open, client]);
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -494,31 +482,28 @@ function ClientFormModal({
         <ModalHeader>
           <ModalTitle>{isEditing ? 'Edit Client' : 'New Client'}</ModalTitle>
           <ModalDescription>
-            {isEditing 
+            {isEditing
               ? 'Update client information below.'
-              : 'Fill in the details to create a new client.'
-            }
+              : 'Fill in the details to create a new client.'}
           </ModalDescription>
         </ModalHeader>
 
         <ModalBody className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">
-              {error}
-            </div>
+            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">{error}</div>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Company Name"
               value={formData.companyName}
-              onChange={(e) => handleChange('companyName', e.target.value)}
+              onChange={e => handleChange('companyName', e.target.value)}
               required
             />
             <Input
               label="Contact Name"
               value={formData.contactName}
-              onChange={(e) => handleChange('contactName', e.target.value)}
+              onChange={e => handleChange('contactName', e.target.value)}
               required
             />
           </div>
@@ -528,12 +513,12 @@ function ClientFormModal({
               label="Email"
               type="email"
               value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
+              onChange={e => handleChange('email', e.target.value)}
             />
             <Input
               label="Phone"
               value={formData.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
+              onChange={e => handleChange('phone', e.target.value)}
             />
           </div>
 
@@ -542,12 +527,12 @@ function ClientFormModal({
               label="Status"
               options={STATUS_OPTIONS}
               value={formData.status}
-              onChange={(e) => handleChange('status', e.target.value)}
+              onChange={e => handleChange('status', e.target.value)}
             />
             <Input
               label="Segment"
               value={formData.segment}
-              onChange={(e) => handleChange('segment', e.target.value)}
+              onChange={e => handleChange('segment', e.target.value)}
               placeholder="e.g., Enterprise, SMB"
             />
           </div>
@@ -555,18 +540,16 @@ function ClientFormModal({
           <Input
             label="Address"
             value={formData.address}
-            onChange={(e) => handleChange('address', e.target.value)}
+            onChange={e => handleChange('address', e.target.value)}
           />
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-neutral-700">
-              Notes
-            </label>
+            <label className="block text-sm font-medium text-neutral-700">Notes</label>
             <textarea
               className="w-full px-3 py-2 text-sm rounded border border-neutral-300 bg-white text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:border-primary-500 focus:ring-primary-500 hover:border-neutral-400 transition-colors duration-150 resize-none"
               rows={3}
               value={formData.notes}
-              onChange={(e) => handleChange('notes', e.target.value)}
+              onChange={e => handleChange('notes', e.target.value)}
               placeholder="Additional notes about this client..."
             />
           </div>
