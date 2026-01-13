@@ -16,6 +16,7 @@ import { authService } from '@/services';
 import { ROUTES, STORAGE_KEYS } from '@/lib/constants';
 import { getInitials } from '@/lib/utils';
 import { NotificationBell, NotificationToast } from '@/components/notifications';
+import { ErrorBoundary } from '@/components/ui';
 
 /**
  * Dashboard layout with sidebar navigation.
@@ -75,17 +76,13 @@ export function DashboardLayout() {
 
         {/* Tenant info */}
         <div className="px-6 py-4 border-b border-neutral-200">
-          <p className="text-sm font-medium text-neutral-900 truncate">
-            {tenant?.name}
-          </p>
-          <p className="text-xs text-neutral-500 truncate">
-            {tenant?.slug}.migestion.com
-          </p>
+          <p className="text-sm font-medium text-neutral-900 truncate">{tenant?.name}</p>
+          <p className="text-xs text-neutral-500 truncate">{tenant?.slug}.migestion.com</p>
         </div>
 
         {/* Navigation */}
         <nav className="p-4 space-y-1">
-          {navigation.map((item) => {
+          {navigation.map(item => {
             const isActive = location.pathname === item.href;
             return (
               <Link
@@ -110,13 +107,19 @@ export function DashboardLayout() {
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-neutral-200">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-full bg-neutral-200 flex items-center justify-center text-sm font-medium text-neutral-600">
-              {user && getInitials(user.firstName, user.lastName)}
+              {user?.firstName && user?.lastName && getInitials(user.firstName, user.lastName)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-neutral-900 truncate">
-                {user?.firstName} {user?.lastName}
+                {user?.firstName || ''} {user?.lastName || ''}
               </p>
-              <p className="text-xs text-neutral-500 truncate">{user?.email}</p>
+              <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-neutral-900 truncate">
+                {user?.firstName || ''} {user?.lastName || ''}
+              </p>
+              <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
             </div>
             <button
               onClick={handleLogout}
@@ -148,7 +151,9 @@ export function DashboardLayout() {
 
         {/* Page content */}
         <main className="p-4 lg:p-8">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
 
