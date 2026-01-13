@@ -201,7 +201,7 @@ export function InteractionsPage() {
             <div className="text-2xl font-semibold text-neutral-900">{stats.total}</div>
             <div className="text-sm text-neutral-500">Total</div>
           </Card>
-          {Object.entries(stats.byType).map(([type, count]) => (
+          {Object.entries(stats.byType || {}).map(([type, count]) => (
             <Card key={type} className="p-4">
               <div className="flex items-center gap-2">
                 <span className="text-neutral-400">{TYPE_ICONS[type as InteractionType]}</span>
@@ -317,12 +317,24 @@ export function InteractionsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
-                        {interaction.user?.firstName?.charAt(0) || '?'}
-                        {interaction.user?.lastName?.charAt(0) || '?'}
-                      </div>
+                      {interaction.user ? (
+                        <div className="h-6 w-6 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
+                          {interaction.user.firstName ? interaction.user.firstName.charAt(0) : ''}
+                          {interaction.user.lastName ? interaction.user.lastName.charAt(0) : ''}
+                        </div>
+                      ) : (
+                        <div className="h-6 w-6 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-medium text-neutral-600">
+                          ?
+                        </div>
+                      )}
                       <span className="text-sm text-neutral-600">
-                        {interaction.user?.firstName || ''} {interaction.user?.lastName || ''}
+                        {interaction.user ? (
+                          <>
+                            {interaction.user.firstName} {interaction.user.lastName}
+                          </>
+                        ) : (
+                          <span className="text-neutral-400">Unknown User</span>
+                        )}
                       </span>
                     </div>
                   </TableCell>
