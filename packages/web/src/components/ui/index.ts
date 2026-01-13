@@ -31,3 +31,4 @@ export { Select, NativeSelect } from './Select';
 export { Badge, StatusBadge } from './Badge';
 export { Pagination, PaginationInfo, PaginationContainer } from './Pagination';
 export { EmptyState } from './EmptyState';
+export { ErrorBoundary } from './ErrorBoundary';
