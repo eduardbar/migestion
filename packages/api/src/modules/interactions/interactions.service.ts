@@ -1,7 +1,7 @@
 /**
  * Interaction service - business logic layer.
  * Orchestrates interaction operations with validation.
- * 
+ *
  * @remarks
  * Service functions contain business rules and coordinate between
  * repository operations and DTO mappings.
@@ -112,14 +112,13 @@ export async function getStats(tenantId: string): Promise<InteractionStatsDto> {
   ]);
 
   // Get user names for the stats
-  const userIds = byUserCounts.map((u) => u.userId);
-  const users = userIds.length > 0
-    ? await interactionsRepository.getUsersWithCounts(tenantId, userIds)
-    : [];
+  const userIds = byUserCounts.map(u => u.userId);
+  const users =
+    userIds.length > 0 ? await interactionsRepository.getUsersWithCounts(tenantId, userIds) : [];
 
-  const userMap = new Map(users.map((u) => [u.id, `${u.firstName} ${u.lastName}`]));
+  const userMap = new Map(users.map(u => [u.id, `${u.firstName} ${u.lastName}`]));
 
-  const byUser = byUserCounts.map((u) => ({
+  const byUser = byUserCounts.map(u => ({
     userId: u.userId,
     userName: userMap.get(u.userId) || 'Unknown User',
     count: u.count,
