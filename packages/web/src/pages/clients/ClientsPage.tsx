@@ -162,7 +162,7 @@ export function ClientsPage() {
     ...segments.map(s => ({ value: s, label: s })),
   ];
 
-  const activeFiltersCount = [filters.status, filters.segment].filter(Boolean).length;
+  const activeFiltersCount = [filters?.status, filters?.segment].filter(Boolean).length;
 
   return (
     <div className="space-y-6">
