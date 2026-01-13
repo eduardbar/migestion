@@ -194,7 +194,7 @@ export function InteractionsPage() {
         </Button>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Disabled in production due to build issues */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <Card className="p-4">
