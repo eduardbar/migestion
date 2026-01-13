@@ -78,7 +78,6 @@ export function InteractionsPage() {
     interactions,
     pagination,
     filters,
-    stats,
     isLoading,
     isSubmitting,
     error,
@@ -194,8 +193,8 @@ export function InteractionsPage() {
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      {stats && (
+      {/* Stats Cards - Temporarily disabled */}
+      {/* {stats && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <Card className="p-4">
             <div className="text-2xl font-semibold text-neutral-900">{stats.total}</div>
@@ -213,7 +212,7 @@ export function InteractionsPage() {
             </Card>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* Filters */}
       <Card className="p-4">
