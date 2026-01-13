@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import type { 
-  Client, 
-  ClientStatus, 
+import type {
+  Client,
+  ClientStatus,
   ClientListParams,
   CreateClientInput,
   UpdateClientInput,
@@ -21,41 +21,41 @@ interface ClientsState {
   selectedClient: Client | null;
   segments: string[];
   stats: ClientStats[];
-  
+
   // Pagination
   pagination: PaginationMeta;
-  
+
   // Filters
   filters: ClientListParams;
-  
+
   // UI State
   isLoading: boolean;
   isSubmitting: boolean;
   error: string | null;
-  
+
   // Actions - Data Fetching
   fetchClients: () => Promise<void>;
   fetchClient: (id: string) => Promise<void>;
   fetchSegments: () => Promise<void>;
   fetchStats: () => Promise<void>;
-  
+
   // Actions - CRUD
   createClient: (data: CreateClientInput) => Promise<Client>;
   updateClient: (id: string, data: UpdateClientInput) => Promise<Client>;
   deleteClient: (id: string) => Promise<void>;
-  
+
   // Actions - Bulk
   bulkUpdateStatus: (clientIds: string[], status: ClientStatus) => Promise<number>;
   bulkAssign: (clientIds: string[], assignedToId: string | null) => Promise<number>;
-  
+
   // Actions - Filters & Pagination
   setFilters: (filters: Partial<ClientListParams>) => void;
   setPage: (page: number) => void;
   resetFilters: () => void;
-  
+
   // Actions - Selection
   setSelectedClient: (client: Client | null) => void;
-  
+
   // Actions - Error Handling
   clearError: () => void;
 }
@@ -63,6 +63,8 @@ interface ClientsState {
 const DEFAULT_FILTERS: ClientListParams = {
   page: 1,
   limit: 20,
+  status: undefined,
+  segment: undefined,
   sortBy: 'createdAt',
   sortOrder: 'desc',
 };
@@ -93,10 +95,10 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   fetchClients: async () => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const { filters } = get();
       const response = await clientsService.getClients(filters);
-      
+
       set({
         clients: response.clients,
         pagination: response.meta,
@@ -113,9 +115,9 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   fetchClient: async (id: string) => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const client = await clientsService.getClient(id);
-      
+
       set({
         selectedClient: client,
         isLoading: false,
@@ -153,13 +155,13 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   createClient: async (data: CreateClientInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const client = await clientsService.createClient(data);
-      
+
       // Refresh list to include new client
       await get().fetchClients();
       await get().fetchStats();
-      
+
       set({ isSubmitting: false });
       return client;
     } catch (error) {
@@ -174,21 +176,21 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   updateClient: async (id: string, data: UpdateClientInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const client = await clientsService.updateClient(id, data);
-      
+
       // Update in list
-      set((state) => ({
-        clients: state.clients.map((c) => (c.id === id ? client : c)),
+      set(state => ({
+        clients: state.clients.map(c => (c.id === id ? client : c)),
         selectedClient: state.selectedClient?.id === id ? client : state.selectedClient,
         isSubmitting: false,
       }));
-      
+
       // Refresh stats if status changed
       if (data.status !== undefined) {
         await get().fetchStats();
       }
-      
+
       return client;
     } catch (error) {
       set({
@@ -202,12 +204,12 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   deleteClient: async (id: string) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       await clientsService.deleteClient(id);
-      
+
       // Remove from list
-      set((state) => ({
-        clients: state.clients.filter((c) => c.id !== id),
+      set(state => ({
+        clients: state.clients.filter(c => c.id !== id),
         selectedClient: state.selectedClient?.id === id ? null : state.selectedClient,
         pagination: {
           ...state.pagination,
@@ -215,7 +217,7 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
         },
         isSubmitting: false,
       }));
-      
+
       await get().fetchStats();
     } catch (error) {
       set({
@@ -233,13 +235,13 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   bulkUpdateStatus: async (clientIds: string[], status: ClientStatus) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const result = await clientsService.bulkUpdateStatus(clientIds, status);
-      
+
       // Refresh list and stats
       await get().fetchClients();
       await get().fetchStats();
-      
+
       set({ isSubmitting: false });
       return result.updatedCount;
     } catch (error) {
@@ -254,12 +256,12 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   bulkAssign: async (clientIds: string[], assignedToId: string | null) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const result = await clientsService.bulkAssign(clientIds, assignedToId);
-      
+
       // Refresh list
       await get().fetchClients();
-      
+
       set({ isSubmitting: false });
       return result.updatedCount;
     } catch (error) {
@@ -276,7 +278,7 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   // ─────────────────────────────────────────
 
   setFilters: (newFilters: Partial<ClientListParams>) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         ...newFilters,
@@ -287,7 +289,7 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
   },
 
   setPage: (page: number) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         page,
