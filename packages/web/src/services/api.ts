@@ -124,21 +124,25 @@ class ApiClient {
     let response = await fetch(`${this.baseUrl}${endpoint}`, config);
 
     // Handle token expiration - only retry if we have a refresh token
-    if (response.status === 401 && !skipAuth && this.getRefreshToken()) {
-      const newToken = await this.refreshAccessToken();
+    if (response.status === 401 && !skipAuth) {
+      const refreshToken = this.getRefreshToken();
 
-      if (newToken) {
-        // Retry request with new token
-        requestHeaders['Authorization'] = `Bearer ${newToken}`;
-        config.headers = requestHeaders;
-        response = await fetch(`${this.baseUrl}${endpoint}`, config);
-      } else {
-        // Clear tokens and redirect to login
-        this.clearTokens();
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
+      if (refreshToken) {
+        const newToken = await this.refreshAccessToken();
+
+        if (newToken) {
+          requestHeaders['Authorization'] = `Bearer ${newToken}`;
+          config.headers = requestHeaders;
+          response = await fetch(`${this.baseUrl}${endpoint}`, config);
+        } else {
+          this.clearTokens();
+          this.redirectToLogin();
+          throw new Error('Session expired');
         }
-        throw new Error('Session expired');
+      } else {
+        this.clearTokens();
+        this.redirectToLogin();
+        throw new Error('No valid session');
       }
     }
 
@@ -155,6 +159,12 @@ class ApiClient {
     }
 
     return (data as ApiResponse<T>).data;
+  }
+
+  private redirectToLogin(): void {
+    if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+      window.location.href = '/login';
+    }
   }
 
   // Convenience methods
