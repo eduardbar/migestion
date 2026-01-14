@@ -1,7 +1,7 @@
 /**
  * Client routes configuration.
  * Defines all client-related endpoints with middleware chains.
- * 
+ *
  * @remarks
  * All routes are protected (require authentication).
  * Multi-tenant isolation is enforced via tenant middleware.
@@ -26,6 +26,7 @@ import {
   clientIdParamSchema,
 } from './clients.validator.js';
 import { z } from 'zod';
+import { clientTimelineRouter } from '../interactions/index.js';
 
 const router = Router();
 
@@ -114,11 +115,7 @@ router.use(authenticate);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/',
-  validateQuery(listClientsQuerySchema),
-  asyncHandler(clientsController.list)
-);
+router.get('/', validateQuery(listClientsQuerySchema), asyncHandler(clientsController.list));
 
 /**
  * @swagger
@@ -146,10 +143,7 @@ router.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/segments',
-  asyncHandler(clientsController.getSegments)
-);
+router.get('/segments', asyncHandler(clientsController.getSegments));
 
 /**
  * @swagger
@@ -177,10 +171,7 @@ router.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/stats',
-  asyncHandler(clientsController.getStats)
-);
+router.get('/stats', asyncHandler(clientsController.getStats));
 
 /**
  * @swagger
@@ -216,11 +207,7 @@ router.get(
  *       404:
  *         $ref: '#/components/responses/NotFound'
  */
-router.get(
-  '/:id',
-  validateParams(clientIdParamSchema),
-  asyncHandler(clientsController.getById)
-);
+router.get('/:id', validateParams(clientIdParamSchema), asyncHandler(clientsController.getById));
 
 // ─────────────────────────────────────────
 // Write Routes (Manager+ role required)
@@ -358,7 +345,10 @@ router.delete(
 // ─────────────────────────────────────────
 
 const bulkStatusSchema = z.object({
-  clientIds: z.array(z.string().uuid()).min(1, 'At least one client ID required').max(100, 'Maximum 100 clients per operation'),
+  clientIds: z
+    .array(z.string().uuid())
+    .min(1, 'At least one client ID required')
+    .max(100, 'Maximum 100 clients per operation'),
   status: z.enum(['active', 'inactive', 'prospect', 'churned']),
 });
 
@@ -476,5 +466,7 @@ router.post(
   validateBody(bulkAssignSchema),
   asyncHandler(clientsController.bulkAssign)
 );
+
+router.use('/:clientId', clientTimelineRouter);
 
 export default router;
