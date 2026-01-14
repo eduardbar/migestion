@@ -6,16 +6,8 @@
 import { z } from 'zod';
 import { CLIENT_STATUS, LIMITS, PAGINATION } from '../../config/constants.js';
 
-// ─────────────────────────────────────────
-// Create Client Schema
-// ─────────────────────────────────────────
-const optionalStringField = () =>
-  z
-    .string()
-    .trim()
-    .transform(val => (val === '' ? null : val))
-    .nullable()
-    .optional();
+const optionalString = () => z.string().trim().optional();
+const optionalNullableString = () => z.string().trim().nullable().optional();
 
 export const createClientSchema = z.object({
   companyName: z
@@ -36,11 +28,9 @@ export const createClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX, `Email must be at most ${LIMITS.EMAIL_MAX} characters`)
     .toLowerCase()
     .trim()
-    .transform(val => (val === '' ? null : val))
-    .nullable()
     .optional(),
 
-  phone: optionalStringField(),
+  phone: optionalString(),
 
   status: z
     .enum([
@@ -51,17 +41,17 @@ export const createClientSchema = z.object({
     ])
     .default(CLIENT_STATUS.PROSPECT),
 
-  segment: optionalStringField(),
+  segment: optionalString(),
 
-  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').nullable().optional(),
+  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').optional(),
 
-  address: optionalStringField(),
+  address: optionalString(),
 
-  notes: optionalStringField(),
+  notes: optionalString(),
 
   customFields: z.record(z.string(), z.unknown()).optional(),
 
-  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
+  assignedToId: z.string().uuid('Invalid assigned user ID').optional(),
 });
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
@@ -90,11 +80,9 @@ export const updateClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX)
     .toLowerCase()
     .trim()
-    .transform(val => (val === '' ? null : val))
-    .nullable()
     .optional(),
 
-  phone: optionalStringField(),
+  phone: optionalString(),
 
   status: z
     .enum([
@@ -105,17 +93,17 @@ export const updateClientSchema = z.object({
     ])
     .optional(),
 
-  segment: optionalStringField(),
+  segment: optionalString(),
 
-  tags: z.array(z.string().max(50)).max(20).nullable().optional(),
+  tags: z.array(z.string().max(50)).max(20).optional(),
 
-  address: optionalStringField(),
+  address: optionalString(),
 
-  notes: optionalStringField(),
+  notes: optionalString(),
 
-  customFields: z.record(z.string(), z.unknown()).nullable().optional(),
+  customFields: z.record(z.string(), z.unknown()).optional(),
 
-  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
+  assignedToId: z.string().uuid('Invalid assigned user ID').optional(),
 });
 
 export type UpdateClientInput = z.infer<typeof updateClientSchema>;
