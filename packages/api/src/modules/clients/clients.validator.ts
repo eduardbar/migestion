@@ -6,8 +6,12 @@
 import { z } from 'zod';
 import { CLIENT_STATUS, LIMITS, PAGINATION } from '../../config/constants.js';
 
-const optionalString = () => z.string().trim().optional();
-const optionalNullableString = () => z.string().trim().nullable().optional();
+const optionalStringWithTransform = () =>
+  z
+    .string()
+    .trim()
+    .transform(val => (val === '' ? undefined : val))
+    .optional();
 
 export const createClientSchema = z.object({
   companyName: z
@@ -30,7 +34,7 @@ export const createClientSchema = z.object({
     .trim()
     .optional(),
 
-  phone: optionalString(),
+  phone: optionalStringWithTransform(),
 
   status: z
     .enum([
@@ -41,13 +45,13 @@ export const createClientSchema = z.object({
     ])
     .default(CLIENT_STATUS.PROSPECT),
 
-  segment: optionalString(),
+  segment: optionalStringWithTransform(),
 
   tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').optional(),
 
-  address: optionalString(),
+  address: optionalStringWithTransform(),
 
-  notes: optionalString(),
+  notes: optionalStringWithTransform(),
 
   customFields: z.record(z.string(), z.unknown()).optional(),
 

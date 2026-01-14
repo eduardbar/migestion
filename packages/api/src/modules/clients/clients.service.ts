@@ -97,6 +97,26 @@ export async function create(
     }
   }
 
+  const data: Prisma.ClientUncheckedCreateInput = {
+    tenantId,
+    companyName: input.companyName,
+    contactName: input.contactName,
+    email: input.email || null,
+    phone: input.phone || null,
+    status: input.status,
+    segment: input.segment || null,
+    tags: input.tags ? (input.tags as Prisma.InputJsonValue) : Prisma.JsonNull,
+    address: input.address || null,
+    notes: input.notes || null,
+    customFields: input.customFields ? (input.customFields as Prisma.InputJsonValue) : Prisma.JsonNull,
+    assignedToId: input.assignedToId || null,
+  };
+
+  const client = await clientsRepository.create(data);
+  return toClientWithAssignedUserDto(client);
+}
+  }
+
   // Clean up empty string values and handle JSON null properly
   const data: Prisma.ClientUncheckedCreateInput = {
     tenantId,
