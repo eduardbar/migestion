@@ -84,24 +84,8 @@ export async function create(req: Request, res: Response): Promise<Response> {
   const tenantId = req.tenantId!;
   const input = req.body as CreateClientInput;
 
-  // Convert empty strings to null for optional fields
-  const sanitizedInput = {
-    companyName: input.companyName,
-    contactName: input.contactName,
-    status: input.status,
-    email: input.email === '' ? null : input.email,
-    phone: input.phone === '' ? null : input.phone,
-    segment: input.segment === '' ? null : input.segment,
-    address: input.address === '' ? null : input.address,
-    notes: input.notes === '' ? null : input.notes,
-    tags: input.tags,
-    customFields: input.customFields,
-    assignedToId: input.assignedToId,
-  };
+  const result = await clientsService.create(tenantId, input);
 
-  const result = await clientsService.create(tenantId, sanitizedInput as any);
-
-  // Audit log (fire and forget)
   auditService.logCreate(getAuditContext(req), 'client', result.id, {
     companyName: result.companyName,
     contactName: result.contactName,
@@ -120,26 +104,9 @@ export async function update(req: Request, res: Response): Promise<Response> {
   const { id } = req.params;
   const input = req.body as UpdateClientInput;
 
-  // Sanitize empty strings to null
-  const sanitizedInput = {
-    companyName: input.companyName,
-    contactName: input.contactName,
-    status: input.status,
-    email: input.email === '' ? null : input.email,
-    phone: input.phone === '' ? null : input.phone,
-    segment: input.segment === '' ? null : input.segment,
-    address: input.address === '' ? null : input.address,
-    notes: input.notes === '' ? null : input.notes,
-    tags: input.tags,
-    customFields: input.customFields,
-    assignedToId: input.assignedToId,
-  };
-
-  // Get old values for audit before update
   const oldClient = await clientsService.getById(tenantId, id!);
-  const client = await clientsService.update(tenantId, id!, sanitizedInput as any);
+  const client = await clientsService.update(tenantId, id!, input);
 
-  // Audit log (fire and forget)
   auditService.logUpdate(
     getAuditContext(req),
     'client',

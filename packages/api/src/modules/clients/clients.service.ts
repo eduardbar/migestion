@@ -1,7 +1,7 @@
 /**
  * Client service - business logic layer.
  * Orchestrates client operations with validation and authorization.
- * 
+ *
  * @remarks
  * Service functions contain business rules and coordinate between
  * repository operations and DTO mappings.
@@ -15,7 +15,11 @@ import {
   type ClientWithAssignedUserDto,
   type ClientListDto,
 } from './clients.dto.js';
-import type { CreateClientInput, UpdateClientInput, ListClientsQuery } from './clients.validator.js';
+import type {
+  CreateClientInput,
+  UpdateClientInput,
+  ListClientsQuery,
+} from './clients.validator.js';
 import { NotFoundError, BadRequestError } from '../../shared/errors/app-error.js';
 
 // ─────────────────────────────────────────
@@ -42,10 +46,7 @@ export async function getById(
 /**
  * List clients with filtering and pagination.
  */
-export async function list(
-  tenantId: string,
-  query: ListClientsQuery
-): Promise<ClientListDto> {
+export async function list(tenantId: string, query: ListClientsQuery): Promise<ClientListDto> {
   const { clients, total } = await clientsRepository.findMany({
     tenantId,
     page: query.page,
@@ -109,7 +110,9 @@ export async function create(
     tags: input.tags ? (input.tags as Prisma.InputJsonValue) : Prisma.JsonNull,
     address: input.address || null,
     notes: input.notes || null,
-    customFields: input.customFields ? (input.customFields as Prisma.InputJsonValue) : Prisma.JsonNull,
+    customFields: input.customFields
+      ? (input.customFields as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
     assignedToId: input.assignedToId || null,
   };
 
@@ -127,14 +130,25 @@ export async function update(
   clientId: string,
   input: UpdateClientInput
 ): Promise<ClientWithAssignedUserDto> {
-  // Check if client exists
   const exists = await clientsRepository.exists(tenantId, clientId);
   if (!exists) {
     throw new NotFoundError('Client');
   }
 
+  const client = await clientsRepository.update(tenantId, clientId, input as any);
+  return toClientWithAssignedUserDto(client);
+}
+
+  const client = await clientsRepository.update(tenantId, clientId, input as any);
+  return toClientWithAssignedUserDto(client);
+}
+
   // Validate assignedToId if provided (and not explicitly set to null)
-  if (input.assignedToId !== undefined && input.assignedToId !== null && input.assignedToId !== '') {
+  if (
+    input.assignedToId !== undefined &&
+    input.assignedToId !== null &&
+    input.assignedToId !== ''
+  ) {
     const userExists = await clientsRepository.userExistsInTenant(tenantId, input.assignedToId);
     if (!userExists) {
       throw new BadRequestError('Assigned user does not exist', 'INVALID_ASSIGNED_USER');
@@ -143,16 +157,19 @@ export async function update(
 
   // Build update data, converting empty strings to null
   const data: Record<string, unknown> = {};
-  
+
   if (input.companyName !== undefined) data.companyName = input.companyName;
   if (input.contactName !== undefined) data.contactName = input.contactName;
   if (input.email !== undefined) data.email = input.email || null;
   if (input.phone !== undefined) data.phone = input.phone || null;
   if (input.status !== undefined) data.status = input.status;
   if (input.segment !== undefined) data.segment = input.segment || null;
-  if (input.tags !== undefined) data.tags = input.tags;
   if (input.address !== undefined) data.address = input.address || null;
   if (input.notes !== undefined) data.notes = input.notes || null;
+  if (input.tags !== undefined) {
+    const tagsArray = Array.isArray(input.tags) ? input.tags : [];
+    data.tags = tagsArray.length > 0 ? (tagsArray as any) : null;
+  }
   if (input.customFields !== undefined) data.customFields = input.customFields;
   if (input.assignedToId !== undefined) data.assignedToId = input.assignedToId || null;
 
