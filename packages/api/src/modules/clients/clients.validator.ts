@@ -28,55 +28,46 @@ export const createClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX, `Email must be at most ${LIMITS.EMAIL_MAX} characters`)
     .toLowerCase()
     .trim()
-    .optional()
-    .or(z.literal('')),
+    .nullable()
+    .optional(),
 
   phone: z
     .string()
     .max(LIMITS.PHONE_MAX, `Phone must be at most ${LIMITS.PHONE_MAX} characters`)
     .trim()
-    .optional()
-    .or(z.literal('')),
+    .nullable()
+    .optional(),
 
   status: z
-    .enum([CLIENT_STATUS.ACTIVE, CLIENT_STATUS.INACTIVE, CLIENT_STATUS.PROSPECT, CLIENT_STATUS.CHURNED])
+    .enum([
+      CLIENT_STATUS.ACTIVE,
+      CLIENT_STATUS.INACTIVE,
+      CLIENT_STATUS.PROSPECT,
+      CLIENT_STATUS.CHURNED,
+    ])
     .default(CLIENT_STATUS.PROSPECT),
 
-  segment: z
-    .string()
-    .max(50, 'Segment must be at most 50 characters')
-    .trim()
-    .optional()
-    .or(z.literal('')),
+  segment: z.string().max(50, 'Segment must be at most 50 characters').trim().nullable().optional(),
 
-  tags: z
-    .array(z.string().max(50))
-    .max(20, 'Maximum 20 tags allowed')
-    .optional(),
+  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').nullable().optional(),
 
   address: z
     .string()
     .max(500, 'Address must be at most 500 characters')
     .trim()
-    .optional()
-    .or(z.literal('')),
+    .nullable()
+    .optional(),
 
   notes: z
     .string()
     .max(LIMITS.NOTES_MAX, `Notes must be at most ${LIMITS.NOTES_MAX} characters`)
     .trim()
-    .optional()
-    .or(z.literal('')),
-
-  customFields: z
-    .record(z.string(), z.unknown())
+    .nullable()
     .optional(),
 
-  assignedToId: z
-    .string()
-    .uuid('Invalid assigned user ID')
-    .optional()
-    .or(z.literal('')),
+  customFields: z.record(z.string(), z.unknown()).optional(),
+
+  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
 });
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
@@ -105,63 +96,31 @@ export const updateClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX)
     .toLowerCase()
     .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
-
-  phone: z
-    .string()
-    .max(LIMITS.PHONE_MAX)
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
-
-  status: z
-    .enum([CLIENT_STATUS.ACTIVE, CLIENT_STATUS.INACTIVE, CLIENT_STATUS.PROSPECT, CLIENT_STATUS.CHURNED])
+    .nullable()
     .optional(),
 
-  segment: z
-    .string()
-    .max(50)
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
+  phone: z.string().max(LIMITS.PHONE_MAX).trim().nullable().optional(),
 
-  tags: z
-    .array(z.string().max(50))
-    .max(20)
-    .optional()
-    .nullable(),
+  status: z
+    .enum([
+      CLIENT_STATUS.ACTIVE,
+      CLIENT_STATUS.INACTIVE,
+      CLIENT_STATUS.PROSPECT,
+      CLIENT_STATUS.CHURNED,
+    ])
+    .optional(),
 
-  address: z
-    .string()
-    .max(500)
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
+  segment: z.string().max(50).trim().nullable().optional(),
 
-  notes: z
-    .string()
-    .max(LIMITS.NOTES_MAX)
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
+  tags: z.array(z.string().max(50)).max(20).nullable().optional(),
 
-  customFields: z
-    .record(z.string(), z.unknown())
-    .optional()
-    .nullable(),
+  address: z.string().max(500).trim().nullable().optional(),
 
-  assignedToId: z
-    .string()
-    .uuid('Invalid assigned user ID')
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
+  notes: z.string().max(LIMITS.NOTES_MAX).trim().nullable().optional(),
+
+  customFields: z.record(z.string(), z.unknown()).nullable().optional(),
+
+  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
 });
 
 export type UpdateClientInput = z.infer<typeof updateClientSchema>;
@@ -170,47 +129,30 @@ export type UpdateClientInput = z.infer<typeof updateClientSchema>;
 // Query Parameters Schema
 // ─────────────────────────────────────────
 export const listClientsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
-  search: z
-    .string()
-    .max(100)
-    .trim()
-    .optional(),
+  search: z.string().max(100).trim().optional(),
 
   status: z
-    .enum([CLIENT_STATUS.ACTIVE, CLIENT_STATUS.INACTIVE, CLIENT_STATUS.PROSPECT, CLIENT_STATUS.CHURNED])
+    .enum([
+      CLIENT_STATUS.ACTIVE,
+      CLIENT_STATUS.INACTIVE,
+      CLIENT_STATUS.PROSPECT,
+      CLIENT_STATUS.CHURNED,
+    ])
     .optional(),
 
-  segment: z
-    .string()
-    .max(50)
-    .trim()
-    .optional(),
+  segment: z.string().max(50).trim().optional(),
 
-  assignedToId: z
-    .string()
-    .uuid()
-    .optional(),
+  assignedToId: z.string().uuid().optional(),
 
   sortBy: z
     .enum(['companyName', 'contactName', 'createdAt', 'updatedAt', 'status'])
     .default('createdAt'),
 
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('desc'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type ListClientsQuery = z.infer<typeof listClientsQuerySchema>;
