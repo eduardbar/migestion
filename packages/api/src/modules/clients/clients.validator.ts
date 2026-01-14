@@ -9,6 +9,14 @@ import { CLIENT_STATUS, LIMITS, PAGINATION } from '../../config/constants.js';
 // ─────────────────────────────────────────
 // Create Client Schema
 // ─────────────────────────────────────────
+const optionalStringField = () =>
+  z
+    .string()
+    .trim()
+    .transform(val => (val === '' ? null : val))
+    .nullable()
+    .optional();
+
 export const createClientSchema = z.object({
   companyName: z
     .string()
@@ -28,15 +36,11 @@ export const createClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX, `Email must be at most ${LIMITS.EMAIL_MAX} characters`)
     .toLowerCase()
     .trim()
+    .transform(val => (val === '' ? null : val))
     .nullable()
     .optional(),
 
-  phone: z
-    .string()
-    .max(LIMITS.PHONE_MAX, `Phone must be at most ${LIMITS.PHONE_MAX} characters`)
-    .trim()
-    .nullable()
-    .optional(),
+  phone: optionalStringField(),
 
   status: z
     .enum([
@@ -47,23 +51,13 @@ export const createClientSchema = z.object({
     ])
     .default(CLIENT_STATUS.PROSPECT),
 
-  segment: z.string().max(50, 'Segment must be at most 50 characters').trim().nullable().optional(),
+  segment: optionalStringField(),
 
   tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').nullable().optional(),
 
-  address: z
-    .string()
-    .max(500, 'Address must be at most 500 characters')
-    .trim()
-    .nullable()
-    .optional(),
+  address: optionalStringField(),
 
-  notes: z
-    .string()
-    .max(LIMITS.NOTES_MAX, `Notes must be at most ${LIMITS.NOTES_MAX} characters`)
-    .trim()
-    .nullable()
-    .optional(),
+  notes: optionalStringField(),
 
   customFields: z.record(z.string(), z.unknown()).optional(),
 
@@ -96,10 +90,11 @@ export const updateClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX)
     .toLowerCase()
     .trim()
+    .transform(val => (val === '' ? null : val))
     .nullable()
     .optional(),
 
-  phone: z.string().max(LIMITS.PHONE_MAX).trim().nullable().optional(),
+  phone: optionalStringField(),
 
   status: z
     .enum([
@@ -110,13 +105,13 @@ export const updateClientSchema = z.object({
     ])
     .optional(),
 
-  segment: z.string().max(50).trim().nullable().optional(),
+  segment: optionalStringField(),
 
   tags: z.array(z.string().max(50)).max(20).nullable().optional(),
 
-  address: z.string().max(500).trim().nullable().optional(),
+  address: optionalStringField(),
 
-  notes: z.string().max(LIMITS.NOTES_MAX).trim().nullable().optional(),
+  notes: optionalStringField(),
 
   customFields: z.record(z.string(), z.unknown()).nullable().optional(),
 
