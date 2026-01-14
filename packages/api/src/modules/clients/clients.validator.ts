@@ -6,13 +6,6 @@
 import { z } from 'zod';
 import { CLIENT_STATUS, LIMITS, PAGINATION } from '../../config/constants.js';
 
-const optionalStringWithTransform = () =>
-  z
-    .string()
-    .trim()
-    .transform(val => (val === '' ? undefined : val))
-    .optional();
-
 export const createClientSchema = z.object({
   companyName: z
     .string()
@@ -32,9 +25,15 @@ export const createClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX, `Email must be at most ${LIMITS.EMAIL_MAX} characters`)
     .toLowerCase()
     .trim()
+    .nullable()
     .optional(),
 
-  phone: optionalStringWithTransform(),
+  phone: z
+    .string()
+    .max(LIMITS.PHONE_MAX, `Phone must be at most ${LIMITS.PHONE_MAX} characters`)
+    .trim()
+    .nullable()
+    .optional(),
 
   status: z
     .enum([
@@ -45,17 +44,27 @@ export const createClientSchema = z.object({
     ])
     .default(CLIENT_STATUS.PROSPECT),
 
-  segment: optionalStringWithTransform(),
+  segment: z.string().max(50, 'Segment must be at most 50 characters').trim().nullable().optional(),
 
-  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').optional(),
+  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').nullable().optional(),
 
-  address: optionalStringWithTransform(),
+  address: z
+    .string()
+    .max(500, 'Address must be at most 500 characters')
+    .trim()
+    .nullable()
+    .optional(),
 
-  notes: optionalStringWithTransform(),
+  notes: z
+    .string()
+    .max(LIMITS.NOTES_MAX, `Notes must be at most ${LIMITS.NOTES_MAX} characters`)
+    .trim()
+    .nullable()
+    .optional(),
 
-  customFields: z.record(z.string(), z.unknown()).optional(),
+  customFields: z.record(z.string(), z.unknown()).nullable().optional(),
 
-  assignedToId: z.string().uuid('Invalid assigned user ID').optional(),
+  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
 });
 
 export type CreateClientInput = z.infer<typeof createClientSchema>;
@@ -84,9 +93,10 @@ export const updateClientSchema = z.object({
     .max(LIMITS.EMAIL_MAX)
     .toLowerCase()
     .trim()
+    .nullable()
     .optional(),
 
-  phone: optionalStringWithTransform(),
+  phone: z.string().max(LIMITS.PHONE_MAX).trim().nullable().optional(),
 
   status: z
     .enum([
@@ -97,17 +107,17 @@ export const updateClientSchema = z.object({
     ])
     .optional(),
 
-  segment: optionalStringWithTransform(),
+  segment: z.string().max(50).trim().nullable().optional(),
 
-  tags: z.array(z.string().max(50)).max(20).optional(),
+  tags: z.array(z.string().max(50)).max(20).nullable().optional(),
 
-  address: optionalStringWithTransform(),
+  address: z.string().max(500).trim().nullable().optional(),
 
-  notes: optionalStringWithTransform(),
+  notes: z.string().max(LIMITS.NOTES_MAX).trim().nullable().optional(),
 
-  customFields: z.record(z.string(), z.unknown()).optional(),
+  customFields: z.record(z.string(), z.unknown()).nullable().optional(),
 
-  assignedToId: z.string().uuid('Invalid assigned user ID').optional(),
+  assignedToId: z.string().uuid('Invalid assigned user ID').nullable().optional(),
 });
 
 export type UpdateClientInput = z.infer<typeof updateClientSchema>;
