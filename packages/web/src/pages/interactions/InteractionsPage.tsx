@@ -103,8 +103,8 @@ export function InteractionsPage() {
 
   // Table hooks
   const { sortConfig, handleSort } = useTableSort(
-    filters.sortBy,
-    filters.sortOrder as 'asc' | 'desc'
+    filters?.sortBy,
+    (filters?.sortOrder || 'desc') as 'asc' | 'desc'
   );
 
   // Initial data fetch

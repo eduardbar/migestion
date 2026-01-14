@@ -2,37 +2,36 @@ import { useEffect, useRef, useState } from 'react';
 import { Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNotificationsStore } from '@/stores';
+import { useAuthStore } from '@/stores';
 import { NotificationPanel } from './NotificationPanel';
 
 /**
  * Notification bell with unread badge and dropdown panel.
  */
 export function NotificationBell() {
-  const {
-    unreadCount,
-    fetchUnreadCount,
-    initializeListeners,
-  } = useNotificationsStore();
-  
+  const { unreadCount, fetchUnreadCount, initializeListeners } = useNotificationsStore();
+  const { isAuthenticated } = useAuthStore();
+
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize listeners and fetch initial count
+  // Initialize listeners and fetch initial count (only when authenticated)
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     fetchUnreadCount();
     const cleanup = initializeListeners();
     return cleanup;
-  }, [fetchUnreadCount, initializeListeners]);
+  }, [isAuthenticated, fetchUnreadCount, initializeListeners]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     if (!isOpen) return;
 
     function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -56,7 +55,7 @@ export function NotificationBell() {
   }, [isOpen]);
 
   const toggleOpen = () => {
-    setIsOpen((prev) => !prev);
+    setIsOpen(prev => !prev);
   };
 
   return (
@@ -72,7 +71,7 @@ export function NotificationBell() {
         aria-haspopup="true"
       >
         <Bell className="h-5 w-5" />
-        
+
         {/* Unread badge */}
         {unreadCount > 0 && (
           <span
@@ -89,9 +88,7 @@ export function NotificationBell() {
       </button>
 
       {/* Dropdown panel */}
-      {isOpen && (
-        <NotificationPanel onClose={() => setIsOpen(false)} />
-      )}
+      {isOpen && <NotificationPanel onClose={() => setIsOpen(false)} />}
     </div>
   );
 }

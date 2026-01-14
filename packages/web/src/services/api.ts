@@ -3,7 +3,7 @@ import type { ApiResponse, ApiError } from '@/types';
 
 /**
  * API client with automatic token refresh and error handling.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Single responsibility: only handles HTTP communication
@@ -58,7 +58,7 @@ class ApiClient {
     }
 
     this.refreshPromise = this.doRefresh(refreshToken);
-    
+
     try {
       return await this.refreshPromise;
     } finally {
@@ -75,6 +75,7 @@ class ApiClient {
       });
 
       if (!response.ok) {
+        // Refresh failed (token expired or invalid)
         this.clearTokens();
         return null;
       }
@@ -85,8 +86,12 @@ class ApiClient {
         return data.data.accessToken;
       }
 
+      // Unexpected response format
+      this.clearTokens();
       return null;
-    } catch {
+    } catch (error) {
+      // Network error or other issue
+      console.error('Token refresh failed:', error);
       this.clearTokens();
       return null;
     }
@@ -118,17 +123,21 @@ class ApiClient {
 
     let response = await fetch(`${this.baseUrl}${endpoint}`, config);
 
-    // Handle token expiration
-    if (response.status === 401 && !skipAuth) {
+    // Handle token expiration - only retry if we have a refresh token
+    if (response.status === 401 && !skipAuth && this.getRefreshToken()) {
       const newToken = await this.refreshAccessToken();
-      
+
       if (newToken) {
+        // Retry request with new token
         requestHeaders['Authorization'] = `Bearer ${newToken}`;
         config.headers = requestHeaders;
         response = await fetch(`${this.baseUrl}${endpoint}`, config);
       } else {
-        // Redirect to login
-        window.location.href = '/login';
+        // Clear tokens and redirect to login
+        this.clearTokens();
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
         throw new Error('Session expired');
       }
     }

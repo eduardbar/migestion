@@ -69,7 +69,7 @@ export function ClientsPage() {
   } = useClientsStore();
 
   // Local state
-  const [searchValue, setSearchValue] = useState(filters.search || '');
+  const [searchValue, setSearchValue] = useState(filters?.search || '');
   const [showFilters, setShowFilters] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -78,8 +78,8 @@ export function ClientsPage() {
 
   // Table hooks
   const { sortConfig, handleSort } = useTableSort(
-    filters.sortBy,
-    filters.sortOrder as 'asc' | 'desc'
+    filters?.sortBy,
+    (filters?.sortOrder || 'desc') as 'asc' | 'desc'
   );
   const selection = useTableSelection(clients);
 
@@ -108,12 +108,12 @@ export function ClientsPage() {
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (searchValue !== filters.search) {
+      if (searchValue !== filters?.search) {
         setFilters({ search: searchValue || undefined });
       }
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchValue, filters.search, setFilters]);
+  }, [searchValue, filters?.search, setFilters]);
 
   // Handlers
   const handleStatusFilter = (status: string) => {

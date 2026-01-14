@@ -1,7 +1,7 @@
 /**
  * Client controller - HTTP request handlers.
  * Handles request/response transformation only, no business logic.
- * 
+ *
  * @remarks
  * Controllers are thin - they extract data from requests, call services,
  * and format responses. All business logic lives in the service layer.
@@ -12,7 +12,11 @@ import * as clientsService from './clients.service.js';
 import * as auditService from '../audit/audit.service.js';
 import { sendSuccess, sendCreated, sendNoContent } from '../../shared/utils/response.js';
 import { getAuditContext } from '../../shared/middlewares/index.js';
-import type { CreateClientInput, UpdateClientInput, ListClientsQuery } from './clients.validator.js';
+import type {
+  CreateClientInput,
+  UpdateClientInput,
+  ListClientsQuery,
+} from './clients.validator.js';
 
 // ─────────────────────────────────────────
 // Read Operations
@@ -28,7 +32,7 @@ export async function list(req: Request, res: Response): Promise<Response> {
 
   const result = await clientsService.list(tenantId, query);
 
-  return sendSuccess(res, result.clients, 200, result.meta);
+  return sendSuccess(res, result);
 }
 
 /**
@@ -53,7 +57,7 @@ export async function getSegments(req: Request, res: Response): Promise<Response
 
   const segments = await clientsService.getSegments(tenantId);
 
-  return sendSuccess(res, { segments });
+  return sendSuccess(res, segments);
 }
 
 /**
@@ -65,7 +69,7 @@ export async function getStats(req: Request, res: Response): Promise<Response> {
 
   const stats = await clientsService.getStatsByStatus(tenantId);
 
-  return sendSuccess(res, { stats });
+  return sendSuccess(res, stats);
 }
 
 // ─────────────────────────────────────────
@@ -110,7 +114,11 @@ export async function update(req: Request, res: Response): Promise<Response> {
     getAuditContext(req),
     'client',
     client.id,
-    { companyName: oldClient.companyName, contactName: oldClient.contactName, status: oldClient.status },
+    {
+      companyName: oldClient.companyName,
+      contactName: oldClient.contactName,
+      status: oldClient.status,
+    },
     { companyName: client.companyName, contactName: client.contactName, status: client.status }
   );
 
@@ -161,7 +169,10 @@ export async function bulkUpdateStatus(req: Request, res: Response): Promise<Res
  */
 export async function bulkAssign(req: Request, res: Response): Promise<Response> {
   const tenantId = req.tenantId!;
-  const { clientIds, assignedToId } = req.body as { clientIds: string[]; assignedToId: string | null };
+  const { clientIds, assignedToId } = req.body as {
+    clientIds: string[];
+    assignedToId: string | null;
+  };
 
   const updatedCount = await clientsService.bulkAssign(tenantId, clientIds, assignedToId);
 

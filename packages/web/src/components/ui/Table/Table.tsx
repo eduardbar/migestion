@@ -1,10 +1,4 @@
-import { 
-  type ReactNode,
-  type HTMLAttributes,
-  forwardRef,
-  useState,
-  useCallback,
-} from 'react';
+import { type ReactNode, type HTMLAttributes, forwardRef, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { ChevronUp, ChevronDown, ChevronsUpDown, Check, Minus } from 'lucide-react';
 import { Spinner } from '../Spinner';
@@ -12,7 +6,7 @@ import { Spinner } from '../Spinner';
 /**
  * Table component system.
  * Provides sortable, selectable data table with clean design.
- * 
+ *
  * @example
  * ```tsx
  * <Table>
@@ -66,11 +60,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(
           <Spinner size="lg" />
         </div>
       )}
-      <table
-        ref={ref}
-        className={cn('w-full caption-bottom text-sm', className)}
-        {...props}
-      >
+      <table ref={ref} className={cn('w-full caption-bottom text-sm', className)} {...props}>
         {children}
       </table>
     </div>
@@ -86,10 +76,10 @@ export const TableHeader = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead 
-    ref={ref} 
-    className={cn('bg-neutral-50 border-b border-neutral-200', className)} 
-    {...props} 
+  <thead
+    ref={ref}
+    className={cn('bg-neutral-50 border-b border-neutral-200', className)}
+    {...props}
   />
 ));
 TableHeader.displayName = 'TableHeader';
@@ -102,11 +92,7 @@ export const TableBody = forwardRef<
   HTMLTableSectionElement,
   HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tbody
-    ref={ref}
-    className={cn('[&_tr:last-child]:border-0', className)}
-    {...props}
-  />
+  <tbody ref={ref} className={cn('[&_tr:last-child]:border-0', className)} {...props} />
 ));
 TableBody.displayName = 'TableBody';
 
@@ -149,7 +135,10 @@ interface TableHeadProps extends HTMLAttributes<HTMLTableCellElement> {
 }
 
 export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
-  ({ className, sortable, sortKey, currentSort, onSort, align = 'left', children, ...props }, ref) => {
+  (
+    { className, sortable, sortKey, currentSort, onSort, align = 'left', children, ...props },
+    ref
+  ) => {
     const isSorted = sortKey && currentSort?.key === sortKey;
     const sortDirection = isSorted ? currentSort.direction : null;
 
@@ -167,7 +156,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
 
     const SortIcon = () => {
       if (!sortable) return null;
-      
+
       if (sortDirection === 'asc') {
         return <ChevronUp className="h-4 w-4" />;
       }
@@ -189,11 +178,13 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
         onClick={sortable ? handleSort : undefined}
         {...props}
       >
-        <div className={cn(
-          'flex items-center gap-1',
-          align === 'center' && 'justify-center',
-          align === 'right' && 'justify-end'
-        )}>
+        <div
+          className={cn(
+            'flex items-center gap-1',
+            align === 'center' && 'justify-center',
+            align === 'right' && 'justify-end'
+          )}
+        >
           {children}
           <SortIcon />
         </div>
@@ -222,11 +213,7 @@ export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
     return (
       <td
         ref={ref}
-        className={cn(
-          'px-4 py-3 text-neutral-900',
-          alignClass,
-          className
-        )}
+        className={cn('px-4 py-3 text-neutral-900', alignClass, className)}
         {...props}
       />
     );
@@ -245,12 +232,7 @@ interface TableCheckboxProps {
   disabled?: boolean;
 }
 
-export function TableCheckbox({ 
-  checked, 
-  indeterminate, 
-  onChange, 
-  disabled 
-}: TableCheckboxProps) {
+export function TableCheckbox({ checked, indeterminate, onChange, disabled }: TableCheckboxProps) {
   return (
     <button
       type="button"
@@ -290,15 +272,9 @@ export function TableEmpty({ icon, title, description, action, colSpan }: TableE
     <tr>
       <td colSpan={colSpan} className="py-12">
         <div className="flex flex-col items-center text-center">
-          {icon && (
-            <div className="mb-4 text-neutral-400">
-              {icon}
-            </div>
-          )}
+          {icon && <div className="mb-4 text-neutral-400">{icon}</div>}
           <h3 className="text-lg font-medium text-neutral-900 mb-1">{title}</h3>
-          {description && (
-            <p className="text-sm text-neutral-500 mb-4 max-w-sm">{description}</p>
-          )}
+          {description && <p className="text-sm text-neutral-500 mb-4 max-w-sm">{description}</p>}
           {action}
         </div>
       </td>
@@ -310,26 +286,26 @@ export function TableEmpty({ icon, title, description, action, colSpan }: TableE
 // useTableSort Hook
 // ─────────────────────────────────────────
 
-export function useTableSort(initialKey?: string, initialDirection: SortDirection = 'asc') {
+export function useTableSort(initialKey = '', initialDirection: SortDirection = 'asc') {
   const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: initialKey || '',
+    key: initialKey,
     direction: initialKey ? initialDirection : null,
   });
 
   const handleSort = useCallback((key: string) => {
-    setSortConfig((prev) => {
+    setSortConfig(prev => {
       if (prev.key !== key) {
         return { key, direction: 'asc' };
       }
-      
+
       if (prev.direction === 'asc') {
         return { key, direction: 'desc' };
       }
-      
+
       if (prev.direction === 'desc') {
         return { key: '', direction: null };
       }
-      
+
       return { key, direction: 'asc' };
     });
   }, []);
@@ -341,14 +317,14 @@ export function useTableSort(initialKey?: string, initialDirection: SortDirectio
 // useTableSelection Hook
 // ─────────────────────────────────────────
 
-export function useTableSelection<T extends { id: string }>(items: T[]) {
+export function useTableSelection<T extends { id: string }>(items: T[] = []) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const isAllSelected = items.length > 0 && selectedIds.size === items.length;
   const isSomeSelected = selectedIds.size > 0 && selectedIds.size < items.length;
 
   const toggleItem = useCallback((id: string) => {
-    setSelectedIds((prev) => {
+    setSelectedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -363,7 +339,7 @@ export function useTableSelection<T extends { id: string }>(items: T[]) {
     if (isAllSelected) {
       setSelectedIds(new Set());
     } else {
-      setSelectedIds(new Set(items.map((item) => item.id)));
+      setSelectedIds(new Set(items.map(item => item.id)));
     }
   }, [items, isAllSelected]);
 
@@ -371,7 +347,7 @@ export function useTableSelection<T extends { id: string }>(items: T[]) {
     setSelectedIds(new Set());
   }, []);
 
-  const selectedItems = items.filter((item) => selectedIds.has(item.id));
+  const selectedItems = items.filter(item => selectedIds.has(item.id));
 
   return {
     selectedIds,

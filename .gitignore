@@ -50,3 +50,5 @@ packages/web/test-results/
 *.pid
 *.seed
 *.pid.lock
+
+.vercel
