@@ -63,7 +63,7 @@ export async function list(tenantId: string, query: ListClientsQuery): Promise<C
 }
 
 /**
- * Get all distinct segments used by clients in the tenant.
+ * Get all distinct segments for tenant.
  */
 export async function getSegments(tenantId: string): Promise<string[]> {
   return clientsRepository.findDistinctSegments(tenantId);
@@ -90,7 +90,6 @@ export async function create(
   tenantId: string,
   input: CreateClientInput
 ): Promise<ClientWithAssignedUserDto> {
-  // Validate assignedToId if provided
   if (input.assignedToId && input.assignedToId !== '') {
     const userExists = await clientsRepository.userExistsInTenant(tenantId, input.assignedToId);
     if (!userExists) {
@@ -98,7 +97,6 @@ export async function create(
     }
   }
 
-  // Clean up empty string values and handle JSON null properly
   const data: Prisma.ClientUncheckedCreateInput = {
     tenantId,
     companyName: input.companyName,
@@ -107,7 +105,10 @@ export async function create(
     phone: input.phone || null,
     status: input.status,
     segment: input.segment || null,
-    tags: input.tags ? (input.tags as Prisma.InputJsonValue) : Prisma.JsonNull,
+    tags:
+      Array.isArray(input.tags) && input.tags.length > 0
+        ? (input.tags as Prisma.InputJsonValue)
+        : Prisma.JsonNull,
     address: input.address || null,
     notes: input.notes || null,
     customFields: input.customFields
@@ -123,7 +124,6 @@ export async function create(
 /**
  * Update an existing client.
  * @throws NotFoundError if client doesn't exist
- * @throws BadRequestError if assignedToId is invalid
  */
 export async function update(
   tenantId: string,
@@ -139,44 +139,6 @@ export async function update(
   return toClientWithAssignedUserDto(client);
 }
 
-  const client = await clientsRepository.update(tenantId, clientId, input as any);
-  return toClientWithAssignedUserDto(client);
-}
-
-  // Validate assignedToId if provided (and not explicitly set to null)
-  if (
-    input.assignedToId !== undefined &&
-    input.assignedToId !== null &&
-    input.assignedToId !== ''
-  ) {
-    const userExists = await clientsRepository.userExistsInTenant(tenantId, input.assignedToId);
-    if (!userExists) {
-      throw new BadRequestError('Assigned user does not exist', 'INVALID_ASSIGNED_USER');
-    }
-  }
-
-  // Build update data, converting empty strings to null
-  const data: Record<string, unknown> = {};
-
-  if (input.companyName !== undefined) data.companyName = input.companyName;
-  if (input.contactName !== undefined) data.contactName = input.contactName;
-  if (input.email !== undefined) data.email = input.email || null;
-  if (input.phone !== undefined) data.phone = input.phone || null;
-  if (input.status !== undefined) data.status = input.status;
-  if (input.segment !== undefined) data.segment = input.segment || null;
-  if (input.address !== undefined) data.address = input.address || null;
-  if (input.notes !== undefined) data.notes = input.notes || null;
-  if (input.tags !== undefined) {
-    const tagsArray = Array.isArray(input.tags) ? input.tags : [];
-    data.tags = tagsArray.length > 0 ? (tagsArray as any) : null;
-  }
-  if (input.customFields !== undefined) data.customFields = input.customFields;
-  if (input.assignedToId !== undefined) data.assignedToId = input.assignedToId || null;
-
-  const client = await clientsRepository.update(tenantId, clientId, data);
-  return toClientWithAssignedUserDto(client);
-}
-
 /**
  * Delete a client.
  * @throws NotFoundError if client doesn't exist
@@ -189,6 +151,10 @@ export async function remove(tenantId: string, clientId: string): Promise<void> 
 
   await clientsRepository.remove(tenantId, clientId);
 }
+
+// ─────────────────────────────────────────
+// Bulk Operations
+// ─────────────────────────────────────────
 
 /**
  * Bulk update status for multiple clients.
@@ -220,7 +186,6 @@ export async function bulkAssign(
     return 0;
   }
 
-  // Validate assignedToId if not null
   if (assignedToId !== null) {
     const userExists = await clientsRepository.userExistsInTenant(tenantId, assignedToId);
     if (!userExists) {
