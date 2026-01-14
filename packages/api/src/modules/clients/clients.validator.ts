@@ -6,8 +6,6 @@
 import { z } from 'zod';
 import { CLIENT_STATUS, LIMITS, PAGINATION } from '../../config/constants.js';
 
-<<<<<<< HEAD
-=======
 const optionalStringWithTransform = () =>
   z
     .string()
@@ -15,7 +13,6 @@ const optionalStringWithTransform = () =>
     .transform(val => (val === '' ? undefined : val))
     .optional();
 
->>>>>>> 71a58928c20195da9db4576494aac6a40c988043
 export const createClientSchema = z.object({
   companyName: z
     .string()
@@ -37,11 +34,7 @@ export const createClientSchema = z.object({
     .trim()
     .optional(),
 
-<<<<<<< HEAD
-  phone: z.string().trim().optional(),
-=======
   phone: optionalStringWithTransform(),
->>>>>>> 71a58928c20195da9db4576494aac6a40c988043
 
   status: z
     .enum([
@@ -52,15 +45,6 @@ export const createClientSchema = z.object({
     ])
     .default(CLIENT_STATUS.PROSPECT),
 
-<<<<<<< HEAD
-  segment: z.string().trim().optional(),
-
-  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').optional(),
-
-  address: z.string().trim().optional(),
-
-  notes: z.string().trim().optional(),
-=======
   segment: optionalStringWithTransform(),
 
   tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').optional(),
@@ -68,7 +52,6 @@ export const createClientSchema = z.object({
   address: optionalStringWithTransform(),
 
   notes: optionalStringWithTransform(),
->>>>>>> 71a58928c20195da9db4576494aac6a40c988043
 
   customFields: z.record(z.string(), z.unknown()).optional(),
 
@@ -103,7 +86,7 @@ export const updateClientSchema = z.object({
     .trim()
     .optional(),
 
-  phone: optionalString(),
+  phone: optionalStringWithTransform(),
 
   status: z
     .enum([
@@ -114,13 +97,13 @@ export const updateClientSchema = z.object({
     ])
     .optional(),
 
-  segment: optionalString(),
+  segment: optionalStringWithTransform(),
 
   tags: z.array(z.string().max(50)).max(20).optional(),
 
-  address: optionalString(),
+  address: optionalStringWithTransform(),
 
-  notes: optionalString(),
+  notes: optionalStringWithTransform(),
 
   customFields: z.record(z.string(), z.unknown()).optional(),
 
