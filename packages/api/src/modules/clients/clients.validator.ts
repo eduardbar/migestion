@@ -28,12 +28,7 @@ export const createClientSchema = z.object({
     .nullable()
     .optional(),
 
-  phone: z
-    .string()
-    .max(LIMITS.PHONE_MAX, `Phone must be at most ${LIMITS.PHONE_MAX} characters`)
-    .trim()
-    .nullable()
-    .optional(),
+  phone: z.string().max(50, 'Phone must be at most 50 characters').trim().nullable().optional(),
 
   status: z
     .enum([
@@ -55,12 +50,7 @@ export const createClientSchema = z.object({
     .nullable()
     .optional(),
 
-  notes: z
-    .string()
-    .max(LIMITS.NOTES_MAX, `Notes must be at most ${LIMITS.NOTES_MAX} characters`)
-    .trim()
-    .nullable()
-    .optional(),
+  notes: z.string().max(500, 'Notes must be at most 500 characters').trim().nullable().optional(),
 
   customFields: z.record(z.string(), z.unknown()).nullable().optional(),
 
@@ -96,7 +86,7 @@ export const updateClientSchema = z.object({
     .nullable()
     .optional(),
 
-  phone: z.string().max(LIMITS.PHONE_MAX).trim().nullable().optional(),
+  phone: z.string().max(50, 'Phone must be at most 50 characters').trim().nullable().optional(),
 
   status: z
     .enum([
@@ -107,13 +97,18 @@ export const updateClientSchema = z.object({
     ])
     .optional(),
 
-  segment: z.string().max(50).trim().nullable().optional(),
+  segment: z.string().max(50, 'Segment must be at most 50 characters').trim().nullable().optional(),
 
-  tags: z.array(z.string().max(50)).max(20).nullable().optional(),
+  tags: z.array(z.string().max(50)).max(20, 'Maximum 20 tags allowed').nullable().optional(),
 
-  address: z.string().max(500).trim().nullable().optional(),
+  address: z
+    .string()
+    .max(500, 'Address must be at most 500 characters')
+    .trim()
+    .nullable()
+    .optional(),
 
-  notes: z.string().max(LIMITS.NOTES_MAX).trim().nullable().optional(),
+  notes: z.string().max(500, 'Notes must be at most 500 characters').trim().nullable().optional(),
 
   customFields: z.record(z.string(), z.unknown()).nullable().optional(),
 
