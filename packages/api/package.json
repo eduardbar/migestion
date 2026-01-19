@@ -18,7 +18,13 @@
     "db:migrate:prod": "prisma migrate deploy --schema=./src/infrastructure/prisma/schema.prisma",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio --schema=./src/infrastructure/prisma/schema.prisma",
-    "setup:prod:db": "node setup-prod-db.js"
+    "setup:prod:db": "node setup-prod-db.js",
+    "db:backup": "tsx scripts/backup.ts backup",
+    "db:backup:list": "tsx scripts/backup.ts list",
+    "db:backup:latest": "tsx scripts/backup.ts latest",
+    "db:restore": "tsx scripts/backup.ts restore",
+    "audit:retention": "tsx scripts/audit-retention.ts run",
+    "audit:stats": "tsx scripts/audit-retention.ts stats"
   },
   "prisma": {
     "schema": "src/infrastructure/prisma/schema.prisma",
@@ -38,9 +44,9 @@
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
     "express-rate-limit": "^7.2.0",
-    "helmet": "^7.1.0",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
+    "rate-limit-redis": "^4.2.0",
     "prisma": "^5.14.0",
     "socket.io": "^4.7.5",
     "swagger-jsdoc": "^6.2.8",

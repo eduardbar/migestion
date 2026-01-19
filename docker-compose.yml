@@ -14,13 +14,13 @@ services:
       MYSQL_USER: ${DB_USER:-migestion}
       MYSQL_PASSWORD: ${DB_PASSWORD:-migestion123}
     ports:
-      - "${DB_PORT:-3306}:3306"
+      - '${DB_PORT:-3306}:3306'
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d
     command: --default-authentication-plugin=caching_sha2_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,12 +35,12 @@ services:
     container_name: migestion-redis
     restart: unless-stopped
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - '${REDIS_PORT:-6379}:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -57,7 +57,7 @@ services:
     container_name: migestion-api
     restart: unless-stopped
     ports:
-      - "${API_PORT:-3000}:3000"
+      - '${API_PORT:-3000}:3000'
     environment:
       NODE_ENV: development
       DATABASE_URL: mysql://${DB_USER:-migestion}:${DB_PASSWORD:-migestion123}@db:3306/${DB_NAME:-migestion}
@@ -85,7 +85,7 @@ services:
     container_name: migestion-web
     restart: unless-stopped
     ports:
-      - "${WEB_PORT:-5173}:5173"
+      - '${WEB_PORT:-5173}:5173'
     environment:
       VITE_API_URL: http://localhost:${API_PORT:-3000}
     volumes:
@@ -96,10 +96,43 @@ services:
     networks:
       - migestion-network
 
+  # ─────────────────────────────────────────
+  # Backup Cron Service
+  # ─────────────────────────────────────────
+  backup:
+    image: node:20-alpine
+    container_name: migestion-backup
+    restart: unless-stopped
+    volumes:
+      - ./packages/api:/app/packages/api:ro
+      - ./docker/backup/entrypoint.sh:/entrypoint.sh:ro
+      - backups_data:/backups
+      - ./docker/backup/.env:/app/.env:ro
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: mysql://${DB_USER:-migestion}:${DB_PASSWORD:-migestion123}@db:3306/${DB_NAME:-migestion}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-migestion}
+      DB_PASSWORD: ${DB_PASSWORD:-migestion123}
+      DB_NAME: ${DB_NAME:-migestion}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 2 * * *}
+    command: sh /entrypoint.sh
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - migestion-network
+    profiles:
+      - backup
+
 volumes:
   mysql_data:
     driver: local
   redis_data:
+    driver: local
+  backups_data:
     driver: local
 
 networks:
