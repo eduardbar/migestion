@@ -1,7 +1,7 @@
 /**
  * User controller - HTTP request handlers.
  * Processes requests and delegates to service layer.
- * 
+ *
  * @remarks
  * Controllers are thin - they only:
  * 1. Extract data from request
@@ -11,9 +11,10 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import * as usersService from './users.service.js';
+import * as usersRepository from './users.repository.js';
 import * as auditService from '../audit/audit.service.js';
 import { getAuditContext } from '../../shared/middlewares/audit.middleware.js';
-import { success } from '../../shared/utils/response.js';
+import { success, sendSuccess } from '../../shared/utils/response.js';
 import type {
   InviteUserInput,
   UpdateProfileInput,
@@ -28,13 +29,12 @@ import type { Role } from '../../config/constants.js';
 // List Team Members
 // ─────────────────────────────────────────
 
-export async function list(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const result = await usersService.list(req.user!.tenantId, req.query as unknown as ListUsersQuery);
+    const result = await usersService.list(
+      req.user!.tenantId,
+      req.query as unknown as ListUsersQuery
+    );
     res.json(success(result));
   } catch (error) {
     next(error);
@@ -45,11 +45,7 @@ export async function list(
 // Get Single User
 // ─────────────────────────────────────────
 
-export async function getById(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await usersService.getById(req.user!.tenantId, req.params.id!);
     res.json(success(user));
@@ -62,11 +58,7 @@ export async function getById(
 // Get Current User Profile
 // ─────────────────────────────────────────
 
-export async function getProfile(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getProfile(req: Request, res: Response, next: NextFunction) {
   try {
     const user = await usersService.getById(req.user!.tenantId, req.user!.userId);
     res.json(success(user));
@@ -79,11 +71,7 @@ export async function getProfile(
 // Get Team Stats
 // ─────────────────────────────────────────
 
-export async function getStats(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getStats(req: Request, res: Response, next: NextFunction) {
   try {
     const stats = await usersService.getTeamStats(req.user!.tenantId);
     res.json(success(stats));
@@ -96,11 +84,7 @@ export async function getStats(
 // Invite New Team Member
 // ─────────────────────────────────────────
 
-export async function invite(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function invite(req: Request, res: Response, next: NextFunction) {
   try {
     const input = req.body as InviteUserInput;
     const user = await usersService.invite(
@@ -128,25 +112,23 @@ export async function invite(
 // Update Own Profile
 // ─────────────────────────────────────────
 
-export async function updateProfile(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function updateProfile(req: Request, res: Response, next: NextFunction) {
   try {
     const input = req.body as UpdateProfileInput;
-    const user = await usersService.updateProfile(
-      req.user!.tenantId,
-      req.user!.userId,
-      input
-    );
+    const user = await usersService.updateProfile(req.user!.tenantId, req.user!.userId, input);
 
     // Audit: profile updated
-    auditService.logUpdate(getAuditContext(req), 'user', req.user!.userId, {}, {
-      firstName: input.firstName,
-      lastName: input.lastName,
-      avatarUrl: input.avatarUrl,
-    });
+    auditService.logUpdate(
+      getAuditContext(req),
+      'user',
+      req.user!.userId,
+      {},
+      {
+        firstName: input.firstName,
+        lastName: input.lastName,
+        avatarUrl: input.avatarUrl,
+      }
+    );
 
     res.json(success(user, 'Profile updated successfully'));
   } catch (error) {
@@ -158,11 +140,7 @@ export async function updateProfile(
 // Change Own Password
 // ─────────────────────────────────────────
 
-export async function changePassword(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function changePassword(req: Request, res: Response, next: NextFunction) {
   try {
     await usersService.changePassword(
       req.user!.tenantId,
@@ -188,15 +166,11 @@ export async function changePassword(
 // Update User Role (Admin Action)
 // ─────────────────────────────────────────
 
-export async function updateRole(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function updateRole(req: Request, res: Response, next: NextFunction) {
   try {
     const targetUserId = req.params.id!;
     const input = req.body as UpdateUserRoleInput;
-    
+
     // Get old role for audit
     const oldUser = await usersService.getById(req.user!.tenantId, targetUserId);
     const oldRole = oldUser.role;
@@ -210,7 +184,10 @@ export async function updateRole(
     );
 
     // Audit: role changed
-    auditService.logUpdate(getAuditContext(req), 'user', targetUserId, 
+    auditService.logUpdate(
+      getAuditContext(req),
+      'user',
+      targetUserId,
       { role: oldRole },
       { role: input.role }
     );
@@ -225,11 +202,7 @@ export async function updateRole(
 // Update User Status (Admin Action)
 // ─────────────────────────────────────────
 
-export async function updateStatus(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function updateStatus(req: Request, res: Response, next: NextFunction) {
   try {
     const targetUserId = req.params.id!;
     const input = req.body as UpdateUserStatusInput;
@@ -247,7 +220,10 @@ export async function updateStatus(
     );
 
     // Audit: status changed
-    auditService.logUpdate(getAuditContext(req), 'user', targetUserId,
+    auditService.logUpdate(
+      getAuditContext(req),
+      'user',
+      targetUserId,
       { status: oldStatus },
       { status: input.status }
     );
@@ -262,11 +238,7 @@ export async function updateStatus(
 // Delete User (Admin Action)
 // ─────────────────────────────────────────
 
-export async function remove(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const targetUserId = req.params.id!;
 
@@ -302,11 +274,7 @@ interface TransferClientsBody {
   toUserId: string | null;
 }
 
-export async function transferClients(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function transferClients(req: Request, res: Response, next: NextFunction) {
   try {
     const body = req.body as TransferClientsBody;
     const count = await usersService.transferClients(
@@ -328,6 +296,38 @@ export async function transferClients(
     });
 
     res.json(success({ transferredCount: count }, `${count} clients transferred successfully`));
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ─────────────────────────────────────────
+// TEMPORARY DEBUG ENDPOINTS (DEV ONLY)
+// ─────────────────────────────────────────
+
+export async function debugRole(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await usersService.getById(req.user!.tenantId, req.user!.userId);
+    res.json(
+      success({
+        userId: req.user!.userId,
+        tenantId: req.user!.tenantId,
+        roleFromToken: req.user!.role,
+        roleFromDb: user.role,
+        email: user.email,
+        fullName: user.fullName,
+      })
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function makeMeAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const user = await usersRepository.updateRole(req.user!.tenantId, req.user!.userId, 'admin');
+
+    res.json(success(user, 'You are now an admin!'));
   } catch (error) {
     next(error);
   }

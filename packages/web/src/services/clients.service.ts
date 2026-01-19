@@ -22,7 +22,7 @@ import type {
  */
 export async function getClients(params: ClientListParams = {}): Promise<ClientListResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
   if (params.search) searchParams.set('search', params.search);
@@ -34,7 +34,7 @@ export async function getClients(params: ClientListParams = {}): Promise<ClientL
 
   const query = searchParams.toString();
   const endpoint = `/clients${query ? `?${query}` : ''}`;
-  
+
   return api.get<ClientListResponse>(endpoint);
 }
 
@@ -81,7 +81,7 @@ export async function updateClient(id: string, data: UpdateClientInput): Promise
  * Delete a client.
  */
 export async function deleteClient(id: string): Promise<void> {
-  return api.delete(`/clients/${id}`);
+  await api.delete(`/clients/${id}`);
 }
 
 // ─────────────────────────────────────────

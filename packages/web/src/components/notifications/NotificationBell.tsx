@@ -24,7 +24,7 @@ export function NotificationBell() {
     fetchUnreadCount();
     const cleanup = initializeListeners();
     return cleanup;
-  }, [isAuthenticated, fetchUnreadCount, initializeListeners]);
+  }, [isAuthenticated]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

@@ -153,11 +153,11 @@ function KPICard({ title, value, change, subtitle, loading }: KPICardProps) {
       ) : (
         <>
           <p className="text-sm text-neutral-500">{title}</p>
-          <p className="text-2xl font-semibold text-neutral-900 mt-1">
+          <div className="text-2xl font-semibold text-neutral-900 mt-1">
             {value.toLocaleString('es-ES')}
-          </p>
+          </div>
           {change !== undefined && (
-            <p
+            <div
               className={cn(
                 'text-xs mt-2',
                 isPositive && 'text-green-600',
@@ -167,9 +167,9 @@ function KPICard({ title, value, change, subtitle, loading }: KPICardProps) {
             >
               {isPositive && '+'}
               {change}% vs periodo anterior
-            </p>
+            </div>
           )}
-          {subtitle && !change && <p className="text-xs text-neutral-400 mt-2">{subtitle}</p>}
+          {subtitle && !change && <div className="text-xs text-neutral-400 mt-2">{subtitle}</div>}
         </>
       )}
     </Card>
@@ -580,29 +580,29 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-5">
           <p className="text-sm text-neutral-500">Equipo Total</p>
-          <p className="text-2xl font-semibold text-neutral-900 mt-1">
+          <div className="text-2xl font-semibold text-neutral-900 mt-1">
             {dashboardLoading ? <Spinner size="sm" /> : dashboard?.team.total || 0}
-          </p>
+          </div>
           <p className="text-xs text-neutral-400 mt-2">Miembros del equipo</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-sm text-neutral-500">Usuarios Activos</p>
-          <p className="text-2xl font-semibold text-neutral-900 mt-1">
+          <div className="text-2xl font-semibold text-neutral-900 mt-1">
             {dashboardLoading ? <Spinner size="sm" /> : dashboard?.team.active || 0}
-          </p>
+          </div>
           <p className="text-xs text-neutral-400 mt-2">Activos en los ultimos 7 dias</p>
         </Card>
 
         <Card className="p-5">
           <p className="text-sm text-neutral-500">Total Interacciones</p>
-          <p className="text-2xl font-semibold text-neutral-900 mt-1">
+          <div className="text-2xl font-semibold text-neutral-900 mt-1">
             {dashboardLoading ? (
               <Spinner size="sm" />
             ) : (
               (dashboard?.interactions.total || 0).toLocaleString('es-ES')
             )}
-          </p>
+          </div>
           <p className="text-xs text-neutral-400 mt-2">Desde siempre</p>
         </Card>
       </div>

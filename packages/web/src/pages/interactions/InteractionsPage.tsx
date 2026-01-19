@@ -156,8 +156,8 @@ export function InteractionsPage() {
       try {
         await deleteInteraction(selectedInteraction.id);
         closeModals();
-      } catch {
-        // Error is handled by store
+      } catch (error) {
+        console.error('Delete error:', error);
       }
     }
   };
@@ -308,8 +308,7 @@ export function InteractionsPage() {
                     </div>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {/* Client info would come from joined data */}
-                    Client #{interaction.clientId.slice(0, 8)}
+                    {interaction.client?.companyName || 'Unknown Client'}
                   </TableCell>
                   <TableCell className="text-neutral-500 max-w-xs">
                     {truncateNotes(interaction.notes)}
@@ -373,6 +372,7 @@ export function InteractionsPage() {
         clients={clients}
         isSubmitting={isSubmitting}
         error={error}
+        interaction={null}
       />
 
       {/* Edit Modal */}
@@ -499,13 +499,31 @@ function InteractionFormModal({
           )}
 
           {!isEditing && (
-            <Select
-              label="Client"
-              options={clientOptions}
-              value={formData.clientId}
-              onChange={e => handleChange('clientId', e.target.value)}
-              required
-            />
+            <>
+              {clientOptions.length === 0 ? (
+                <div className="p-4 text-sm text-warning-700 bg-warning-50 rounded-md">
+                  No clients available. Please create a client first.
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-medium text-neutral-700">Client</label>
+                  <select
+                    className="w-full px-3 py-2 pr-10 text-sm rounded border bg-white text-neutral-900 appearance-none cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-1 border-neutral-300 hover:border-neutral-400 focus:border-primary-500 focus:ring-primary-500"
+                    value={formData.clientId}
+                    onChange={e => {
+                      handleChange('clientId', e.target.value);
+                    }}
+                  >
+                    <option value="">Select a client...</option>
+                    {clientOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </>
           )}
 
           <Select

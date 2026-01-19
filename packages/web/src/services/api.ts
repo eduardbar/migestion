@@ -146,19 +146,22 @@ class ApiClient {
       }
     }
 
-    const data = await response.json();
+    let data = null;
+    if (response.status !== 204) {
+      data = await response.json();
+    }
 
     if (!response.ok) {
       const error = data as ApiError;
       throw new ApiRequestError(
-        error.error.message,
-        error.error.code,
+        error.error?.message || 'Request failed',
+        error.error?.code || 'UNKNOWN_ERROR',
         response.status,
-        error.error.errors
+        error.error?.errors
       );
     }
 
-    return (data as ApiResponse<T>).data;
+    return response.status === 204 ? (undefined as unknown as T) : (data as ApiResponse<T>).data;
   }
 
   private redirectToLogin(): void {
@@ -184,7 +187,10 @@ class ApiClient {
     return this.request<T>(endpoint, { ...options, method: 'PATCH', body });
   }
 
-  delete<T>(endpoint: string, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T> {
+  async delete<T = void>(
+    endpoint: string,
+    options?: Omit<RequestOptions, 'method' | 'body'>
+  ): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
 }

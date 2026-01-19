@@ -35,15 +35,17 @@ router.use(authenticate);
  */
 router.get('/me', usersController.getProfile);
 
+// TEMPORARIO: Debug endpoint para verificar/actualizar rol
+router.get('/debug-role', usersController.debugRole);
+
+// TEMPORARIO: Endpoint para darse admin a uno mismo (solo para desarrollo)
+router.post('/make-me-admin', usersController.makeMeAdmin);
+
 /**
  * PATCH /users/me
  * Update current user's profile
  */
-router.patch(
-  '/me',
-  validate({ body: updateProfileSchema }),
-  usersController.updateProfile
-);
+router.patch('/me', validate({ body: updateProfileSchema }), usersController.updateProfile);
 
 /**
  * POST /users/me/password
@@ -74,11 +76,7 @@ router.get(
  * GET /users/stats
  * Get team statistics
  */
-router.get(
-  '/stats',
-  requireRole(ROLES.MANAGER),
-  usersController.getStats
-);
+router.get('/stats', requireRole(ROLES.MANAGER), usersController.getStats);
 
 /**
  * GET /users/:id

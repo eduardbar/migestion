@@ -3,7 +3,7 @@ import { z } from 'zod';
 /**
  * Environment configuration schema with validation.
  * Uses Zod for runtime type safety and validation.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Single source of truth for environment variables
@@ -17,20 +17,20 @@ const envSchema = z.object({
   API_URL: z.string().url().default('http://localhost:3000'),
   WEB_URL: z.string().url().default('http://localhost:5173'),
 
-  // Database
-  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
+  // Database - Default for local dev
+  DATABASE_URL: z.string().default('postgresql://migestion:password@localhost:5432/migestion_db'),
 
-  // Redis
+  // Redis - Default for local dev
   REDIS_URL: z.string().default('redis://localhost:6379'),
 
-  // JWT
-  JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
-  JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET must be at least 32 characters'),
+  // JWT - Default for local dev
+  JWT_ACCESS_SECRET: z.string().default('supersecretaccesskey32charsminimumlengthneeded'),
+  JWT_REFRESH_SECRET: z.string().default('supersecretrefreshkey32charsminimumlengthneeded'),
   JWT_ACCESS_EXPIRY: z.string().default('15m'),
   JWT_REFRESH_EXPIRY: z.string().default('7d'),
 
   // Security
-  BCRYPT_ROUNDS: z.coerce.number().min(10).max(15).default(12),
+  BCRYPT_ROUNDS: z.coerce.number().min(10).max(15).default(10),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
   RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(100),
 

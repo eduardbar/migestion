@@ -18,37 +18,37 @@ interface InteractionsState {
   interactions: Interaction[];
   selectedInteraction: Interaction | null;
   stats: InteractionStats | null;
-  
+
   // Pagination
   pagination: PaginationMeta;
-  
+
   // Filters
   filters: InteractionListParams;
-  
+
   // UI State
   isLoading: boolean;
   isSubmitting: boolean;
   error: string | null;
-  
+
   // Actions - Data Fetching
   fetchInteractions: () => Promise<void>;
   fetchInteraction: (id: string) => Promise<void>;
   fetchClientTimeline: (clientId: string) => Promise<void>;
   fetchStats: () => Promise<void>;
-  
+
   // Actions - CRUD
   createInteraction: (data: CreateInteractionInput) => Promise<Interaction>;
   updateInteraction: (id: string, data: UpdateInteractionInput) => Promise<Interaction>;
   deleteInteraction: (id: string) => Promise<void>;
-  
+
   // Actions - Filters & Pagination
   setFilters: (filters: Partial<InteractionListParams>) => void;
   setPage: (page: number) => void;
   resetFilters: () => void;
-  
+
   // Actions - Selection
   setSelectedInteraction: (interaction: Interaction | null) => void;
-  
+
   // Actions - Error Handling
   clearError: () => void;
 }
@@ -85,19 +85,24 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   fetchInteractions: async () => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const { filters } = get();
       const response = await interactionsService.getInteractions(filters);
-      
+
+      // Handle both array response and object response
+      const interactions = Array.isArray(response) ? response : response?.interactions || [];
+      const meta = response && !Array.isArray(response) ? response.meta : DEFAULT_PAGINATION;
+
       set({
-        interactions: response.interactions,
-        pagination: response.meta,
+        interactions,
+        pagination: meta,
         isLoading: false,
       });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to fetch interactions',
         isLoading: false,
+        interactions: [],
       });
     }
   },
@@ -105,9 +110,9 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   fetchInteraction: async (id: string) => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const interaction = await interactionsService.getInteraction(id);
-      
+
       set({
         selectedInteraction: interaction,
         isLoading: false,
@@ -123,13 +128,13 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   fetchClientTimeline: async (clientId: string) => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const { filters } = get();
       const response = await interactionsService.getClientTimeline(clientId, {
         page: filters.page,
         limit: filters.limit,
       });
-      
+
       set({
         interactions: response.interactions,
         pagination: response.meta,
@@ -159,13 +164,12 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   createInteraction: async (data: CreateInteractionInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const interaction = await interactionsService.createInteraction(data);
-      
-      // Refresh list to include new interaction
+
       await get().fetchInteractions();
       await get().fetchStats();
-      
+
       set({ isSubmitting: false });
       return interaction;
     } catch (error) {
@@ -180,16 +184,17 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   updateInteraction: async (id: string, data: UpdateInteractionInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const interaction = await interactionsService.updateInteraction(id, data);
-      
+
       // Update in list
-      set((state) => ({
-        interactions: state.interactions.map((i) => (i.id === id ? interaction : i)),
-        selectedInteraction: state.selectedInteraction?.id === id ? interaction : state.selectedInteraction,
+      set(state => ({
+        interactions: state.interactions.map(i => (i.id === id ? interaction : i)),
+        selectedInteraction:
+          state.selectedInteraction?.id === id ? interaction : state.selectedInteraction,
         isSubmitting: false,
       }));
-      
+
       return interaction;
     } catch (error) {
       set({
@@ -203,21 +208,13 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   deleteInteraction: async (id: string) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       await interactionsService.deleteInteraction(id);
-      
-      // Remove from list
-      set((state) => ({
-        interactions: state.interactions.filter((i) => i.id !== id),
-        selectedInteraction: state.selectedInteraction?.id === id ? null : state.selectedInteraction,
-        pagination: {
-          ...state.pagination,
-          total: state.pagination.total - 1,
-        },
-        isSubmitting: false,
-      }));
-      
+
+      await get().fetchInteractions();
       await get().fetchStats();
+
+      set({ isSubmitting: false });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to delete interaction',
@@ -232,7 +229,7 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   // ─────────────────────────────────────────
 
   setFilters: (newFilters: Partial<InteractionListParams>) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         ...newFilters,
@@ -243,7 +240,7 @@ export const useInteractionsStore = create<InteractionsState>((set, get) => ({
   },
 
   setPage: (page: number) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         page,

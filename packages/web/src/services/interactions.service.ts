@@ -131,5 +131,5 @@ export async function updateInteraction(
  * Delete an interaction.
  */
 export async function deleteInteraction(id: string): Promise<void> {
-  return api.delete(`/interactions/${id}`);
+  await api.delete(`/interactions/${id}`);
 }

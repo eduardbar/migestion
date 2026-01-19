@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Users, 
-  Pencil, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Users,
+  Pencil,
+  Trash2,
   X,
   ShieldCheck,
   UserMinus,
@@ -58,14 +58,20 @@ const ROLE_OPTIONS = [
   { value: 'user', label: 'User' },
 ];
 
-const ROLE_BADGE_VARIANTS: Record<UserRole, 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'> = {
+const ROLE_BADGE_VARIANTS: Record<
+  UserRole,
+  'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'
+> = {
   owner: 'primary',
   admin: 'warning',
   manager: 'info',
   user: 'default',
 };
 
-const STATUS_BADGE_VARIANTS: Record<string, 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'> = {
+const STATUS_BADGE_VARIANTS: Record<
+  string,
+  'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'
+> = {
   active: 'success',
   inactive: 'error',
   pending: 'warning',
@@ -106,7 +112,7 @@ export function TeamPage() {
 
   // Table hooks
   const { sortConfig, handleSort } = useTableSort(
-    filters.sortBy, 
+    filters.sortBy,
     filters.sortOrder as 'asc' | 'desc'
   );
 
@@ -193,8 +199,8 @@ export function TeamPage() {
       try {
         await removeUser(selectedUser.id);
         closeModals();
-      } catch {
-        // Error is handled by store
+      } catch (error) {
+        console.error('Delete error:', error);
       }
     }
   };
@@ -229,9 +235,7 @@ export function TeamPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-900">Team</h1>
-          <p className="text-sm text-neutral-500 mt-1">
-            Manage your team members and their roles
-          </p>
+          <p className="text-sm text-neutral-500 mt-1">Manage your team members and their roles</p>
         </div>
         {canManageUsers && (
           <Button onClick={openInviteModal}>
@@ -250,14 +254,11 @@ export function TeamPage() {
               <Input
                 placeholder="Search team members..."
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={e => setSearchValue(e.target.value)}
                 className="pl-10"
               />
             </div>
-            <Button 
-              variant="secondary" 
-              onClick={() => setShowFilters(!showFilters)}
-            >
+            <Button variant="secondary" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="h-4 w-4 mr-2" />
               Filters
               {(filters.status || filters.role) && (
@@ -274,7 +275,7 @@ export function TeamPage() {
                 <Select
                   options={STATUS_OPTIONS}
                   value={filters.status || ''}
-                  onChange={(e) => handleStatusFilter(e.target.value)}
+                  onChange={e => handleStatusFilter(e.target.value)}
                   placeholder="Status"
                 />
               </div>
@@ -282,13 +283,13 @@ export function TeamPage() {
                 <Select
                   options={ROLE_OPTIONS}
                   value={filters.role || ''}
-                  onChange={(e) => handleRoleFilter(e.target.value)}
+                  onChange={e => handleRoleFilter(e.target.value)}
                   placeholder="Role"
                 />
               </div>
               {(filters.status || filters.role) && (
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => setFilters({ status: undefined, role: undefined })}
                 >
@@ -306,34 +307,19 @@ export function TeamPage() {
         <Table loading={isLoading}>
           <TableHeader>
             <TableRow>
-              <TableHead 
-                sortable 
-                sortKey="firstName" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="firstName" currentSort={sortConfig} onSort={handleSort}>
                 Name
               </TableHead>
-              <TableHead 
-                sortable 
-                sortKey="email" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="email" currentSort={sortConfig} onSort={handleSort}>
                 Email
               </TableHead>
-              <TableHead 
-                sortable 
-                sortKey="role" 
-                currentSort={sortConfig}
-                onSort={handleSort}
-              >
+              <TableHead sortable sortKey="role" currentSort={sortConfig} onSort={handleSort}>
                 Role
               </TableHead>
               <TableHead>Status</TableHead>
-              <TableHead 
-                sortable 
-                sortKey="lastLoginAt" 
+              <TableHead
+                sortable
+                sortKey="lastLoginAt"
                 currentSort={sortConfig}
                 onSort={handleSort}
               >
@@ -350,11 +336,14 @@ export function TeamPage() {
                 title="No team members found"
                 description={
                   filters.search || filters.status || filters.role
-                    ? "Try adjusting your search or filters"
-                    : "Get started by inviting your first team member"
+                    ? 'Try adjusting your search or filters'
+                    : 'Get started by inviting your first team member'
                 }
                 action={
-                  canManageUsers && !filters.search && !filters.status && !filters.role && (
+                  canManageUsers &&
+                  !filters.search &&
+                  !filters.status &&
+                  !filters.role && (
                     <Button onClick={openInviteModal}>
                       <Plus className="h-4 w-4 mr-2" />
                       Invite Member
@@ -363,15 +352,18 @@ export function TeamPage() {
                 }
               />
             ) : (
-              users.map((user) => (
+              users.map(user => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-sm font-medium">
-                        {user.firstName[0]}{user.lastName[0]}
+                        {user.firstName[0]}
+                        {user.lastName[0]}
                       </div>
                       <div>
-                        <div>{user.firstName} {user.lastName}</div>
+                        <div>
+                          {user.firstName} {user.lastName}
+                        </div>
                         {user.id === currentUser?.id && (
                           <span className="text-xs text-neutral-500">(You)</span>
                         )}
@@ -389,15 +381,13 @@ export function TeamPage() {
                       {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-neutral-500">
-                    {formatDate(user.lastLoginAt)}
-                  </TableCell>
+                  <TableCell className="text-neutral-500">{formatDate(user.lastLoginAt)}</TableCell>
                   <TableCell>
                     {canManageUsers && user.id !== currentUser?.id && (
                       <div className="flex items-center gap-1">
                         {canChangeRole(user) && (
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => openRoleModal(user)}
                             title="Change role"
@@ -405,8 +395,8 @@ export function TeamPage() {
                             <ShieldCheck className="h-4 w-4" />
                           </Button>
                         )}
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => openEditModal(user)}
                           title="Edit"
@@ -414,8 +404,8 @@ export function TeamPage() {
                           <Pencil className="h-4 w-4" />
                         </Button>
                         {user.status === 'active' ? (
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => openStatusDialog(user, 'deactivate')}
                             title="Deactivate"
@@ -423,8 +413,8 @@ export function TeamPage() {
                             <UserMinus className="h-4 w-4 text-warning-500" />
                           </Button>
                         ) : (
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => openStatusDialog(user, 'activate')}
                             title="Activate"
@@ -432,8 +422,8 @@ export function TeamPage() {
                             <UserPlus className="h-4 w-4 text-success-500" />
                           </Button>
                         )}
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => openDeleteDialog(user)}
                           title="Remove"
@@ -467,7 +457,7 @@ export function TeamPage() {
       <InviteUserModal
         open={isInviteModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           await inviteUser(data);
           closeModals();
         }}
@@ -479,7 +469,7 @@ export function TeamPage() {
       <EditUserModal
         open={isEditModalOpen}
         onClose={closeModals}
-        onSubmit={async (data) => {
+        onSubmit={async data => {
           if (selectedUser) {
             await updateUser(selectedUser.id, data);
             closeModals();
@@ -494,7 +484,7 @@ export function TeamPage() {
       <ChangeRoleModal
         open={isRoleModalOpen}
         onClose={closeModals}
-        onSubmit={async (role) => {
+        onSubmit={async role => {
           if (selectedUser) {
             await changeRole(selectedUser.id, role);
             closeModals();
@@ -549,13 +539,7 @@ interface InviteUserModalProps {
   error: string | null;
 }
 
-function InviteUserModal({
-  open,
-  onClose,
-  onSubmit,
-  isSubmitting,
-  error,
-}: InviteUserModalProps) {
+function InviteUserModal({ open, onClose, onSubmit, isSubmitting, error }: InviteUserModalProps) {
   const [formData, setFormData] = useState<InviteUserInput>({
     email: '',
     firstName: '',
@@ -575,7 +559,7 @@ function InviteUserModal({
   }, [open]);
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -594,23 +578,19 @@ function InviteUserModal({
       <form onSubmit={handleSubmit}>
         <ModalHeader>
           <ModalTitle>Invite Team Member</ModalTitle>
-          <ModalDescription>
-            Send an invitation to join your team.
-          </ModalDescription>
+          <ModalDescription>Send an invitation to join your team.</ModalDescription>
         </ModalHeader>
 
         <ModalBody className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">
-              {error}
-            </div>
+            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">{error}</div>
           )}
 
           <Input
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => handleChange('email', e.target.value)}
+            onChange={e => handleChange('email', e.target.value)}
             required
           />
 
@@ -618,13 +598,13 @@ function InviteUserModal({
             <Input
               label="First Name"
               value={formData.firstName}
-              onChange={(e) => handleChange('firstName', e.target.value)}
+              onChange={e => handleChange('firstName', e.target.value)}
               required
             />
             <Input
               label="Last Name"
               value={formData.lastName}
-              onChange={(e) => handleChange('lastName', e.target.value)}
+              onChange={e => handleChange('lastName', e.target.value)}
               required
             />
           </div>
@@ -633,7 +613,7 @@ function InviteUserModal({
             label="Role"
             options={roleOptions}
             value={formData.role}
-            onChange={(e) => handleChange('role', e.target.value)}
+            onChange={e => handleChange('role', e.target.value)}
           />
         </ModalBody>
 
@@ -663,14 +643,7 @@ interface EditUserModalProps {
   error: string | null;
 }
 
-function EditUserModal({
-  open,
-  onClose,
-  onSubmit,
-  user,
-  isSubmitting,
-  error,
-}: EditUserModalProps) {
+function EditUserModal({ open, onClose, onSubmit, user, isSubmitting, error }: EditUserModalProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -686,7 +659,7 @@ function EditUserModal({
   }, [open, user]);
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -699,28 +672,24 @@ function EditUserModal({
       <form onSubmit={handleSubmit}>
         <ModalHeader>
           <ModalTitle>Edit Team Member</ModalTitle>
-          <ModalDescription>
-            Update team member information.
-          </ModalDescription>
+          <ModalDescription>Update team member information.</ModalDescription>
         </ModalHeader>
 
         <ModalBody className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">
-              {error}
-            </div>
+            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">{error}</div>
           )}
 
           <Input
             label="First Name"
             value={formData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
+            onChange={e => handleChange('firstName', e.target.value)}
             required
           />
           <Input
             label="Last Name"
             value={formData.lastName}
-            onChange={(e) => handleChange('lastName', e.target.value)}
+            onChange={e => handleChange('lastName', e.target.value)}
             required
           />
         </ModalBody>
@@ -776,16 +745,20 @@ function ChangeRoleModal({
 
   // Build role options based on current user's permissions
   const roleOptions = [
-    { value: 'user', label: 'User', description: 'Basic access to view and manage assigned clients' },
+    {
+      value: 'user',
+      label: 'User',
+      description: 'Basic access to view and manage assigned clients',
+    },
     { value: 'manager', label: 'Manager', description: 'Can manage clients and view team reports' },
     { value: 'admin', label: 'Admin', description: 'Full access except owner-level actions' },
   ];
 
   if (currentUserRole === 'owner') {
-    roleOptions.push({ 
-      value: 'owner', 
-      label: 'Owner', 
-      description: 'Complete system access and control' 
+    roleOptions.push({
+      value: 'owner',
+      label: 'Owner',
+      description: 'Complete system access and control',
     });
   }
 
@@ -801,13 +774,11 @@ function ChangeRoleModal({
 
         <ModalBody className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">
-              {error}
-            </div>
+            <div className="p-3 text-sm text-error-700 bg-error-50 rounded-md">{error}</div>
           )}
 
           <div className="space-y-2">
-            {roleOptions.map((option) => (
+            {roleOptions.map(option => (
               <label
                 key={option.value}
                 className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -821,7 +792,7 @@ function ChangeRoleModal({
                   name="role"
                   value={option.value}
                   checked={selectedRole === option.value}
-                  onChange={(e) => setSelectedRole(e.target.value as UserRole)}
+                  onChange={e => setSelectedRole(e.target.value as UserRole)}
                   className="mt-1"
                 />
                 <div>

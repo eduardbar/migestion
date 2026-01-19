@@ -1,110 +1,119 @@
-# Agentic Coding Guidelines (AGENTS.md)
+# Repository Guidelines
 
-This document provides instructions for AI agents (and human developers) working on the `migestion` repository. It outlines build processes, code styles, and operational mandates.
+## How to Use This Guide
 
-## 1. Environment & Architecture
+- Start here for cross-project norms. MiGestion is a monorepo with two components: API and Web.
+- Each component has specific patterns documented in the skills below.
+- Component-specific skills override general TypeScript/React patterns when guidance conflicts.
 
-- **Root**: `C:\Users\eduar\OneDrive\Escritorio\Profesional\migestion`
-- **Monorepo**: Uses npm workspaces.
-  - `packages/api`: Backend (Node.js, Express, Prisma, TypeScript).
-  - `packages/web`: Frontend (React, Vite, TypeScript, Tailwind CSS).
-- **Database**: PostgreSQL (Prisma ORM).
-- **Cache**: Redis.
+## Available Skills
 
-## 2. Build, Lint, & Test Commands
+Use these skills for detailed patterns on-demand:
 
-### **Global Commands (Root)**
+### Generic Skills (Any Project)
 
-- **Install**: `npm install`
-- **Build All**: `npm run build`
-- **Lint All**: `npm run lint`
-- **Test All**: `npm run test`
-- **Dev**: `npm run dev` (starts both api and web if possible, or use specific workspace commands)
+| Skill        | Description                                   | URL                                    |
+| ------------ | --------------------------------------------- | -------------------------------------- |
+| `typescript` | Strict TypeScript, const types, utility types | [SKILL.md](skills/typescript/SKILL.md) |
+| `react-18`   | React 18 patterns, hooks, forwardRef          | [SKILL.md](skills/react-18/SKILL.md)   |
+| `vite`       | Vite build tool, aliases, config patterns     | [SKILL.md](skills/vite/SKILL.md)       |
+| `tailwind`   | Tailwind CSS, cn utility, design system       | [SKILL.md](skills/tailwind/SKILL.md)   |
+| `playwright` | Page Object Model, E2E testing patterns       | [SKILL.md](skills/playwright/SKILL.md) |
+| `jest`       | Unit testing, mocking, fixtures               | [SKILL.md](skills/jest/SKILL.md)       |
+| `zod-3`      | Zod validation schemas, refinements           | [SKILL.md](skills/zod-3/SKILL.md)      |
+| `zustand-4`  | Zustand stores, actions, slices               | [SKILL.md](skills/zustand-4/SKILL.md)  |
 
-### **Workspace Specifics**
+### MiGestion-Specific Skills
 
-| Task           | Backend (`packages/api`)                  | Frontend (`packages/web`)                     |
-| :------------- | :---------------------------------------- | :-------------------------------------------- |
-| **Dev Server** | `npm run dev:api`                         | `npm run dev:web`                             |
-| **Build**      | `npm run build:api`                       | `npm run build:web`                           |
-| **Lint**       | `npm run lint --workspace=@migestion/api` | `npm run lint --workspace=@migestion/web`     |
-| **Test**       | `npm run test:api`                        | `npm run test:web`                            |
-| **E2E Test**   | N/A                                       | `npm run test:e2e --workspace=@migestion/web` |
+| Skill                | Description                                          | URL                                            |
+| -------------------- | ---------------------------------------------------- | ---------------------------------------------- |
+| `migestion`          | Project overview, component navigation, architecture | [SKILL.md](skills/migestion/SKILL.md)          |
+| `migestion-api`      | Express + Prisma patterns, modules, validation       | [SKILL.md](skills/migestion-api/SKILL.md)      |
+| `migestion-web`      | React + Vite + Zustand patterns, design system       | [SKILL.md](skills/migestion-web/SKILL.md)      |
+| `migestion-prisma`   | Prisma ORM patterns, multi-tenant queries            | [SKILL.md](skills/migestion-prisma/SKILL.md)   |
+| `migestion-test-api` | API testing with Jest + Supertest                    | [SKILL.md](skills/migestion-test-api/SKILL.md) |
+| `migestion-test-web` | Web E2E testing with Playwright                      | [SKILL.md](skills/migestion-test-web/SKILL.md) |
 
-### **Running Single Tests**
+### Auto-invoke Skills
 
-- **Jest (API/Web)**:
-  To run a specific test file, pass the relative path (matched by regex) to the test command.
-  _Example (API):_ `npm run test:api -- src/modules/auth/auth.service.test.ts`
-  _Example (Web):_ `npm run test:web -- src/components/Button.test.tsx`
-- **Playwright (E2E)**:
-  `npm run test:e2e --workspace=@migestion/web -- -g "specific test name"`
+When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
-## 3. Code Style & Conventions
-
-### **General**
-
-- **TypeScript**: Strict mode is enabled. No `any`. Use explicit types or interfaces.
-- **Formatting**: Prettier is authoritative. Run `npm run format`.
-- **Linting**: ESLint is authoritative. Fix errors before committing.
-
-### **Imports**
-
-- **Backend (`@migestion/api`)**:
-  - Use ES modules syntax (`import ... from ...`).
-  - **Important**: Local imports must include the `.js` extension (e.g., `import { app } from './app.js';`).
-  - Group imports: Node built-ins -> External libs -> Internal aliases/paths -> Local files.
-- **Frontend (`@migestion/web`)**:
-  - Standard ES imports.
-  - No `.js` extension required for local files.
-  - Prefer absolute imports if configured (check `tsconfig.json`), otherwise consistent relative imports.
-
-### **Naming**
-
-- **Files**: `kebab-case` (e.g., `user-controller.ts`, `auth-service.ts`).
-- **Classes**: `PascalCase` (e.g., `UserController`).
-- **Interfaces/Types**: `PascalCase` (e.g., `User`, `AuthPayload`).
-- **Variables/Functions**: `camelCase`.
-- **Constants**: `UPPER_SNAKE_CASE` for true constants.
-- **React Components**: `PascalCase` (e.g., `UserProfile.tsx`).
-
-### **Structure & Patterns**
-
-- **Backend**:
-  - Modular architecture (`src/modules/`).
-  - Pattern: `Controller` -> `Service` -> `Repository/Prisma`.
-  - Use `zod` for validation.
-  - Infrastructure concerns (Redis, Socket.IO) go in `src/infrastructure/`.
-- **Frontend**:
-  - Components in `src/components/` (atomic/reusable) or `src/pages/` (views).
-  - State management via `zustand` (`src/stores/`).
-  - Data fetching via `react-query` (`src/hooks/` or `src/services/`).
-  - Styling with Tailwind CSS classes.
-
-### **Error Handling**
-
-- **Backend**:
-  - Use custom error classes (if available) or standard HTTP errors.
-  - Centralized error handling middleware.
-  - Log errors via `winston` (`src/shared/utils/logger.js`), do NOT use `console.log`.
-- **Frontend**:
-  - Use error boundaries for UI crashes.
-  - Handle API errors gracefully in `react-query` hooks or `try/catch` blocks.
-  - Display user-friendly error messages (e.g., via toast notifications).
-
-## 4. Workflows & Rules
-
-1. **Search First**: Before changing code, search for existing patterns using `grep` or `glob`.
-2. **Verify**: Always run the relevant `build` and `lint` command after changes.
-3. **Tests**: Add unit tests for new logic. Run existing tests to ensure no regressions.
-4. **No Placeholders**: Write complete, functional code.
-5. **Secrets**: Never commit secrets/env files. Use environment variables.
-
-## 5. Deployment
-
-- **Docker**: Production builds use `Dockerfile.api` (multi-stage build).
-- **Compose**: `docker-compose.yml` for local dev (DB, Redis). `docker-compose.prod.yml` for production.
+| Action                                                         | Skill                |
+| -------------------------------------------------------------- | -------------------- |
+| Creating/modifying API modules (controller/service/repository) | `migestion-api`      |
+| Creating/modifying React components/pages                      | `migestion-web`      |
+| Writing/modifying Prisma queries/migrations                    | `migestion-prisma`   |
+| Creating/modifying Zod validation schemas                      | `zod-3`              |
+| Writing/modifying Zustand stores                               | `zustand-4`          |
+| Writing API unit tests                                         | `migestion-test-api` |
+| Writing/modifying E2E tests                                    | `migestion-test-web` |
+| General project questions                                      | `migestion`          |
+| Writing/modifying TypeScript types/interfaces                  | `typescript`         |
+| Writing React components                                       | `react-18`           |
+| Writing/modifying Tailwind styles                              | `tailwind`           |
 
 ---
 
-_Generated by opencode for `migestion` repository._
+## Project Overview
+
+MiGestion is a multi-tenant SaaS CRM for local businesses with enterprise-grade architecture.
+
+| Component | Location        | Tech Stack                                                                |
+| --------- | --------------- | ------------------------------------------------------------------------- |
+| API       | `packages/api/` | Node.js 20, Express 4, TypeScript 5, Prisma, MySQL 8, Redis 7             |
+| Web       | `packages/web/` | React 18, TypeScript 5, Vite 5, Tailwind CSS, Zustand 4, TanStack Query 5 |
+
+## Quick Commands
+
+```bash
+# Global
+npm install              # Install dependencies
+npm run dev              # Start both services
+npm run build            # Build all
+npm run test             # Test all
+npm run lint             # Lint all
+
+# API
+npm run dev:api          # Start API dev server (http://localhost:3000)
+npm run build:api        # Build API
+npm run test:api         # Run API unit tests
+npm run db:generate      # Generate Prisma client
+npm run db:migrate       # Run migrations
+npm run db:seed          # Seed database
+
+# Web
+npm run dev:web          # Start Web dev server (http://localhost:5173)
+npm run build:web        # Build Web
+npm run test:web         # Run Web unit tests
+npm run test:e2e         # Run E2E tests
+
+# Docker
+docker-compose up -d     # Start infrastructure
+docker-compose down      # Stop infrastructure
+```
+
+## Core Features
+
+- **Multi-tenant Architecture** - Complete tenant data isolation
+- **JWT Authentication** - Token-based auth with refresh tokens and rotation
+- **Role-based Access Control** - Owner, Admin, Manager, User roles
+- **Client Management** - Full CRUD with search, filters, pagination
+- **Interaction Tracking** - Calls, emails, meetings, notes, tasks
+- **Client Segmentation** - Custom segments with criteria
+- **Advanced Reports** - Dashboard with KPIs and charts
+- **Real-time Notifications** - Socket.IO integration
+- **Comprehensive Audit** - Complete audit trail
+
+## Commit Style
+
+Follow conventional-commit style: `<type>[scope]: <description>`
+
+**Types:** `feat`, `fix`, `docs`, `chore`, `perf`, `refactor`, `style`, `test`
+
+## Related Skills
+
+- `migestion-api` - Backend patterns (Express, Prisma, modules)
+- `migestion-web` - Frontend patterns (React, Zustand, design system)
+- `migestion-prisma` - Database patterns (multi-tenant queries)
+- `typescript` - TypeScript strict patterns
+- `react-18` - React component patterns

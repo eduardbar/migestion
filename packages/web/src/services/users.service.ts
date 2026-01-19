@@ -1,9 +1,5 @@
 import { api } from './api';
-import type {
-  User,
-  UserRole,
-  PaginationMeta,
-} from '@/types';
+import type { User, UserRole, PaginationMeta } from '@/types';
 
 /**
  * Users/Team service.
@@ -67,7 +63,7 @@ export interface TeamStats {
  */
 export async function getTeamMembers(params: TeamListParams = {}): Promise<TeamListResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
   if (params.search) searchParams.set('search', params.search);
@@ -78,7 +74,7 @@ export async function getTeamMembers(params: TeamListParams = {}): Promise<TeamL
 
   const query = searchParams.toString();
   const endpoint = `/users${query ? `?${query}` : ''}`;
-  
+
   return api.get<TeamListResponse>(endpoint);
 }
 
@@ -147,7 +143,7 @@ export async function reactivateUser(id: string): Promise<TeamMember> {
  * Remove a user from the team.
  */
 export async function removeUser(id: string): Promise<void> {
-  return api.delete(`/users/${id}`);
+  await api.delete(`/users/${id}`);
 }
 
 /**

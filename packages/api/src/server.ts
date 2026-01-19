@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 import { createServer } from 'http';
 import { createApp } from './app.js';
 import { env } from './config/index.js';

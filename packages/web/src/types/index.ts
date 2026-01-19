@@ -177,6 +177,7 @@ export interface Interaction {
   metadata: Record<string, unknown> | null;
   createdAt: string;
   user: User;
+  client: Client;
 }
 
 export type InteractionType = 'call' | 'email' | 'meeting' | 'note' | 'task';

@@ -151,8 +151,8 @@ export function ClientsPage() {
       try {
         await deleteClient(selectedClientForAction.id);
         closeModals();
-      } catch {
-        // Error is handled by store
+      } catch (error) {
+        console.error('Delete error:', error);
       }
     }
   };

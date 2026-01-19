@@ -19,23 +19,23 @@ interface UsersState {
   users: TeamMember[];
   selectedUser: TeamMember | null;
   stats: TeamStats | null;
-  
+
   // Pagination
   pagination: PaginationMeta;
-  
+
   // Filters
   filters: TeamListParams;
-  
+
   // UI State
   isLoading: boolean;
   isSubmitting: boolean;
   error: string | null;
-  
+
   // Actions - Data Fetching
   fetchUsers: () => Promise<void>;
   fetchUser: (id: string) => Promise<void>;
   fetchStats: () => Promise<void>;
-  
+
   // Actions - CRUD
   inviteUser: (data: InviteUserInput) => Promise<TeamMember>;
   updateUser: (id: string, data: UpdateUserInput) => Promise<TeamMember>;
@@ -43,15 +43,15 @@ interface UsersState {
   deactivateUser: (id: string) => Promise<TeamMember>;
   reactivateUser: (id: string) => Promise<TeamMember>;
   removeUser: (id: string) => Promise<void>;
-  
+
   // Actions - Filters & Pagination
   setFilters: (filters: Partial<TeamListParams>) => void;
   setPage: (page: number) => void;
   resetFilters: () => void;
-  
+
   // Actions - Selection
   setSelectedUser: (user: TeamMember | null) => void;
-  
+
   // Actions - Error Handling
   clearError: () => void;
 }
@@ -88,10 +88,10 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   fetchUsers: async () => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const { filters } = get();
       const response = await usersService.getTeamMembers(filters);
-      
+
       set({
         users: response.users,
         pagination: response.meta,
@@ -108,9 +108,9 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   fetchUser: async (id: string) => {
     try {
       set({ isLoading: true, error: null });
-      
+
       const user = await usersService.getTeamMember(id);
-      
+
       set({
         selectedUser: user,
         isLoading: false,
@@ -139,13 +139,13 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   inviteUser: async (data: InviteUserInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const user = await usersService.inviteUser(data);
-      
+
       // Refresh list to include new user
       await get().fetchUsers();
       await get().fetchStats();
-      
+
       set({ isSubmitting: false });
       return user;
     } catch (error) {
@@ -160,16 +160,16 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   updateUser: async (id: string, data: UpdateUserInput) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const user = await usersService.updateUser(id, data);
-      
+
       // Update in list
-      set((state) => ({
-        users: state.users.map((u) => (u.id === id ? user : u)),
+      set(state => ({
+        users: state.users.map(u => (u.id === id ? user : u)),
         selectedUser: state.selectedUser?.id === id ? user : state.selectedUser,
         isSubmitting: false,
       }));
-      
+
       return user;
     } catch (error) {
       set({
@@ -183,16 +183,16 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   changeRole: async (id: string, role: UserRole) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const user = await usersService.changeUserRole(id, { role });
-      
+
       // Update in list
-      set((state) => ({
-        users: state.users.map((u) => (u.id === id ? user : u)),
+      set(state => ({
+        users: state.users.map(u => (u.id === id ? user : u)),
         selectedUser: state.selectedUser?.id === id ? user : state.selectedUser,
         isSubmitting: false,
       }));
-      
+
       await get().fetchStats();
       return user;
     } catch (error) {
@@ -207,15 +207,15 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   deactivateUser: async (id: string) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const user = await usersService.deactivateUser(id);
-      
+
       // Update in list
-      set((state) => ({
-        users: state.users.map((u) => (u.id === id ? user : u)),
+      set(state => ({
+        users: state.users.map(u => (u.id === id ? user : u)),
         isSubmitting: false,
       }));
-      
+
       await get().fetchStats();
       return user;
     } catch (error) {
@@ -230,15 +230,15 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   reactivateUser: async (id: string) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       const user = await usersService.reactivateUser(id);
-      
+
       // Update in list
-      set((state) => ({
-        users: state.users.map((u) => (u.id === id ? user : u)),
+      set(state => ({
+        users: state.users.map(u => (u.id === id ? user : u)),
         isSubmitting: false,
       }));
-      
+
       await get().fetchStats();
       return user;
     } catch (error) {
@@ -253,21 +253,14 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   removeUser: async (id: string) => {
     try {
       set({ isSubmitting: true, error: null });
-      
+
       await usersService.removeUser(id);
-      
-      // Remove from list
-      set((state) => ({
-        users: state.users.filter((u) => u.id !== id),
-        selectedUser: state.selectedUser?.id === id ? null : state.selectedUser,
-        pagination: {
-          ...state.pagination,
-          total: state.pagination.total - 1,
-        },
-        isSubmitting: false,
-      }));
-      
+
+      // Refresh list to ensure pagination is correct
+      await get().fetchUsers();
       await get().fetchStats();
+
+      set({ isSubmitting: false });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to remove user',
@@ -282,7 +275,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   // ─────────────────────────────────────────
 
   setFilters: (newFilters: Partial<TeamListParams>) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         ...newFilters,
@@ -293,7 +286,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   },
 
   setPage: (page: number) => {
-    set((state) => ({
+    set(state => ({
       filters: {
         ...state.filters,
         page,

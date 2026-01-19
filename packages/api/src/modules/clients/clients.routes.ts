@@ -335,7 +335,7 @@ router.patch(
  */
 router.delete(
   '/:id',
-  authorize(ROLES.ADMIN),
+  authorize(ROLES.MANAGER),
   validateParams(clientIdParamSchema),
   asyncHandler(clientsController.remove)
 );

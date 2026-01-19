@@ -18,28 +18,28 @@ interface NotificationsState {
   unreadCount: number;
   isLoading: boolean;
   error: string | null;
-  
+
   // Toast state
   toast: NotificationPayload | null;
-  
+
   // Actions
   fetchNotifications: () => Promise<void>;
   fetchUnreadCount: () => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
-  
+
   // Real-time handlers
   addNotification: (payload: NotificationPayload) => void;
   setUnreadCount: (count: number) => void;
-  
+
   // Toast handlers
   showToast: (notification: NotificationPayload) => void;
   dismissToast: () => void;
-  
+
   // Initialize real-time listeners
   initializeListeners: () => () => void;
-  
+
   // Reset state
   reset: () => void;
 }
@@ -69,7 +69,7 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
 
   fetchNotifications: async () => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const response = await notificationsService.getNotifications({ limit: 20 });
       set({
@@ -90,7 +90,9 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
       const counts = await notificationsService.getNotificationCounts();
       set({ unreadCount: counts.unread });
     } catch (error) {
-      console.error('Failed to fetch notification count:', error);
+      if ((error as { status?: number })?.status !== 401) {
+        console.error('Failed to fetch notification count:', error);
+      }
     }
   },
 
@@ -101,11 +103,9 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
   markAsRead: async (id: string) => {
     try {
       await notificationsService.markAsRead(id);
-      
-      set((state) => ({
-        notifications: state.notifications.map((n) =>
-          n.id === id ? { ...n, read: true } : n
-        ),
+
+      set(state => ({
+        notifications: state.notifications.map(n => (n.id === id ? { ...n, read: true } : n)),
         unreadCount: Math.max(0, state.unreadCount - 1),
       }));
     } catch (error) {
@@ -116,9 +116,9 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
   markAllAsRead: async () => {
     try {
       await notificationsService.markAllAsRead();
-      
-      set((state) => ({
-        notifications: state.notifications.map((n) => ({ ...n, read: true })),
+
+      set(state => ({
+        notifications: state.notifications.map(n => ({ ...n, read: true })),
         unreadCount: 0,
       }));
     } catch (error) {
@@ -128,14 +128,15 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
 
   deleteNotification: async (id: string) => {
     try {
-      const notification = get().notifications.find((n) => n.id === id);
+      const notification = get().notifications.find(n => n.id === id);
       await notificationsService.deleteNotification(id);
-      
-      set((state) => ({
-        notifications: state.notifications.filter((n) => n.id !== id),
-        unreadCount: notification && !notification.read
-          ? Math.max(0, state.unreadCount - 1)
-          : state.unreadCount,
+
+      set(state => ({
+        notifications: state.notifications.filter(n => n.id !== id),
+        unreadCount:
+          notification && !notification.read
+            ? Math.max(0, state.unreadCount - 1)
+            : state.unreadCount,
       }));
     } catch (error) {
       console.error('Failed to delete notification:', error);
@@ -158,7 +159,7 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
       createdAt: payload.createdAt,
     };
 
-    set((state) => ({
+    set(state => ({
       // Add to front of list, keeping max 50
       notifications: [notification, ...state.notifications].slice(0, 50),
       unreadCount: state.unreadCount + 1,
@@ -178,7 +179,7 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
 
   showToast: (notification: NotificationPayload) => {
     set({ toast: notification });
-    
+
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
       const currentToast = get().toast;

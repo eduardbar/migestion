@@ -207,18 +207,10 @@ export const useClientsStore = create<ClientsState>((set, get) => ({
 
       await clientsService.deleteClient(id);
 
-      // Remove from list
-      set(state => ({
-        clients: state.clients.filter(c => c.id !== id),
-        selectedClient: state.selectedClient?.id === id ? null : state.selectedClient,
-        pagination: {
-          ...state.pagination,
-          total: state.pagination.total - 1,
-        },
-        isSubmitting: false,
-      }));
-
+      await get().fetchClients();
       await get().fetchStats();
+
+      set({ isSubmitting: false });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to delete client',
