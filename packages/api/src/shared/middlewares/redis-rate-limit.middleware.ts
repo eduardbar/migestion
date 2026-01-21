@@ -53,8 +53,10 @@ function createRedisStore(prefix: string) {
   }
 
   return new RateLimitRedisStore({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- rate-limit-redis types incompatible with ioredis
     sendCommand: (command: string, ...args: any[]) => client.call(command, ...args) as any,
     prefix,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- rate-limit-redis types incompatible with ioredis
   } as any);
 }
 
@@ -76,7 +78,7 @@ export function createRedisRateLimiter(options: RedisRateLimitOptions) {
       return req.user?.userId ?? req.ip ?? 'unknown';
     },
     skipSuccessfulRequests,
-    skip: (_req, res) => {
+    skip: (_req, _res) => {
       return !store && env.NODE_ENV === 'production';
     },
   });

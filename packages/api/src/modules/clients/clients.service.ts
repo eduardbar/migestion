@@ -135,7 +135,11 @@ export async function update(
     throw new NotFoundError('Client');
   }
 
-  const client = await clientsRepository.update(tenantId, clientId, input as any);
+  const client = await clientsRepository.update(
+    tenantId,
+    clientId,
+    input as Prisma.ClientUncheckedUpdateInput
+  );
   return toClientWithAssignedUserDto(client);
 }
 

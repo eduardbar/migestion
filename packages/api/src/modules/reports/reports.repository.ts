@@ -5,7 +5,6 @@
  */
 
 import { prisma } from '../../infrastructure/prisma/client.js';
-import type { Prisma } from '@prisma/client';
 
 // ─────────────────────────────────────────
 // Types

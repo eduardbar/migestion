@@ -32,8 +32,6 @@ import { USER_STATUS, TENANT_STATUS } from '../../config/constants.js';
 // Validation Helpers
 // ─────────────────────────────────────────
 
-type UserWithTenant = User & { tenant: Tenant };
-
 /**
  * Ensure user account is in active status.
  * @throws {InvalidCredentialsError} if user is not active

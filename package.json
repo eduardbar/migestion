@@ -18,6 +18,7 @@
     "test:web": "npm run test --workspace=@migestion/web",
     "test:e2e": "npm run test:e2e --workspace=@migestion/web",
     "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
     "format": "prettier --write \"packages/**/*.{ts,tsx,json,css}\"",
     "db:generate": "npm run db:generate --workspace=@migestion/api",
     "db:migrate": "npm run db:migrate --workspace=@migestion/api",

@@ -1,4 +1,4 @@
-import { User, Tenant, RefreshToken } from '@prisma/client';
+import { User, Tenant } from '@prisma/client';
 
 /**
  * Auth module DTOs (Data Transfer Objects).

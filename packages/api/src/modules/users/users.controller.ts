@@ -14,7 +14,7 @@ import * as usersService from './users.service.js';
 import * as usersRepository from './users.repository.js';
 import * as auditService from '../audit/audit.service.js';
 import { getAuditContext } from '../../shared/middlewares/audit.middleware.js';
-import { success, sendSuccess } from '../../shared/utils/response.js';
+import { success } from '../../shared/utils/response.js';
 import type {
   InviteUserInput,
   UpdateProfileInput,

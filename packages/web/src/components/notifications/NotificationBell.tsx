@@ -24,6 +24,7 @@ export function NotificationBell() {
     fetchUnreadCount();
     const cleanup = initializeListeners();
     return cleanup;
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Zustand store functions have stable references
   }, [isAuthenticated]);
 
   // Close dropdown when clicking outside
