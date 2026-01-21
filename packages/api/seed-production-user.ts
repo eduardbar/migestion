@@ -1,3 +1,11 @@
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Load environment variables from .env file
+config({ path: resolve(__dirname, '..', '..', '.env') });
+
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -17,10 +25,10 @@ async function hashPassword(password: string): Promise<string> {
 
 async function createTestUser() {
   console.log('\n🌱 Creating test user for production...\n');
-  
+
   try {
     const passwordHash = await hashPassword('Test123!');
-    
+
     const tenant = await prisma.tenant.upsert({
       where: { slug: 'migestion-test' },
       update: {},
@@ -58,11 +66,10 @@ async function createTestUser() {
     });
 
     console.log(`✓ User created: ${user.email} (${user.id})`);
-    
+
     console.log('\n✅ Test user created successfully!\n');
     console.log('📧 Email: test@migestion.com');
     console.log('🔑 Password: Test123!\n');
-    
   } catch (error) {
     console.error('❌ Error creating test user:', error);
     throw error;
@@ -71,8 +78,7 @@ async function createTestUser() {
   }
 }
 
-createTestUser()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+createTestUser().catch(e => {
+  console.error(e);
+  process.exit(1);
+});

@@ -9,7 +9,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -20,7 +19,7 @@ model Tenant {
   name      String   @db.VarChar(100)
   slug      String   @unique @db.VarChar(50)
   status    String   @default("active") @db.VarChar(20)
-  settings  Json?    @db.Json
+  settings  Json?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -100,10 +99,10 @@ model Client {
   phone        String?  @db.VarChar(20)
   status       String   @default("prospect") @db.VarChar(20)
   segment      String?  @db.VarChar(50)
-  tags         Json?    @db.Json
-  customFields Json?    @map("custom_fields") @db.Json
+  tags         Json?
+  customFields Json?    @map("custom_fields")
   address      String?  @db.VarChar(500)
-  notes        String?  @db.Text
+  notes        String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -128,8 +127,8 @@ model Interaction {
   clientId  String   @map("client_id")
   userId    String   @map("user_id")
   type      String   @db.VarChar(20)
-  notes     String?  @db.Text
-  metadata  Json?    @db.Json
+  notes     String?
+  metadata  Json?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -152,7 +151,7 @@ model Segment {
   id        String   @id @default(uuid())
   tenantId  String   @map("tenant_id")
   name      String   @db.VarChar(100)
-  criteria  Json?    @db.Json
+  criteria  Json?
   color     String?  @db.VarChar(7)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -174,8 +173,8 @@ model Notification {
   userId    String   @map("user_id")
   type      String   @db.VarChar(50)
   title     String   @db.VarChar(200)
-  message   String?  @db.Text
-  data      Json?    @db.Json
+  message   String?
+  data      Json?
   read      Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -198,9 +197,9 @@ model AuditLog {
   userId    String?  @map("user_id")
   action    String   @db.VarChar(50)
   entity    String   @db.VarChar(50)
-  entityId  String?  @map("entity_id") @db.VarChar(36)
-  oldValues Json?    @map("old_values") @db.Json
-  newValues Json?    @map("new_values") @db.Json
+  entityId  String?  @map("entity_id")
+  oldValues Json?    @map("old_values")
+  newValues Json?    @map("new_values")
   ipAddress String?  @map("ip_address") @db.VarChar(45)
   userAgent String?  @map("user_agent") @db.VarChar(500)
   createdAt DateTime @default(now()) @map("created_at")

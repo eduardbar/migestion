@@ -1,0 +1,7 @@
+# This is your Prisma migration lockfile.
+# Please don't edit this file manually
+# It is used to ensure that no two migration engines
+# try to run at the same time.
+# For more information, see https://pris.ly/d/migrate-lock
+
+provider = "postgresql"

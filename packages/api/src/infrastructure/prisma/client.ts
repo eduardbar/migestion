@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { env, isDevelopment } from '../../config/index.js';
 
 /**
@@ -13,15 +14,15 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const adapter = new PrismaPg({
+  connectionString: env.DATABASE_URL,
+});
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    adapter,
     log: isDevelopment ? ['query', 'error', 'warn'] : ['error'],
-    datasources: {
-      db: {
-        url: env.DATABASE_URL,
-      },
-    },
   });
 
 if (isDevelopment) {

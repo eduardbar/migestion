@@ -18,7 +18,7 @@ const envSchema = z.object({
   WEB_URL: z.string().url().default('http://localhost:5173'),
 
   // Database - Default for local dev
-  DATABASE_URL: z.string().default('postgresql://migestion:password@localhost:5432/migestion_db'),
+  DATABASE_URL: z.string().default('postgresql://migestion:password@localhost:5432/migestion'),
 
   // Redis - Default for local dev
   REDIS_URL: z.string().default('redis://localhost:6379'),
