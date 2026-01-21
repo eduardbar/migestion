@@ -30,7 +30,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          DATABASE_URL: file:./test.db
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
 
       - name: Build
         run: npm run build
