@@ -1,20 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  User,
-  Building2,
-  Shield,
-  Eye,
-  EyeOff,
-  Check,
-  AlertCircle,
-} from 'lucide-react';
-import {
-  Card,
-  Button,
-  Input,
-  Alert,
-} from '@/components/ui';
+import { User, Building2, Shield, Eye, EyeOff, Check, AlertCircle } from 'lucide-react';
+import { Card, Button, Input, Alert } from '@/components/ui';
 import { useAuthStore } from '@/stores';
 import { ROLE_LABELS } from '@/lib/constants';
 import {
@@ -56,16 +43,15 @@ export function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold text-neutral-900">Settings</h1>
-        <p className="text-sm text-neutral-500 mt-1">
-          Manage your account and preferences
-        </p>
+        <p className="text-sm text-neutral-500 mt-1">Manage your account and preferences</p>
       </div>
 
       {/* User Info Card */}
       <Card className="p-6">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-primary-100 flex items-center justify-center text-xl font-medium text-primary-600">
-            {user?.firstName.charAt(0)}{user?.lastName.charAt(0)}
+            {user?.firstName.charAt(0)}
+            {user?.lastName.charAt(0)}
           </div>
           <div>
             <h2 className="text-lg font-medium text-neutral-900">
@@ -79,8 +65,7 @@ export function SettingsPage() {
         </div>
         <div className="mt-4 pt-4 border-t border-neutral-200">
           <p className="text-sm text-neutral-500">
-            <span className="font-medium text-neutral-700">Company:</span>{' '}
-            {tenant?.name}
+            <span className="font-medium text-neutral-700">Company:</span> {tenant?.name}
           </p>
         </div>
       </Card>
@@ -88,7 +73,7 @@ export function SettingsPage() {
       {/* Tab Navigation */}
       <div className="border-b border-neutral-200">
         <nav className="flex gap-4">
-          {TABS.map((tab) => {
+          {TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
@@ -140,7 +125,7 @@ function ProfileTab({ user, tenant, setAuth }: ProfileTabProps) {
 
   const mutation = useMutation({
     mutationFn: (data: UpdateProfileInput) => updateProfile(data),
-    onSuccess: (updatedUser) => {
+    onSuccess: updatedUser => {
       // Update local storage and store
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
       setAuth(updatedUser, tenant);
@@ -150,7 +135,7 @@ function ProfileTab({ user, tenant, setAuth }: ProfileTabProps) {
   });
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -158,8 +143,7 @@ function ProfileTab({ user, tenant, setAuth }: ProfileTabProps) {
     mutation.mutate(formData);
   };
 
-  const hasChanges =
-    formData.firstName !== user.firstName || formData.lastName !== user.lastName;
+  const hasChanges = formData.firstName !== user.firstName || formData.lastName !== user.lastName;
 
   return (
     <Card className="p-6">
@@ -175,7 +159,9 @@ function ProfileTab({ user, tenant, setAuth }: ProfileTabProps) {
       {mutation.isError && (
         <Alert variant="error" className="mb-6">
           <AlertCircle className="h-4 w-4" />
-          <span>{mutation.error instanceof Error ? mutation.error.message : 'Failed to update profile'}</span>
+          <span>
+            {mutation.error instanceof Error ? mutation.error.message : 'Failed to update profile'}
+          </span>
         </Alert>
       )}
 
@@ -184,13 +170,13 @@ function ProfileTab({ user, tenant, setAuth }: ProfileTabProps) {
           <Input
             label="First Name"
             value={formData.firstName}
-            onChange={(e) => handleChange('firstName', e.target.value)}
+            onChange={e => handleChange('firstName', e.target.value)}
             required
           />
           <Input
             label="Last Name"
             value={formData.lastName}
-            onChange={(e) => handleChange('lastName', e.target.value)}
+            onChange={e => handleChange('lastName', e.target.value)}
             required
           />
         </div>
@@ -238,13 +224,13 @@ function SecurityTab() {
   });
 
   const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ ...prev, [field]: value }));
     setValidationError(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate passwords match
     if (formData.newPassword !== formData.confirmPassword) {
       setValidationError('New passwords do not match');
@@ -258,7 +244,9 @@ function SecurityTab() {
       return;
     }
     if (!passwordRegex.test(formData.newPassword)) {
-      setValidationError('Password must contain at least one lowercase letter, one uppercase letter, and one number');
+      setValidationError(
+        'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+      );
       return;
     }
 
@@ -268,8 +256,7 @@ function SecurityTab() {
     });
   };
 
-  const canSubmit =
-    formData.currentPassword && formData.newPassword && formData.confirmPassword;
+  const canSubmit = formData.currentPassword && formData.newPassword && formData.confirmPassword;
 
   return (
     <Card className="p-6">
@@ -286,8 +273,10 @@ function SecurityTab() {
         <Alert variant="error" className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <span>
-            {validationError || 
-              (mutation.error instanceof Error ? mutation.error.message : 'Failed to change password')}
+            {validationError ||
+              (mutation.error instanceof Error
+                ? mutation.error.message
+                : 'Failed to change password')}
           </span>
         </Alert>
       )}
@@ -298,7 +287,7 @@ function SecurityTab() {
             label="Current Password"
             type={showCurrentPassword ? 'text' : 'password'}
             value={formData.currentPassword}
-            onChange={(e) => handleChange('currentPassword', e.target.value)}
+            onChange={e => handleChange('currentPassword', e.target.value)}
             required
           />
           <button
@@ -315,7 +304,7 @@ function SecurityTab() {
             label="New Password"
             type={showNewPassword ? 'text' : 'password'}
             value={formData.newPassword}
-            onChange={(e) => handleChange('newPassword', e.target.value)}
+            onChange={e => handleChange('newPassword', e.target.value)}
             hint="Minimum 8 characters with uppercase, lowercase, and number"
             required
           />
@@ -332,7 +321,7 @@ function SecurityTab() {
           label="Confirm New Password"
           type="password"
           value={formData.confirmPassword}
-          onChange={(e) => handleChange('confirmPassword', e.target.value)}
+          onChange={e => handleChange('confirmPassword', e.target.value)}
           required
         />
 
@@ -365,9 +354,7 @@ function CompanyTab({ tenant, userRole }: CompanyTabProps) {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Company Name
-            </label>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Company Name</label>
             <Input
               value={tenant.name}
               disabled={!isOwner}
@@ -376,20 +363,12 @@ function CompanyTab({ tenant, userRole }: CompanyTabProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Company Slug
-            </label>
-            <Input
-              value={tenant.slug}
-              disabled
-              hint="The unique identifier for your company"
-            />
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Company Slug</label>
+            <Input value={tenant.slug} disabled hint="The unique identifier for your company" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Company ID
-            </label>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">Company ID</label>
             <div className="flex items-center gap-2">
               <Input value={tenant.id} disabled className="font-mono text-sm" />
               <Button
@@ -407,25 +386,10 @@ function CompanyTab({ tenant, userRole }: CompanyTabProps) {
 
         {isOwner && (
           <div className="mt-6 flex justify-end">
-            <Button disabled>
-              Save Changes
-            </Button>
+            <Button disabled>Save Changes</Button>
           </div>
         )}
       </Card>
-
-      {/* Danger Zone */}
-      {isOwner && (
-        <Card className="p-6 border-error-200">
-          <h3 className="text-lg font-medium text-error-700 mb-2">Danger Zone</h3>
-          <p className="text-sm text-neutral-500 mb-4">
-            Deleting your company will permanently remove all data including clients, interactions, and team members.
-          </p>
-          <Button variant="danger" disabled>
-            Delete Company
-          </Button>
-        </Card>
-      )}
     </div>
   );
 }

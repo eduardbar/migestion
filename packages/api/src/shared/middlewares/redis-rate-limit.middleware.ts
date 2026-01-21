@@ -1,5 +1,5 @@
 import rateLimit from 'express-rate-limit';
-import { RateLimitRedisStore } from 'rate-limit-redis';
+import RateLimitRedisStore from 'rate-limit-redis';
 import Redis from 'ioredis';
 import { env } from '../../config/index.js';
 import { TooManyRequestsError } from '../errors/index.js';
@@ -53,9 +53,9 @@ function createRedisStore(prefix: string) {
   }
 
   return new RateLimitRedisStore({
-    client: redisClient,
+    sendCommand: (command: string, ...args: any[]) => client.call(command, ...args) as any,
     prefix,
-  });
+  } as any);
 }
 
 export function createRedisRateLimiter(options: RedisRateLimitOptions) {

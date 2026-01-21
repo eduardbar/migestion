@@ -115,12 +115,6 @@ export function DashboardLayout() {
               </p>
               <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-neutral-900 truncate">
-                {user?.firstName || ''} {user?.lastName || ''}
-              </p>
-              <p className="text-xs text-neutral-500 truncate">{user?.email || ''}</p>
-            </div>
             <button
               onClick={handleLogout}
               className="p-2 rounded hover:bg-neutral-100 text-neutral-500 hover:text-neutral-700"
