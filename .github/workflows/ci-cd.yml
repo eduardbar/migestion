@@ -8,7 +8,7 @@ on:
 
 env:
   NODE_VERSION: '20'
-  DATABASE_URL: mysql://root:password@localhost:3306/migestion_test
+  DATABASE_URL: postgresql://postgres:password@localhost:5432/migestion_test
 
 jobs:
   # ─────────────────────────────────────────
@@ -43,15 +43,16 @@ jobs:
     name: API Tests
     runs-on: ubuntu-latest
     services:
-      mysql:
-        image: mysql:8.0
+      postgres:
+        image: postgres:15
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: migestion_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: migestion_test
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping -h localhost"
+          --health-cmd="pg_isready -U postgres"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5

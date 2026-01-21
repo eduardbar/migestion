@@ -27,6 +27,7 @@
     "clean": "rimraf node_modules packages/*/node_modules packages/*/dist"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.2.5",
     "prisma": "^7.3.0",
