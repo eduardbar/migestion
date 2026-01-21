@@ -2,21 +2,9 @@ import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
-import {
-  Bell,
-  Check,
-  CheckCheck,
-  Trash2,
-  Filter,
-  RefreshCw,
-} from 'lucide-react';
+import { Bell, Check, CheckCheck, Trash2, Filter, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Card,
-  Button,
-  Spinner,
-  EmptyState,
-} from '@/components/ui';
+import { Card, Button, Spinner, EmptyState } from '@/components/ui';
 import * as notificationsService from '@/services/notifications.service';
 import type { Notification } from '@/types';
 
@@ -51,12 +39,7 @@ export function NotificationsPage() {
   const limit = 20;
 
   // Fetch notifications
-  const {
-    data,
-    isLoading,
-    isFetching,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['notifications', page, filters],
     queryFn: () =>
       notificationsService.getNotifications({
@@ -109,7 +92,7 @@ export function NotificationsPage() {
   const unreadCount = data?.unreadCount ?? 0;
 
   const handleFilterChange = (key: keyof typeof filters, value: string | boolean) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const getNotificationIcon = (type: string) => {
@@ -155,12 +138,7 @@ export function NotificationsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => refetch()}
-            disabled={isFetching}
-          >
+          <Button variant="secondary" size="sm" onClick={() => refetch()} disabled={isFetching}>
             <RefreshCw className={cn('h-4 w-4', isFetching && 'animate-spin')} />
             Actualizar
           </Button>
@@ -190,10 +168,10 @@ export function NotificationsPage() {
             {/* Type filter */}
             <select
               value={filters.type}
-              onChange={(e) => handleFilterChange('type', e.target.value)}
+              onChange={e => handleFilterChange('type', e.target.value)}
               className="h-9 px-3 text-sm border border-neutral-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
-              {NOTIFICATION_TYPES.map((type) => (
+              {NOTIFICATION_TYPES.map(type => (
                 <option key={type.value} value={type.value}>
                   {type.label}
                 </option>
@@ -205,7 +183,7 @@ export function NotificationsPage() {
               <input
                 type="checkbox"
                 checked={filters.unreadOnly}
-                onChange={(e) => handleFilterChange('unreadOnly', e.target.checked)}
+                onChange={e => handleFilterChange('unreadOnly', e.target.checked)}
                 className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
               />
               <span className="text-sm text-neutral-700">Solo sin leer</span>
@@ -247,7 +225,7 @@ export function NotificationsPage() {
         ) : (
           <>
             <ul className="divide-y divide-neutral-200">
-              {notifications.map((notification) => (
+              {notifications.map(notification => (
                 <NotificationItem
                   key={notification.id}
                   notification={notification}
@@ -264,15 +242,15 @@ export function NotificationsPage() {
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200">
                 <p className="text-sm text-neutral-500">
-                  Mostrando {((page - 1) * limit) + 1} -{' '}
-                  {Math.min(page * limit, pagination.total)} de {pagination.total}
+                  Mostrando {(page - 1) * limit + 1} - {Math.min(page * limit, pagination.total)} de{' '}
+                  {pagination.total}
                 </p>
 
                 <div className="flex items-center gap-2">
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >
                     Anterior
@@ -283,7 +261,7 @@ export function NotificationsPage() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
+                    onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                     disabled={page === pagination.totalPages}
                   >
                     Siguiente
@@ -335,17 +313,13 @@ function NotificationItem({
           <p
             className={cn(
               'text-sm',
-              notification.read
-                ? 'text-neutral-600'
-                : 'text-neutral-900 font-medium'
+              notification.read ? 'text-neutral-600' : 'text-neutral-900 font-medium'
             )}
           >
             {notification.title}
           </p>
           {notification.message && (
-            <p className="text-sm text-neutral-500 mt-1">
-              {notification.message}
-            </p>
+            <p className="text-sm text-neutral-500 mt-1">{notification.message}</p>
           )}
           <p className="text-xs text-neutral-400 mt-2">
             {formatDistanceToNow(new Date(notification.createdAt), {

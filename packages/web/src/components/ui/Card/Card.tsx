@@ -38,11 +38,7 @@ interface CardHeaderProps {
 }
 
 export function CardHeader({ children, className }: CardHeaderProps) {
-  return (
-    <div className={cn('border-b border-neutral-200 px-6 py-4', className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('border-b border-neutral-200 px-6 py-4', className)}>{children}</div>;
 }
 
 interface CardTitleProps {
@@ -51,11 +47,7 @@ interface CardTitleProps {
 }
 
 export function CardTitle({ children, className }: CardTitleProps) {
-  return (
-    <h3 className={cn('text-lg font-semibold text-neutral-900', className)}>
-      {children}
-    </h3>
-  );
+  return <h3 className={cn('text-lg font-semibold text-neutral-900', className)}>{children}</h3>;
 }
 
 interface CardContentProps {
@@ -73,9 +65,5 @@ interface CardFooterProps {
 }
 
 export function CardFooter({ children, className }: CardFooterProps) {
-  return (
-    <div className={cn('border-t border-neutral-200 px-6 py-4', className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('border-t border-neutral-200 px-6 py-4', className)}>{children}</div>;
 }

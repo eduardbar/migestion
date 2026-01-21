@@ -8,21 +8,21 @@ const { combine, timestamp, errors, json, colorize, printf } = winston.format;
  */
 const devFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
   let log = `${timestamp} [${level}]: ${message}`;
-  
+
   if (Object.keys(meta).length > 0) {
     log += ` ${JSON.stringify(meta)}`;
   }
-  
+
   if (stack) {
     log += `\n${stack}`;
   }
-  
+
   return log;
 });
 
 /**
  * Application logger configured for different environments.
- * 
+ *
  * @remarks
  * - Development: Colorized console output with readable format
  * - Production: JSON format for log aggregation services
@@ -30,15 +30,10 @@ const devFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
 export const logger = winston.createLogger({
   level: env.LOG_LEVEL,
   defaultMeta: { service: 'migestion-api' },
-  format: combine(
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    errors({ stack: true })
-  ),
+  format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), errors({ stack: true })),
   transports: [
     new winston.transports.Console({
-      format: isProduction
-        ? combine(json())
-        : combine(colorize(), devFormat),
+      format: isProduction ? combine(json()) : combine(colorize(), devFormat),
     }),
   ],
 });

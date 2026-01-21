@@ -28,11 +28,7 @@ router.use(authenticate);
  * GET /segments
  * List segments with pagination
  */
-router.get(
-  '/',
-  validate({ query: listSegmentsQuerySchema }),
-  segmentsController.list
-);
+router.get('/', validate({ query: listSegmentsQuerySchema }), segmentsController.list);
 
 /**
  * GET /segments/all
@@ -50,11 +46,7 @@ router.get('/stats', segmentsController.getStats);
  * GET /segments/:id
  * Get a specific segment
  */
-router.get(
-  '/:id',
-  validate({ params: segmentIdParamSchema }),
-  segmentsController.getById
-);
+router.get('/:id', validate({ params: segmentIdParamSchema }), segmentsController.getById);
 
 // ─────────────────────────────────────────
 // Write Routes (managers and above)

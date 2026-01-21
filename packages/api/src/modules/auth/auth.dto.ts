@@ -3,7 +3,7 @@ import { User, Tenant, RefreshToken } from '@prisma/client';
 /**
  * Auth module DTOs (Data Transfer Objects).
  * Separates internal entities from API responses.
- * 
+ *
  * @remarks
  * Following Clean Code: DTOs prevent exposing internal data structures.
  */

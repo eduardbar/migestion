@@ -6,7 +6,7 @@ import { Role } from '../../config/constants.js';
 /**
  * Authentication middleware.
  * Verifies JWT access token and populates req.user.
- * 
+ *
  * @remarks
  * Following Single Responsibility Principle:
  * - Only handles token verification

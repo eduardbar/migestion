@@ -1,7 +1,7 @@
 /**
  * Interaction routes configuration.
  * Defines all interaction-related endpoints with middleware chains.
- * 
+ *
  * @remarks
  * All routes are protected (require authentication).
  * Multi-tenant isolation is enforced via tenant middleware.
@@ -51,10 +51,7 @@ router.get(
  * Get interaction statistics.
  * Note: Must be before /:id to avoid matching "stats" as an ID.
  */
-router.get(
-  '/stats',
-  asyncHandler(interactionsController.getStats)
-);
+router.get('/stats', asyncHandler(interactionsController.getStats));
 
 /**
  * GET /interactions/:id

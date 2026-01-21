@@ -1,9 +1,9 @@
 import { api } from './api';
 import { STORAGE_KEYS } from '@/lib/constants';
-import type { 
-  AuthResponse, 
-  TokenRefreshResponse, 
-  LoginCredentials, 
+import type {
+  AuthResponse,
+  TokenRefreshResponse,
+  LoginCredentials,
   RegisterData,
   User,
   Tenant,
@@ -32,10 +32,10 @@ export async function refreshToken(token: string): Promise<TokenRefreshResponse>
     { refreshToken: token },
     { skipAuth: true }
   );
-  
+
   localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.accessToken);
   localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refreshToken);
-  
+
   return response;
 }
 

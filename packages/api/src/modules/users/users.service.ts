@@ -1,7 +1,7 @@
 /**
  * User service - business logic layer.
  * Orchestrates team management operations with validation and authorization.
- * 
+ *
  * @remarks
  * Service functions contain business rules including:
  * - Role hierarchy enforcement (can't modify users with higher roles)
@@ -67,7 +67,7 @@ function generateTempPassword(): string {
 /**
  * Validates that an actor can perform management operations on a target user.
  * Extracts common validation logic shared by updateRole, updateStatus, and remove.
- * 
+ *
  * @throws ForbiddenError if trying to modify self
  * @throws NotFoundError if target user doesn't exist
  * @throws ForbiddenError if trying to modify owner
@@ -79,12 +79,13 @@ async function validateUserManagementPermissions(
   action: 'modify' | 'delete'
 ): Promise<{ targetUser: Awaited<ReturnType<typeof usersRepository.findById>> }> {
   const { tenantId, actorId, actorRole } = context;
-  
+
   // Can't perform action on self
   if (actorId === targetUserId) {
-    const selfActionMessage = action === 'delete' 
-      ? 'You cannot delete your own account'
-      : 'You cannot change your own role or status';
+    const selfActionMessage =
+      action === 'delete'
+        ? 'You cannot delete your own account'
+        : 'You cannot change your own role or status';
     throw new ForbiddenError(selfActionMessage);
   }
 
@@ -95,9 +96,10 @@ async function validateUserManagementPermissions(
 
   // Can't modify/delete owner
   if (targetUser.role === ROLES.OWNER) {
-    const ownerMessage = action === 'delete'
-      ? 'Cannot delete the owner account'
-      : 'Cannot change the owner\'s role or status';
+    const ownerMessage =
+      action === 'delete'
+        ? 'Cannot delete the owner account'
+        : "Cannot change the owner's role or status";
     throw new ForbiddenError(ownerMessage);
   }
 
@@ -117,10 +119,7 @@ async function validateUserManagementPermissions(
  * Get a single user by ID.
  * @throws NotFoundError if user doesn't exist
  */
-export async function getById(
-  tenantId: string,
-  userId: string
-): Promise<UserWithStatsDto> {
+export async function getById(tenantId: string, userId: string): Promise<UserWithStatsDto> {
   const user = await usersRepository.findById(tenantId, userId);
 
   if (!user) {
@@ -133,10 +132,7 @@ export async function getById(
 /**
  * List team members with filtering and pagination.
  */
-export async function list(
-  tenantId: string,
-  query: ListUsersQuery
-): Promise<UserListDto> {
+export async function list(tenantId: string, query: ListUsersQuery): Promise<UserListDto> {
   const { users, total } = await usersRepository.findMany({
     tenantId,
     page: query.page,
@@ -165,7 +161,7 @@ export async function getTeamStats(tenantId: string): Promise<TeamStatsDto> {
 /**
  * Invite a new team member.
  * Creates user with temporary password and pending status.
- * 
+ *
  * @throws BadRequestError if email already exists
  * @throws ForbiddenError if actor can't create users with that role
  */
@@ -203,7 +199,7 @@ export async function invite(
   // TODO: Send invitation email with tempPassword
   // For now, we'll include it in the response (development only)
   const dto = toUserWithStatsDto(user);
-  
+
   return {
     ...dto,
     // @ts-expect-error - temporary field for development
@@ -232,7 +228,11 @@ export async function updateProfile(
     return toUserWithStatsDto(user);
   }
 
-  const user = await usersRepository.updateProfile(tenantId, userId, data as { firstName?: string; lastName?: string; avatarUrl?: string | null });
+  const user = await usersRepository.updateProfile(
+    tenantId,
+    userId,
+    data as { firstName?: string; lastName?: string; avatarUrl?: string | null }
+  );
   return toUserWithStatsDto(user);
 }
 
@@ -261,7 +261,7 @@ export async function changePassword(
 
 /**
  * Update a team member's role.
- * 
+ *
  * @throws NotFoundError if user doesn't exist
  * @throws ForbiddenError if trying to modify own role, owner, or higher-ranked user
  */
@@ -286,7 +286,7 @@ export async function updateRole(
 
 /**
  * Update a team member's status (activate/deactivate).
- * 
+ *
  * @throws NotFoundError if user doesn't exist
  * @throws ForbiddenError if trying to deactivate self, owner, or higher-ranked user
  */
@@ -307,7 +307,7 @@ export async function updateStatus(
 /**
  * Delete a team member.
  * Unassigns all their clients.
- * 
+ *
  * @throws NotFoundError if user doesn't exist
  * @throws ForbiddenError if trying to delete self, owner, or higher-ranked user
  */
@@ -325,7 +325,7 @@ export async function remove(
 
 /**
  * Transfer all clients from one user to another.
- * 
+ *
  * @returns Number of clients transferred
  */
 export async function transferClients(

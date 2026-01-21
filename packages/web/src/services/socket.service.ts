@@ -79,7 +79,7 @@ const statusListeners = new Set<StatusListener>();
  */
 function updateStatus(status: ConnectionStatus, error?: string): void {
   connectionState = { status, error: error ?? null };
-  statusListeners.forEach((listener) => listener(status, error));
+  statusListeners.forEach(listener => listener(status, error));
 }
 
 /**
@@ -129,38 +129,38 @@ export function connect(): void {
   // Connection events
   socket.on('connect', () => {
     updateStatus('connected');
-    
+
     // Subscribe to receive notifications
-    socket?.emit('subscribe', (success) => {
+    socket?.emit('subscribe', success => {
       if (!success) {
         console.warn('Failed to subscribe to notifications');
       }
     });
   });
 
-  socket.on('disconnect', (reason) => {
+  socket.on('disconnect', reason => {
     updateStatus('disconnected');
-    
+
     // If server disconnected us, try to reconnect
     if (reason === 'io server disconnect') {
       socket?.connect();
     }
   });
 
-  socket.on('connect_error', (error) => {
+  socket.on('connect_error', error => {
     updateStatus('error', error.message);
   });
 
   // Application events
-  socket.on('notification', (payload) => {
-    notificationListeners.forEach((listener) => listener(payload));
+  socket.on('notification', payload => {
+    notificationListeners.forEach(listener => listener(payload));
   });
 
-  socket.on('notificationCount', (count) => {
-    countListeners.forEach((listener) => listener(count));
+  socket.on('notificationCount', count => {
+    countListeners.forEach(listener => listener(count));
   });
 
-  socket.on('error', (message) => {
+  socket.on('error', message => {
     console.error('Socket error:', message);
   });
 }

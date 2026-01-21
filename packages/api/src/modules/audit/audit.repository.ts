@@ -70,18 +70,8 @@ export async function createAuditLog(data: CreateAuditLogData): Promise<AuditLog
 export async function listAuditLogs(
   options: ListAuditLogsOptions
 ): Promise<{ auditLogs: AuditLogWithUser[]; total: number }> {
-  const {
-    tenantId,
-    page,
-    limit,
-    action,
-    entity,
-    userId,
-    entityId,
-    startDate,
-    endDate,
-    sortOrder,
-  } = options;
+  const { tenantId, page, limit, action, entity, userId, entityId, startDate, endDate, sortOrder } =
+    options;
 
   const where: Prisma.AuditLogWhereInput = {
     tenantId,
@@ -203,7 +193,7 @@ export async function getAuditStats(
     _count: { action: true },
   });
 
-  return result.map((r) => ({
+  return result.map(r => ({
     action: r.action,
     count: r._count.action,
   }));

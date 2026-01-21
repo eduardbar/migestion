@@ -37,17 +37,10 @@ export function NotificationToast() {
         </div>
 
         {/* Content */}
-        <div
-          className="flex-1 min-w-0 cursor-pointer"
-          onClick={handleClick}
-        >
-          <p className="text-sm font-medium text-neutral-900">
-            {toast.title}
-          </p>
+        <div className="flex-1 min-w-0 cursor-pointer" onClick={handleClick}>
+          <p className="text-sm font-medium text-neutral-900">{toast.title}</p>
           {toast.message && (
-            <p className="text-sm text-neutral-500 mt-1 line-clamp-2">
-              {toast.message}
-            </p>
+            <p className="text-sm text-neutral-500 mt-1 line-clamp-2">{toast.message}</p>
           )}
         </div>
 

@@ -1,7 +1,7 @@
 /**
  * Client Data Transfer Objects (DTOs).
  * Defines the shape of data exposed through the API.
- * 
+ *
  * @remarks
  * DTOs separate internal database models from API responses,
  * allowing us to control exactly what data is exposed.

@@ -4,7 +4,7 @@ import { TooManyRequestsError } from '../errors/index.js';
 
 /**
  * Rate limiting middleware configuration.
- * 
+ *
  * @remarks
  * Protects API from abuse and DoS attacks.
  * Different limits for different endpoints.
@@ -21,7 +21,7 @@ export const defaultRateLimiter = rateLimit({
   handler: () => {
     throw new TooManyRequestsError();
   },
-  keyGenerator: (req) => {
+  keyGenerator: req => {
     // Use user ID if authenticated, otherwise IP
     return req.user?.userId ?? req.ip ?? 'unknown';
   },
@@ -37,11 +37,9 @@ export const authRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: () => {
-    throw new TooManyRequestsError(
-      'Too many authentication attempts, please try again later'
-    );
+    throw new TooManyRequestsError('Too many authentication attempts, please try again later');
   },
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: req => req.ip ?? 'unknown',
   skipSuccessfulRequests: true,
 });
 
@@ -54,9 +52,7 @@ export const passwordResetRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   handler: () => {
-    throw new TooManyRequestsError(
-      'Too many password reset requests, please try again later'
-    );
+    throw new TooManyRequestsError('Too many password reset requests, please try again later');
   },
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: req => req.ip ?? 'unknown',
 });

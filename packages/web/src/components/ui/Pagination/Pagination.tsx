@@ -38,10 +38,7 @@ function generatePagination(
 
   // Case 2: No left dots
   if (!showLeftDots && showRightDots) {
-    const leftRange = Array.from(
-      { length: siblingsCount * 2 + 3 },
-      (_, i) => i + 1
-    );
+    const leftRange = Array.from({ length: siblingsCount * 2 + 3 }, (_, i) => i + 1);
     return [...leftRange, DOTS, totalPages];
   }
 
@@ -97,11 +94,7 @@ export function Pagination({
       {pages.map((page, index) => {
         if (page === DOTS) {
           return (
-            <span
-              key={`dots-${index}`}
-              className="px-2 text-neutral-400"
-              aria-hidden
-            >
+            <span key={`dots-${index}`} className="px-2 text-neutral-400" aria-hidden>
               <MoreHorizontal className="h-4 w-4" />
             </span>
           );
@@ -156,11 +149,7 @@ export function PaginationInfo({
   const end = Math.min(currentPage * pageSize, totalItems);
 
   if (totalItems === 0) {
-    return (
-      <p className={cn('text-sm text-neutral-500', className)}>
-        No results
-      </p>
-    );
+    return <p className={cn('text-sm text-neutral-500', className)}>No results</p>;
   }
 
   return (
@@ -192,11 +181,7 @@ export function PaginationContainer({
 }: PaginationContainerProps) {
   return (
     <div className={cn('flex items-center justify-between', className)}>
-      <PaginationInfo
-        currentPage={currentPage}
-        pageSize={pageSize}
-        totalItems={totalItems}
-      />
+      <PaginationInfo currentPage={currentPage} pageSize={pageSize} totalItems={totalItems} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

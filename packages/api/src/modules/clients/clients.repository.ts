@@ -1,7 +1,7 @@
 /**
  * Client repository - database access layer.
  * Handles all Prisma operations for clients.
- * 
+ *
  * @remarks
  * Repository functions are pure database operations without business logic.
  * All queries are scoped by tenantId for multi-tenant isolation.
@@ -54,10 +54,7 @@ export async function findById(
 /**
  * Find a client by email within a tenant.
  */
-export async function findByEmail(
-  tenantId: string,
-  email: string
-): Promise<Client | null> {
+export async function findByEmail(tenantId: string, email: string): Promise<Client | null> {
   return prisma.client.findFirst({
     where: {
       tenantId,
@@ -72,17 +69,8 @@ export async function findByEmail(
 export async function findMany(
   options: FindManyOptions
 ): Promise<{ clients: ClientWithAssignedUser[]; total: number }> {
-  const {
-    tenantId,
-    page,
-    limit,
-    search,
-    status,
-    segment,
-    assignedToId,
-    sortBy,
-    sortOrder,
-  } = options;
+  const { tenantId, page, limit, search, status, segment, assignedToId, sortBy, sortOrder } =
+    options;
 
   // Build where clause
   const where: Prisma.ClientWhereInput = {
@@ -147,9 +135,7 @@ export async function findDistinctSegments(tenantId: string): Promise<string[]> 
     distinct: ['segment'],
   });
 
-  return results
-    .map((r) => r.segment)
-    .filter((s): s is string => s !== null);
+  return results.map(r => r.segment).filter((s): s is string => s !== null);
 }
 
 /**
@@ -164,7 +150,7 @@ export async function countByStatus(
     _count: { status: true },
   });
 
-  return results.map((r) => ({
+  return results.map(r => ({
     status: r.status,
     count: r._count.status,
   }));
@@ -212,10 +198,7 @@ export async function update(
  * Delete a client.
  * Note: Interactions will be cascade deleted due to schema relation.
  */
-export async function remove(
-  tenantId: string,
-  clientId: string
-): Promise<Client> {
+export async function remove(tenantId: string, clientId: string): Promise<Client> {
   return prisma.client.delete({
     where: {
       id: clientId,
@@ -269,10 +252,7 @@ export async function assignMany(
 /**
  * Check if a user exists in the tenant (for assignment validation).
  */
-export async function userExistsInTenant(
-  tenantId: string,
-  userId: string
-): Promise<boolean> {
+export async function userExistsInTenant(tenantId: string, userId: string): Promise<boolean> {
   const user = await prisma.user.findFirst({
     where: {
       id: userId,
@@ -287,10 +267,7 @@ export async function userExistsInTenant(
 /**
  * Check if client exists in tenant.
  */
-export async function exists(
-  tenantId: string,
-  clientId: string
-): Promise<boolean> {
+export async function exists(tenantId: string, clientId: string): Promise<boolean> {
   const client = await prisma.client.findFirst({
     where: {
       id: clientId,

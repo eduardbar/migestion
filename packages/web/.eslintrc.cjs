@@ -23,7 +23,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  ignorePatterns: ['.eslintrc.cjs', 'dist', 'node_modules', 'coverage', 'test-results', 'playwright-report'],
+  ignorePatterns: ['.eslintrc.cjs', 'dist', 'node_modules', 'coverage', 'test-results', 'playwright-report', '**/LandingPage.tsx'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

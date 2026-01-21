@@ -91,11 +91,7 @@ export function sendError(
 /**
  * Build pagination metadata.
  */
-export function buildPaginationMeta(
-  page: number,
-  limit: number,
-  total: number
-): ResponseMeta {
+export function buildPaginationMeta(page: number, limit: number, total: number): ResponseMeta {
   return {
     page,
     limit,

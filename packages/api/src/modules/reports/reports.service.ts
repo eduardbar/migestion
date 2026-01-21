@@ -65,7 +65,7 @@ function getEndOfDay(date: Date): Date {
 export function calculateDateRange(query: DateRangeQuery): DateRange {
   const now = new Date();
   const today = getStartOfDay(now);
-  
+
   if (query.period === 'custom' && query.startDate && query.endDate) {
     return {
       start: new Date(query.startDate),
@@ -129,7 +129,7 @@ export async function getDashboardOverview(
   query: DateRangeQuery
 ): Promise<DashboardOverviewDto> {
   const dateRange = calculateDateRange(query);
-  
+
   // Calculate previous period for trends
   const periodLength = dateRange.end.getTime() - dateRange.start.getTime();
   const previousRange: DateRange = {
@@ -163,16 +163,22 @@ export async function getDashboardOverview(
   ]);
 
   // Transform status data
-  const byStatus = clientsByStatus.reduce((acc, item) => {
-    acc[item.status] = item._count;
-    return acc;
-  }, {} as Record<string, number>);
+  const byStatus = clientsByStatus.reduce(
+    (acc, item) => {
+      acc[item.status] = item._count;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   // Transform interaction type data
-  const byType = interactionsByType.reduce((acc, item) => {
-    acc[item.type] = item._count;
-    return acc;
-  }, {} as Record<string, number>);
+  const byType = interactionsByType.reduce(
+    (acc, item) => {
+      acc[item.type] = item._count;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   return {
     clients: {
@@ -211,7 +217,7 @@ export async function getClientStats(
   switch (query.groupBy) {
     case 'status': {
       const byStatus = await reportsRepository.getClientsByStatus(tenantId);
-      data = byStatus.map((item) => ({
+      data = byStatus.map(item => ({
         label: item.status,
         value: item.status,
         count: item._count,
@@ -222,7 +228,7 @@ export async function getClientStats(
 
     case 'segment': {
       const bySegment = await reportsRepository.getClientsBySegment(tenantId);
-      data = bySegment.map((item) => ({
+      data = bySegment.map(item => ({
         label: item.segment || 'No Segment',
         value: item.segment,
         count: item._count,
@@ -233,10 +239,8 @@ export async function getClientStats(
 
     case 'assignedTo': {
       const byAssigned = await reportsRepository.getClientsByAssignedUser(tenantId);
-      data = byAssigned.map((item) => ({
-        label: item.user
-          ? `${item.user.firstName} ${item.user.lastName}`
-          : 'Unassigned',
+      data = byAssigned.map(item => ({
+        label: item.user ? `${item.user.firstName} ${item.user.lastName}` : 'Unassigned',
         value: item.assignedToId,
         count: item._count,
         percentage: calculatePercentage(item._count, total),
@@ -247,7 +251,7 @@ export async function getClientStats(
     case 'createdMonth': {
       const byMonth = await reportsRepository.getClientsByCreatedMonth(tenantId, dateRange);
       const monthTotal = byMonth.reduce((sum, item) => sum + item.count, 0);
-      data = byMonth.map((item) => ({
+      data = byMonth.map(item => ({
         label: item.month,
         value: item.month,
         count: item.count,
@@ -282,7 +286,7 @@ export async function getInteractionStats(
   switch (query.groupBy) {
     case 'type': {
       const byType = await reportsRepository.getInteractionsByType(tenantId, dateRange);
-      data = byType.map((item) => ({
+      data = byType.map(item => ({
         label: item.type,
         value: item.type,
         count: item._count,
@@ -293,7 +297,7 @@ export async function getInteractionStats(
 
     case 'user': {
       const byUser = await reportsRepository.getInteractionsByUser(tenantId, dateRange);
-      data = byUser.map((item) => ({
+      data = byUser.map(item => ({
         label: `${item.user.firstName} ${item.user.lastName}`,
         value: item.userId,
         count: item._count,
@@ -306,7 +310,7 @@ export async function getInteractionStats(
     case 'week':
     case 'month': {
       const byDay = await reportsRepository.getInteractionsByDay(tenantId, dateRange);
-      data = byDay.map((item) => ({
+      data = byDay.map(item => ({
         label: item.date,
         value: item.date,
         count: item.count,
@@ -334,10 +338,10 @@ export async function getTeamPerformance(
   query: TeamPerformanceQuery
 ): Promise<TeamPerformanceDto> {
   const dateRange = calculateDateRange(query);
-  
+
   const performance = await reportsRepository.getTeamPerformance(tenantId, dateRange);
 
-  const members = performance.map((p) => ({
+  const members = performance.map(p => ({
     userId: p.userId,
     name: `${p.firstName} ${p.lastName}`,
     email: p.email,
@@ -382,8 +386,8 @@ export async function getActivityTimeline(
   ]);
 
   // Merge data by date
-  const clientMap = new Map(clientsByDay.map((c) => [c.date, c.count]));
-  const interactionMap = new Map(interactionsByDay.map((i) => [i.date, i.count]));
+  const clientMap = new Map(clientsByDay.map(c => [c.date, c.count]));
+  const interactionMap = new Map(interactionsByDay.map(i => [i.date, i.count]));
 
   // Generate all dates in range
   const dates: string[] = [];
@@ -393,7 +397,7 @@ export async function getActivityTimeline(
     current.setDate(current.getDate() + 1);
   }
 
-  const data: ActivityTimelineItem[] = dates.map((date) => ({
+  const data: ActivityTimelineItem[] = dates.map(date => ({
     date,
     clients: clientMap.get(date) || 0,
     interactions: interactionMap.get(date) || 0,
@@ -417,12 +421,8 @@ export async function getTopClients(
   limit: number = DEFAULTS.TOP_CLIENTS_LIMIT
 ): Promise<TopClientsDto> {
   const dateRange = calculateDateRange(query);
-  
-  const clients = await reportsRepository.getTopClientsByInteractions(
-    tenantId,
-    dateRange,
-    limit
-  );
+
+  const clients = await reportsRepository.getTopClientsByInteractions(tenantId, dateRange, limit);
 
   return {
     clients,

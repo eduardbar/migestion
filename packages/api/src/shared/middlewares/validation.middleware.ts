@@ -4,13 +4,13 @@ import { ValidationError } from '../errors/index.js';
 
 /**
  * Request validation middleware using Zod schemas.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Centralized validation logic
  * - Type-safe request handling
  * - Clear error messages for API consumers
- * 
+ *
  * @example
  * ```typescript
  * const createUserSchema = z.object({
@@ -19,7 +19,7 @@ import { ValidationError } from '../errors/index.js';
  *     password: z.string().min(8),
  *   }),
  * });
- * 
+ *
  * router.post('/users', validate(createUserSchema), createUser);
  * ```
  */
@@ -86,9 +86,7 @@ function mergeZodErrors(
   prefix: string
 ): void {
   for (const issue of zodError.issues) {
-    const path = issue.path.length > 0
-      ? `${prefix}.${issue.path.join('.')}`
-      : prefix;
+    const path = issue.path.length > 0 ? `${prefix}.${issue.path.join('.')}` : prefix;
 
     if (!errors[path]) {
       errors[path] = [];

@@ -56,7 +56,7 @@ function createRedisClient(): Redis {
     logger.info('Redis client connected and ready');
   });
 
-  client.on('error', (error) => {
+  client.on('error', error => {
     connectionReady = false;
     logger.error('Redis client error', { error: error.message });
   });
@@ -140,7 +140,10 @@ export async function cacheGet<T>(key: string): Promise<T | null> {
     if (!value) return null;
     return JSON.parse(value) as T;
   } catch (error) {
-    logger.warn('Cache get failed', { key, error: error instanceof Error ? error.message : 'Unknown' });
+    logger.warn('Cache get failed', {
+      key,
+      error: error instanceof Error ? error.message : 'Unknown',
+    });
     return null;
   }
 }
@@ -160,7 +163,10 @@ export async function cacheSet<T>(
     const ttl = options.ttl ?? DEFAULT_TTL;
     await redis.setex(key, ttl, JSON.stringify(value));
   } catch (error) {
-    logger.warn('Cache set failed', { key, error: error instanceof Error ? error.message : 'Unknown' });
+    logger.warn('Cache set failed', {
+      key,
+      error: error instanceof Error ? error.message : 'Unknown',
+    });
   }
 }
 
@@ -173,7 +179,10 @@ export async function cacheDelete(key: string): Promise<void> {
   try {
     await redis.del(key);
   } catch (error) {
-    logger.warn('Cache delete failed', { key, error: error instanceof Error ? error.message : 'Unknown' });
+    logger.warn('Cache delete failed', {
+      key,
+      error: error instanceof Error ? error.message : 'Unknown',
+    });
   }
 }
 
@@ -194,7 +203,10 @@ export async function cacheDeletePattern(pattern: string): Promise<void> {
       }
     } while (cursor !== '0');
   } catch (error) {
-    logger.warn('Cache delete pattern failed', { pattern, error: error instanceof Error ? error.message : 'Unknown' });
+    logger.warn('Cache delete pattern failed', {
+      pattern,
+      error: error instanceof Error ? error.message : 'Unknown',
+    });
   }
 }
 
@@ -207,7 +219,10 @@ export async function cacheExists(key: string): Promise<boolean> {
   try {
     return (await redis.exists(key)) === 1;
   } catch (error) {
-    logger.warn('Cache exists check failed', { key, error: error instanceof Error ? error.message : 'Unknown' });
+    logger.warn('Cache exists check failed', {
+      key,
+      error: error instanceof Error ? error.message : 'Unknown',
+    });
     return false;
   }
 }
@@ -219,25 +234,25 @@ export async function cacheExists(key: string): Promise<boolean> {
 export const CacheKeys = {
   /** User session data */
   userSession: (userId: string) => `session:${userId}`,
-  
+
   /** Tenant data */
   tenant: (tenantId: string) => `tenant:${tenantId}`,
-  
+
   /** User profile */
   userProfile: (userId: string) => `user:${userId}:profile`,
-  
+
   /** Dashboard stats for a tenant */
   dashboardStats: (tenantId: string) => `stats:${tenantId}:dashboard`,
-  
+
   /** Client list for a tenant (with hash of query params) */
   clientList: (tenantId: string, queryHash: string) => `clients:${tenantId}:${queryHash}`,
-  
+
   /** Single client */
   client: (tenantId: string, clientId: string) => `client:${tenantId}:${clientId}`,
-  
+
   /** Notification count for a user */
   notificationCount: (userId: string) => `notifications:${userId}:count`,
-  
+
   /** Rate limit counter */
   rateLimit: (ip: string, endpoint: string) => `ratelimit:${ip}:${endpoint}`,
 } as const;
@@ -267,11 +282,11 @@ export async function invalidateClientCache(tenantId: string, clientId?: string)
     cacheDeletePattern(`clients:${tenantId}:*`),
     cacheDelete(CacheKeys.dashboardStats(tenantId)),
   ];
-  
+
   if (clientId) {
     promises.push(cacheDelete(CacheKeys.client(tenantId, clientId)));
   }
-  
+
   await Promise.all(promises);
 }
 

@@ -185,7 +185,11 @@ Authorization: Bearer <access_token>
           email: { type: 'string', format: 'email' },
           phone: { type: 'string' },
           address: { type: 'string' },
-          status: { type: 'string', enum: ['active', 'inactive', 'prospect', 'churned'], default: 'prospect' },
+          status: {
+            type: 'string',
+            enum: ['active', 'inactive', 'prospect', 'churned'],
+            default: 'prospect',
+          },
           segment: { type: 'string' },
           notes: { type: 'string' },
           assignedToId: { type: 'string', format: 'uuid' },
@@ -332,10 +336,7 @@ Authorization: Bearer <access_token>
 
 const options: swaggerJsdoc.Options = {
   definition: swaggerDefinition,
-  apis: [
-    './src/modules/**/*.routes.ts',
-    './src/modules/**/*.controller.ts',
-  ],
+  apis: ['./src/modules/**/*.routes.ts', './src/modules/**/*.controller.ts'],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

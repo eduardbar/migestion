@@ -23,11 +23,7 @@ import type {
  * Get dashboard overview stats.
  * GET /reports/dashboard
  */
-export async function getDashboard(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function getDashboard(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { tenantId } = req.user!;
     const query = req.query as unknown as DashboardQuery;

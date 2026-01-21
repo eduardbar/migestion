@@ -123,14 +123,16 @@ export function initializeSocketIO(httpServer: HttpServer): TypedServer {
   // Authentication middleware
   io.use(async (socket: TypedSocket, next) => {
     try {
-      const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.replace('Bearer ', '');
+      const token =
+        socket.handshake.auth.token ||
+        socket.handshake.headers.authorization?.replace('Bearer ', '');
 
       if (!token) {
         return next(new Error('Authentication required'));
       }
 
       const payload = verifyAccessToken(token) as AccessTokenPayload;
-      
+
       // Attach user data to socket
       socket.data.userId = payload.userId;
       socket.data.tenantId = payload.tenantId;
@@ -153,30 +155,30 @@ export function initializeSocketIO(httpServer: HttpServer): TypedServer {
 
     // Join user-specific room
     socket.join(`user:${userId}`);
-    
+
     // Join tenant-wide room
     socket.join(`tenant:${tenantId}`);
 
     // Handle subscription request (explicit join)
-    socket.on('subscribe', (callback) => {
+    socket.on('subscribe', callback => {
       logger.debug('Socket subscribed', { socketId: socket.id, userId });
       callback(true);
     });
 
     // Handle unsubscription
-    socket.on('unsubscribe', (callback) => {
+    socket.on('unsubscribe', callback => {
       socket.leave(`user:${userId}`);
       socket.leave(`tenant:${tenantId}`);
       callback(true);
     });
 
     // Handle disconnection
-    socket.on('disconnect', (reason) => {
+    socket.on('disconnect', reason => {
       logger.debug('Socket disconnected', { socketId: socket.id, userId, reason });
     });
 
     // Handle errors
-    socket.on('error', (error) => {
+    socket.on('error', error => {
       logger.error('Socket error', { socketId: socket.id, userId, error });
     });
   });
@@ -191,7 +193,7 @@ export function initializeSocketIO(httpServer: HttpServer): TypedServer {
 export async function shutdownSocketIO(): Promise<void> {
   if (io) {
     io.disconnectSockets(true);
-    await new Promise<void>((resolve) => {
+    await new Promise<void>(resolve => {
       io!.close(() => {
         logger.info('Socket.IO server closed');
         io = null;
@@ -208,7 +210,11 @@ export async function shutdownSocketIO(): Promise<void> {
 /**
  * Send a notification to a specific user.
  */
-export function emitToUser(userId: string, event: keyof ServerToClientEvents, payload: unknown): void {
+export function emitToUser(
+  userId: string,
+  event: keyof ServerToClientEvents,
+  payload: unknown
+): void {
   if (!io) {
     logger.warn('Socket.IO not initialized, cannot emit event', { event, userId });
     return;
@@ -221,7 +227,11 @@ export function emitToUser(userId: string, event: keyof ServerToClientEvents, pa
 /**
  * Send a notification to all users in a tenant.
  */
-export function emitToTenant(tenantId: string, event: keyof ServerToClientEvents, payload: unknown): void {
+export function emitToTenant(
+  tenantId: string,
+  event: keyof ServerToClientEvents,
+  payload: unknown
+): void {
   if (!io) {
     logger.warn('Socket.IO not initialized, cannot emit event', { event, tenantId });
     return;

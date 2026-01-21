@@ -12,13 +12,14 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.cjs', 'dist', 'node_modules', 'coverage'],
+  ignorePatterns: ['.eslintrc.cjs', 'dist', 'node_modules', 'coverage', '**/*.d.ts'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-namespace': 'off',
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
 };

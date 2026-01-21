@@ -24,18 +24,9 @@ const registerSchema = z.object({
     .string()
     .min(3, 'El identificador debe tener al menos 3 caracteres')
     .max(50)
-    .regex(
-      /^[a-z0-9-]+$/,
-      'Solo letras minúsculas, números y guiones'
-    ),
-  firstName: z
-    .string()
-    .min(2, 'El nombre debe tener al menos 2 caracteres')
-    .max(100),
-  lastName: z
-    .string()
-    .min(2, 'El apellido debe tener al menos 2 caracteres')
-    .max(100),
+    .regex(/^[a-z0-9-]+$/, 'Solo letras minúsculas, números y guiones'),
+  firstName: z.string().min(2, 'El nombre debe tener al menos 2 caracteres').max(100),
+  lastName: z.string().min(2, 'El apellido debe tener al menos 2 caracteres').max(100),
   email: z.string().email('Ingresa un email válido'),
   password: z
     .string()
@@ -49,7 +40,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setAuth = useAuthStore(state => state.setAuth);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -112,9 +103,7 @@ export function RegisterPage() {
 
             {/* Company Info */}
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-neutral-700">
-                Información de la empresa
-              </h3>
+              <h3 className="text-sm font-medium text-neutral-700">Información de la empresa</h3>
 
               <Input
                 label="Nombre de la empresa"
@@ -137,9 +126,7 @@ export function RegisterPage() {
 
             {/* User Info */}
             <div className="space-y-4 pt-4 border-t border-neutral-200">
-              <h3 className="text-sm font-medium text-neutral-700">
-                Tu información
-              </h3>
+              <h3 className="text-sm font-medium text-neutral-700">Tu información</h3>
 
               <div className="grid grid-cols-2 gap-4">
                 <Input
@@ -181,11 +168,7 @@ export function RegisterPage() {
                     className="focus:outline-none"
                     tabIndex={-1}
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 }
                 hint="Mínimo 8 caracteres, una mayúscula, una minúscula y un número"
@@ -213,10 +196,7 @@ export function RegisterPage() {
 
         <p className="text-center text-sm text-neutral-600 mt-6">
           ¿Ya tienes una cuenta?{' '}
-          <Link
-            to={ROUTES.LOGIN}
-            className="font-medium text-neutral-900 hover:underline"
-          >
+          <Link to={ROUTES.LOGIN} className="font-medium text-neutral-900 hover:underline">
             Inicia sesión
           </Link>
         </p>

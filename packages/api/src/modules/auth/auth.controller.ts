@@ -6,7 +6,7 @@ import { sendSuccess, sendCreated, sendNoContent } from '../../shared/utils/resp
 
 /**
  * Auth controller - handles HTTP requests for authentication.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Controllers are thin: delegate to services
@@ -86,7 +86,7 @@ export async function refresh(req: Request, res: Response): Promise<Response> {
  */
 export async function logout(req: Request, res: Response): Promise<Response> {
   const { refreshToken } = req.body;
-  
+
   // Audit logout before revoking token
   if (req.user && req.tenantId) {
     auditService.logLogout({
@@ -100,7 +100,7 @@ export async function logout(req: Request, res: Response): Promise<Response> {
   if (refreshToken) {
     await authService.logout(refreshToken);
   }
-  
+
   return sendNoContent(res);
 }
 
@@ -136,7 +136,7 @@ export async function logoutAll(req: Request, res: Response): Promise<Response> 
  */
 export async function me(req: Request, res: Response): Promise<Response> {
   const { user, tenant } = await authService.getCurrentUser(req.user!.userId);
-  
+
   return sendSuccess(res, {
     user: toUserDto(user),
     tenant: toTenantDto(tenant),

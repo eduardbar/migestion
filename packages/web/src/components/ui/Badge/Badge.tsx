@@ -6,13 +6,7 @@ import { cn } from '@/lib/utils';
  * Follows design system: minimal, clean colors.
  */
 
-type BadgeVariant = 
-  | 'default' 
-  | 'primary' 
-  | 'success' 
-  | 'warning' 
-  | 'error' 
-  | 'info';
+type BadgeVariant = 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info';
 
 type BadgeSize = 'sm' | 'md';
 
@@ -57,9 +51,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       )}
       {...props}
     >
-      {dot && (
-        <span className={cn('h-1.5 w-1.5 rounded-full', dotStyles[variant])} />
-      )}
+      {dot && <span className={cn('h-1.5 w-1.5 rounded-full', dotStyles[variant])} />}
       {children}
     </span>
   )

@@ -21,14 +21,13 @@ const interactionTypeValues = [
 // Create Interaction Schema
 // ─────────────────────────────────────────
 export const createInteractionSchema = z.object({
-  clientId: z
-    .string()
-    .uuid('Invalid client ID'),
+  clientId: z.string().uuid('Invalid client ID'),
 
-  type: z
-    .enum(interactionTypeValues, {
-      errorMap: () => ({ message: 'Invalid interaction type. Must be: call, email, meeting, note, or task' }),
+  type: z.enum(interactionTypeValues, {
+    errorMap: () => ({
+      message: 'Invalid interaction type. Must be: call, email, meeting, note, or task',
     }),
+  }),
 
   notes: z
     .string()
@@ -59,17 +58,9 @@ export type CreateInteractionInput = z.infer<typeof createInteractionSchema>;
 // Update Interaction Schema
 // ─────────────────────────────────────────
 export const updateInteractionSchema = z.object({
-  type: z
-    .enum(interactionTypeValues)
-    .optional(),
+  type: z.enum(interactionTypeValues).optional(),
 
-  notes: z
-    .string()
-    .max(LIMITS.NOTES_MAX)
-    .trim()
-    .optional()
-    .or(z.literal(''))
-    .nullable(),
+  notes: z.string().max(LIMITS.NOTES_MAX).trim().optional().or(z.literal('')).nullable(),
 
   metadata: z
     .object({
@@ -94,50 +85,23 @@ export type UpdateInteractionInput = z.infer<typeof updateInteractionSchema>;
 // Query Parameters Schema
 // ─────────────────────────────────────────
 export const listInteractionsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
-  clientId: z
-    .string()
-    .uuid()
-    .optional(),
+  clientId: z.string().uuid().optional(),
 
-  userId: z
-    .string()
-    .uuid()
-    .optional(),
+  userId: z.string().uuid().optional(),
 
-  type: z
-    .enum(interactionTypeValues)
-    .optional(),
+  type: z.enum(interactionTypeValues).optional(),
 
-  startDate: z
-    .string()
-    .datetime()
-    .optional(),
+  startDate: z.string().datetime().optional(),
 
-  endDate: z
-    .string()
-    .datetime()
-    .optional(),
+  endDate: z.string().datetime().optional(),
 
-  sortBy: z
-    .enum(['createdAt', 'updatedAt', 'type'])
-    .default('createdAt'),
+  sortBy: z.enum(['createdAt', 'updatedAt', 'type']).default('createdAt'),
 
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('desc'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type ListInteractionsQuery = z.infer<typeof listInteractionsQuerySchema>;
@@ -161,22 +125,11 @@ export type ClientIdParam = z.infer<typeof clientIdParamSchema>;
 // Client Timeline Query Schema
 // ─────────────────────────────────────────
 export const clientTimelineQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
-  type: z
-    .enum(interactionTypeValues)
-    .optional(),
+  type: z.enum(interactionTypeValues).optional(),
 });
 
 export type ClientTimelineQuery = z.infer<typeof clientTimelineQuerySchema>;

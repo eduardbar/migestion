@@ -76,7 +76,10 @@ const STATUS_COLORS: Record<string, string> = {
   lost: CHART_COLORS.error,
 };
 
-const STATUS_BADGE_VARIANTS: Record<string, 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'> = {
+const STATUS_BADGE_VARIANTS: Record<
+  string,
+  'default' | 'primary' | 'success' | 'warning' | 'error' | 'info'
+> = {
   lead: 'info',
   prospect: 'warning',
   active: 'success',
@@ -133,15 +136,13 @@ export function ReportsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-900">Reports</h1>
-          <p className="text-sm text-neutral-500 mt-1">
-            Analyze your business performance
-          </p>
+          <p className="text-sm text-neutral-500 mt-1">Analyze your business performance</p>
         </div>
         <div className="w-full sm:w-48">
           <Select
             options={PERIOD_OPTIONS}
             value={period}
-            onChange={(e) => setPeriod(e.target.value as DatePeriod)}
+            onChange={e => setPeriod(e.target.value as DatePeriod)}
           />
         </div>
       </div>
@@ -186,9 +187,7 @@ export function ReportsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Clients by Status - Pie Chart */}
         <Card className="p-6">
-          <h3 className="text-lg font-medium text-neutral-900 mb-4">
-            Clients by Status
-          </h3>
+          <h3 className="text-lg font-medium text-neutral-900 mb-4">Clients by Status</h3>
           {isLoadingClientStats ? (
             <ChartSkeleton />
           ) : clientStats && clientStats.data.length > 0 ? (
@@ -196,7 +195,7 @@ export function ReportsPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={clientStats.data.map((item) => ({
+                    data={clientStats.data.map(item => ({
                       name: formatLabel(item.label),
                       value: item.count,
                     }))}
@@ -206,15 +205,16 @@ export function ReportsPage() {
                     outerRadius={90}
                     paddingAngle={2}
                     dataKey="value"
-                    label={({ name, percent }) => 
-                      `${name} (${(percent * 100).toFixed(0)}%)`
-                    }
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                     labelLine={false}
                   >
                     {clientStats.data.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={STATUS_COLORS[entry.label.toLowerCase()] || PIE_COLORS[index % PIE_COLORS.length]}
+                        fill={
+                          STATUS_COLORS[entry.label.toLowerCase()] ||
+                          PIE_COLORS[index % PIE_COLORS.length]
+                        }
                       />
                     ))}
                   </Pie>
@@ -229,16 +229,14 @@ export function ReportsPage() {
 
         {/* Interactions by Type - Bar Chart */}
         <Card className="p-6">
-          <h3 className="text-lg font-medium text-neutral-900 mb-4">
-            Interactions by Type
-          </h3>
+          <h3 className="text-lg font-medium text-neutral-900 mb-4">Interactions by Type</h3>
           {isLoadingInteractionStats ? (
             <ChartSkeleton />
           ) : interactionStats && interactionStats.data.length > 0 ? (
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={interactionStats.data.map((item) => ({
+                  data={interactionStats.data.map(item => ({
                     name: formatLabel(item.label),
                     count: item.count,
                   }))}
@@ -273,7 +271,7 @@ export function ReportsPage() {
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={timeline.data.map((item) => ({
+                data={timeline.data.map(item => ({
                   date: formatDate(item.date),
                   clients: item.clients,
                   interactions: item.interactions,
@@ -330,17 +328,24 @@ export function ReportsPage() {
                   <tr className="border-b border-neutral-200">
                     <th className="text-left py-3 px-2 font-medium text-neutral-500">Member</th>
                     <th className="text-right py-3 px-2 font-medium text-neutral-500">Clients</th>
-                    <th className="text-right py-3 px-2 font-medium text-neutral-500">Interactions</th>
-                    <th className="text-right py-3 px-2 font-medium text-neutral-500">Conversions</th>
+                    <th className="text-right py-3 px-2 font-medium text-neutral-500">
+                      Interactions
+                    </th>
+                    <th className="text-right py-3 px-2 font-medium text-neutral-500">
+                      Conversions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {teamPerformance.members.map((member) => (
+                  {teamPerformance.members.map(member => (
                     <tr key={member.userId} className="border-b border-neutral-100 last:border-0">
                       <td className="py-3 px-2">
                         <div className="flex items-center gap-2">
                           <div className="h-7 w-7 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center text-xs font-medium">
-                            {member.name.split(' ').map((n) => n[0]).join('')}
+                            {member.name
+                              .split(' ')
+                              .map(n => n[0])
+                              .join('')}
                           </div>
                           <span className="font-medium text-neutral-900">{member.name}</span>
                         </div>
@@ -406,13 +411,13 @@ export function ReportsPage() {
                       {client.companyName || client.contactName}
                     </div>
                     {client.companyName && (
-                      <div className="text-sm text-neutral-500 truncate">
-                        {client.contactName}
-                      </div>
+                      <div className="text-sm text-neutral-500 truncate">{client.contactName}</div>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={STATUS_BADGE_VARIANTS[client.status.toLowerCase()] || 'default'}>
+                    <Badge
+                      variant={STATUS_BADGE_VARIANTS[client.status.toLowerCase()] || 'default'}
+                    >
                       {formatLabel(client.status)}
                     </Badge>
                     <div className="text-sm text-neutral-500">
@@ -472,13 +477,12 @@ function StatsCard({ title, value, change, subtitle, icon, iconBg, loading }: St
                       change >= 0 ? 'text-success-600' : 'text-error-600'
                     }`}
                   >
-                    {change >= 0 ? '+' : ''}{change}% vs previous period
+                    {change >= 0 ? '+' : ''}
+                    {change}% vs previous period
                   </span>
                 </div>
               )}
-              {subtitle && (
-                <p className="text-xs text-neutral-400 mt-1">{subtitle}</p>
-              )}
+              {subtitle && <p className="text-xs text-neutral-400 mt-1">{subtitle}</p>}
             </>
           )}
         </div>
@@ -493,10 +497,7 @@ interface ChartSkeletonProps {
 
 function ChartSkeleton({ height = 256 }: ChartSkeletonProps) {
   return (
-    <div
-      className="flex items-center justify-center bg-neutral-50 rounded-lg"
-      style={{ height }}
-    >
+    <div className="flex items-center justify-center bg-neutral-50 rounded-lg" style={{ height }}>
       <Spinner size="lg" />
     </div>
   );

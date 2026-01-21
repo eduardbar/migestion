@@ -1,7 +1,7 @@
 /**
  * Application constants.
  * Centralized configuration values that don't change at runtime.
- * 
+ *
  * @remarks
  * Following Clean Code: magic numbers and strings are extracted
  * to named constants for clarity and maintainability.
@@ -78,10 +78,10 @@ export const PAGINATION = {
 // Cache TTL (in seconds)
 // ─────────────────────────────────────────
 export const CACHE_TTL = {
-  SHORT: 60,           // 1 minute
-  MEDIUM: 300,         // 5 minutes
-  LONG: 3600,          // 1 hour
-  SESSION: 900,        // 15 minutes (matches access token)
+  SHORT: 60, // 1 minute
+  MEDIUM: 300, // 5 minutes
+  LONG: 3600, // 1 hour
+  SESSION: 900, // 15 minutes (matches access token)
   REFRESH_TOKEN: 604800, // 7 days
 } as const;
 

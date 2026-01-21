@@ -168,17 +168,17 @@ function AuditDetailModal({ log, onClose }: AuditDetailModalProps) {
   if (!log) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
       <div
         className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
           <h3 className="font-semibold text-neutral-900">Detalle de Auditoria</h3>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-600"
-          >
+          <button onClick={onClose} className="text-neutral-400 hover:text-neutral-600">
             &times;
           </button>
         </div>
@@ -199,28 +199,20 @@ function AuditDetailModal({ log, onClose }: AuditDetailModalProps) {
             <div>
               <p className="text-sm text-neutral-500">Usuario</p>
               <p className="text-sm font-medium text-neutral-900">
-                {log.user
-                  ? `${log.user.firstName} ${log.user.lastName}`
-                  : 'Sistema'}
+                {log.user ? `${log.user.firstName} ${log.user.lastName}` : 'Sistema'}
               </p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">Fecha</p>
-              <p className="text-sm font-medium text-neutral-900">
-                {formatDate(log.createdAt)}
-              </p>
+              <p className="text-sm font-medium text-neutral-900">{formatDate(log.createdAt)}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">IP</p>
-              <p className="text-sm font-mono text-neutral-700">
-                {log.ipAddress || '-'}
-              </p>
+              <p className="text-sm font-mono text-neutral-700">{log.ipAddress || '-'}</p>
             </div>
             <div>
               <p className="text-sm text-neutral-500">ID Entidad</p>
-              <p className="text-sm font-mono text-neutral-700">
-                {log.entityId || '-'}
-              </p>
+              <p className="text-sm font-mono text-neutral-700">{log.entityId || '-'}</p>
             </div>
           </div>
 
@@ -245,9 +237,7 @@ function AuditDetailModal({ log, onClose }: AuditDetailModalProps) {
           {log.userAgent && (
             <div>
               <p className="text-sm text-neutral-500 mb-2">User Agent</p>
-              <p className="text-xs text-neutral-600 break-all">
-                {log.userAgent}
-              </p>
+              <p className="text-xs text-neutral-600 break-all">{log.userAgent}</p>
             </div>
           )}
         </div>
@@ -274,15 +264,13 @@ export function AuditPage() {
   if (!hasPermission) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-neutral-500">
-          No tienes permiso para ver los registros de auditoria.
-        </p>
+        <p className="text-neutral-500">No tienes permiso para ver los registros de auditoria.</p>
       </div>
     );
   }
 
   const handleFilterChange = (key: keyof AuditFilters, value: string) => {
-    setFilters((prev) => ({
+    setFilters(prev => ({
       ...prev,
       [key]: value || undefined,
     }));
@@ -298,12 +286,8 @@ export function AuditPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-neutral-900">
-          Registro de Auditoria
-        </h1>
-        <p className="text-neutral-500 mt-1">
-          Historial de todas las acciones del sistema
-        </p>
+        <h1 className="text-2xl font-semibold text-neutral-900">Registro de Auditoria</h1>
+        <p className="text-neutral-500 mt-1">Historial de todas las acciones del sistema</p>
       </div>
 
       {/* Filters */}
@@ -313,7 +297,7 @@ export function AuditPage() {
             <Select
               label="Accion"
               value={filters.action || ''}
-              onChange={(e) => handleFilterChange('action', e.target.value)}
+              onChange={e => handleFilterChange('action', e.target.value)}
               options={ACTION_OPTIONS}
             />
           </div>
@@ -322,7 +306,7 @@ export function AuditPage() {
             <Select
               label="Entidad"
               value={filters.entity || ''}
-              onChange={(e) => handleFilterChange('entity', e.target.value)}
+              onChange={e => handleFilterChange('entity', e.target.value)}
               options={ENTITY_OPTIONS}
             />
           </div>
@@ -332,7 +316,7 @@ export function AuditPage() {
               label="Desde"
               type="date"
               value={filters.startDate || ''}
-              onChange={(e) => handleFilterChange('startDate', e.target.value)}
+              onChange={e => handleFilterChange('startDate', e.target.value)}
             />
           </div>
 
@@ -341,7 +325,7 @@ export function AuditPage() {
               label="Hasta"
               type="date"
               value={filters.endDate || ''}
-              onChange={(e) => handleFilterChange('endDate', e.target.value)}
+              onChange={e => handleFilterChange('endDate', e.target.value)}
             />
           </div>
 
@@ -380,30 +364,22 @@ export function AuditPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.data.map((log) => (
+                {data.data.map(log => (
                   <TableRow key={log.id}>
-                    <TableCell className="whitespace-nowrap">
-                      {formatDate(log.createdAt)}
-                    </TableCell>
+                    <TableCell className="whitespace-nowrap">{formatDate(log.createdAt)}</TableCell>
                     <TableCell>
-                      {log.user
-                        ? `${log.user.firstName} ${log.user.lastName}`
-                        : '-'}
+                      {log.user ? `${log.user.firstName} ${log.user.lastName}` : '-'}
                     </TableCell>
                     <TableCell>
                       <Badge className={ACTION_COLORS[log.action] || ''}>
                         {ACTION_LABELS[log.action] || log.action}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      {ENTITY_LABELS[log.entity] || log.entity}
-                    </TableCell>
+                    <TableCell>{ENTITY_LABELS[log.entity] || log.entity}</TableCell>
                     <TableCell className="max-w-xs truncate">
                       {formatValues(log.newValues || log.oldValues)}
                     </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {log.ipAddress || '-'}
-                    </TableCell>
+                    <TableCell className="font-mono text-xs">{log.ipAddress || '-'}</TableCell>
                     <TableCell>
                       <button
                         onClick={() => setSelectedLog(log)}

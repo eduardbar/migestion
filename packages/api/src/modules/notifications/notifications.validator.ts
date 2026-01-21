@@ -20,20 +20,17 @@ export const NOTIFICATION_TYPES = [
   'system',
 ] as const;
 
-export type NotificationType = typeof NOTIFICATION_TYPES[number];
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 // ─────────────────────────────────────────
 // Create Notification Schema
 // ─────────────────────────────────────────
 export const createNotificationSchema = z.object({
-  userId: z
-    .string()
-    .uuid('Invalid user ID'),
+  userId: z.string().uuid('Invalid user ID'),
 
-  type: z
-    .enum(NOTIFICATION_TYPES, {
-      errorMap: () => ({ message: 'Invalid notification type' }),
-    }),
+  type: z.enum(NOTIFICATION_TYPES, {
+    errorMap: () => ({ message: 'Invalid notification type' }),
+  }),
 
   title: z
     .string()
@@ -41,15 +38,9 @@ export const createNotificationSchema = z.object({
     .max(200, 'Title must be at most 200 characters')
     .trim(),
 
-  message: z
-    .string()
-    .max(1000, 'Message must be at most 1000 characters')
-    .trim()
-    .optional(),
+  message: z.string().max(1000, 'Message must be at most 1000 characters').trim().optional(),
 
-  data: z
-    .record(z.unknown())
-    .optional(),
+  data: z.record(z.unknown()).optional(),
 });
 
 export type CreateNotificationInput = z.infer<typeof createNotificationSchema>;
@@ -63,10 +54,9 @@ export const bulkCreateNotificationsSchema = z.object({
     .min(1, 'At least one user ID is required')
     .max(100, 'Cannot send to more than 100 users at once'),
 
-  type: z
-    .enum(NOTIFICATION_TYPES, {
-      errorMap: () => ({ message: 'Invalid notification type' }),
-    }),
+  type: z.enum(NOTIFICATION_TYPES, {
+    errorMap: () => ({ message: 'Invalid notification type' }),
+  }),
 
   title: z
     .string()
@@ -74,15 +64,9 @@ export const bulkCreateNotificationsSchema = z.object({
     .max(200, 'Title must be at most 200 characters')
     .trim(),
 
-  message: z
-    .string()
-    .max(1000, 'Message must be at most 1000 characters')
-    .trim()
-    .optional(),
+  message: z.string().max(1000, 'Message must be at most 1000 characters').trim().optional(),
 
-  data: z
-    .record(z.unknown())
-    .optional(),
+  data: z.record(z.unknown()).optional(),
 });
 
 export type BulkCreateNotificationsInput = z.infer<typeof bulkCreateNotificationsSchema>;
@@ -91,31 +75,18 @@ export type BulkCreateNotificationsInput = z.infer<typeof bulkCreateNotification
 // Query Parameters Schema
 // ─────────────────────────────────────────
 export const listNotificationsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
   unreadOnly: z
     .string()
-    .transform((val) => val === 'true')
+    .transform(val => val === 'true')
     .optional(),
 
-  type: z
-    .enum(NOTIFICATION_TYPES)
-    .optional(),
+  type: z.enum(NOTIFICATION_TYPES).optional(),
 
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('desc'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type ListNotificationsQuery = z.infer<typeof listNotificationsQuerySchema>;

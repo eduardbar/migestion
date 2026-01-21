@@ -20,7 +20,16 @@ export const dateRangeSchema = z.object({
     .optional(),
 
   period: z
-    .enum(['today', 'yesterday', 'last7days', 'last30days', 'thisMonth', 'lastMonth', 'thisYear', 'custom'])
+    .enum([
+      'today',
+      'yesterday',
+      'last7days',
+      'last30days',
+      'thisMonth',
+      'lastMonth',
+      'thisYear',
+      'custom',
+    ])
     .default('last30days'),
 });
 
@@ -37,9 +46,7 @@ export type DashboardQuery = z.infer<typeof dashboardQuerySchema>;
 // Client Stats Query
 // ─────────────────────────────────────────
 export const clientStatsQuerySchema = dateRangeSchema.extend({
-  groupBy: z
-    .enum(['status', 'segment', 'assignedTo', 'createdMonth'])
-    .default('status'),
+  groupBy: z.enum(['status', 'segment', 'assignedTo', 'createdMonth']).default('status'),
 });
 
 export type ClientStatsQuery = z.infer<typeof clientStatsQuerySchema>;
@@ -48,9 +55,7 @@ export type ClientStatsQuery = z.infer<typeof clientStatsQuerySchema>;
 // Interaction Stats Query
 // ─────────────────────────────────────────
 export const interactionStatsQuerySchema = dateRangeSchema.extend({
-  groupBy: z
-    .enum(['type', 'user', 'client', 'day', 'week', 'month'])
-    .default('type'),
+  groupBy: z.enum(['type', 'user', 'client', 'day', 'week', 'month']).default('type'),
 });
 
 export type InteractionStatsQuery = z.infer<typeof interactionStatsQuerySchema>;
@@ -68,16 +73,9 @@ export type TeamPerformanceQuery = z.infer<typeof teamPerformanceQuerySchema>;
 // Activity Timeline Query
 // ─────────────────────────────────────────
 export const activityTimelineQuerySchema = z.object({
-  days: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(365)
-    .default(30),
+  days: z.coerce.number().int().min(1).max(365).default(30),
 
-  type: z
-    .enum(['all', 'clients', 'interactions', 'users'])
-    .default('all'),
+  type: z.enum(['all', 'clients', 'interactions', 'users']).default('all'),
 });
 
 export type ActivityTimelineQuery = z.infer<typeof activityTimelineQuerySchema>;

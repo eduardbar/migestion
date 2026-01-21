@@ -14,7 +14,7 @@ import { Button } from '../Button';
 /**
  * Modal component system.
  * Accessible dialog with backdrop, focus trap, and keyboard handling.
- * 
+ *
  * @example
  * ```tsx
  * <Modal open={isOpen} onClose={() => setIsOpen(false)}>
@@ -128,9 +128,9 @@ export function Modal({
       onClick={handleBackdropClick}
     >
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/50 animate-in fade-in duration-200" 
-        aria-hidden="true" 
+      <div
+        className="fixed inset-0 bg-black/50 animate-in fade-in duration-200"
+        aria-hidden="true"
       />
 
       {/* Modal Content */}
@@ -169,32 +169,22 @@ export function Modal({
 // Modal Header
 // ─────────────────────────────────────────
 
-export const ModalHeader = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('px-6 pt-6 pb-4', className)}
-    {...props}
-  />
-));
+export const ModalHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('px-6 pt-6 pb-4', className)} {...props} />
+  )
+);
 ModalHeader.displayName = 'ModalHeader';
 
 // ─────────────────────────────────────────
 // Modal Title
 // ─────────────────────────────────────────
 
-export const ModalTitle = forwardRef<
-  HTMLHeadingElement,
-  HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h2
-    ref={ref}
-    className={cn('text-lg font-semibold text-neutral-900', className)}
-    {...props}
-  />
-));
+export const ModalTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h2 ref={ref} className={cn('text-lg font-semibold text-neutral-900', className)} {...props} />
+  )
+);
 ModalTitle.displayName = 'ModalTitle';
 
 // ─────────────────────────────────────────
@@ -205,11 +195,7 @@ export const ModalDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn('text-sm text-neutral-500 mt-1', className)}
-    {...props}
-  />
+  <p ref={ref} className={cn('text-sm text-neutral-500 mt-1', className)} {...props} />
 ));
 ModalDescription.displayName = 'ModalDescription';
 
@@ -217,36 +203,30 @@ ModalDescription.displayName = 'ModalDescription';
 // Modal Body
 // ─────────────────────────────────────────
 
-export const ModalBody = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('px-6 py-4', className)}
-    {...props}
-  />
-));
+export const ModalBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('px-6 py-4', className)} {...props} />
+  )
+);
 ModalBody.displayName = 'ModalBody';
 
 // ─────────────────────────────────────────
 // Modal Footer
 // ─────────────────────────────────────────
 
-export const ModalFooter = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'px-6 py-4 bg-neutral-50 rounded-b-lg',
-      'flex items-center justify-end gap-3',
-      className
-    )}
-    {...props}
-  />
-));
+export const ModalFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'px-6 py-4 bg-neutral-50 rounded-b-lg',
+        'flex items-center justify-end gap-3',
+        className
+      )}
+      {...props}
+    />
+  )
+);
 ModalFooter.displayName = 'ModalFooter';
 
 // ─────────────────────────────────────────

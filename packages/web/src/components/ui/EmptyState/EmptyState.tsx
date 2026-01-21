@@ -14,19 +14,10 @@ interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({
-  icon: Icon,
-  title,
-  description,
-  action,
-  className,
-}: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, action, className }: EmptyStateProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center py-12 px-4 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center py-12 px-4 text-center', className)}
     >
       {Icon && (
         <div className="h-12 w-12 rounded-full bg-neutral-100 flex items-center justify-center mb-4">
@@ -34,9 +25,7 @@ export function EmptyState({
         </div>
       )}
       <h3 className="text-sm font-medium text-neutral-900">{title}</h3>
-      {description && (
-        <p className="text-sm text-neutral-500 mt-1 max-w-sm">{description}</p>
-      )}
+      {description && <p className="text-sm text-neutral-500 mt-1 max-w-sm">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

@@ -1,14 +1,7 @@
 import { User, Tenant } from '@prisma/client';
 import * as authRepository from './auth.repository.js';
-import { 
-  RegisterInput, 
-  LoginInput,
-} from './auth.validator.js';
-import {
-  toAuthResponse,
-  AuthResponseDto,
-  TokenRefreshResponseDto,
-} from './auth.dto.js';
+import { RegisterInput, LoginInput } from './auth.validator.js';
+import { toAuthResponse, AuthResponseDto, TokenRefreshResponseDto } from './auth.dto.js';
 import {
   hashPassword,
   comparePassword,
@@ -27,7 +20,7 @@ import { USER_STATUS, TENANT_STATUS } from '../../config/constants.js';
 
 /**
  * Auth service - business logic for authentication.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Single Responsibility: only handles auth logic
@@ -135,7 +128,7 @@ export async function register(input: RegisterInput): Promise<AuthResponseDto> {
 export async function login(input: LoginInput): Promise<AuthResponseDto> {
   // Find user by email (across all tenants for login)
   const userWithTenant = await authRepository.findUserByEmailAcrossTenants(input.email);
-  
+
   if (!userWithTenant) {
     throw new InvalidCredentialsError();
   }
@@ -181,9 +174,7 @@ export async function login(input: LoginInput): Promise<AuthResponseDto> {
  * Refresh access token using refresh token.
  * Implements token rotation for security.
  */
-export async function refreshTokens(
-  refreshToken: string
-): Promise<TokenRefreshResponseDto> {
+export async function refreshTokens(refreshToken: string): Promise<TokenRefreshResponseDto> {
   // Verify refresh token
   const payload = verifyRefreshToken(refreshToken);
 
@@ -245,11 +236,9 @@ export async function logoutAll(userId: string): Promise<void> {
 /**
  * Get current user profile.
  */
-export async function getCurrentUser(
-  userId: string
-): Promise<{ user: User; tenant: Tenant }> {
+export async function getCurrentUser(userId: string): Promise<{ user: User; tenant: Tenant }> {
   const userWithTenant = await authRepository.findUserWithTenant(userId);
-  
+
   if (!userWithTenant) {
     throw new NotFoundError('User');
   }

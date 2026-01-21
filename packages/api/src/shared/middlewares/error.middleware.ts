@@ -6,7 +6,7 @@ import { isProduction } from '../../config/index.js';
 
 /**
  * Global error handling middleware.
- * 
+ *
  * @remarks
  * Following Clean Code principles:
  * - Centralized error handling
@@ -32,51 +32,28 @@ export function errorHandler(
   if (error instanceof AppError) {
     // Handle validation errors with field-level details
     if (error instanceof ValidationError) {
-      return sendError(
-        res,
-        error.code,
-        error.message,
-        error.statusCode,
-        error.errors
-      );
+      return sendError(res, error.code, error.message, error.statusCode, error.errors);
     }
 
-    return sendError(
-      res,
-      error.code,
-      error.message,
-      error.statusCode
-    );
+    return sendError(res, error.code, error.message, error.statusCode);
   }
 
   // Handle unknown errors
-  const message = isProduction
-    ? 'An unexpected error occurred'
-    : error.message;
+  const message = isProduction ? 'An unexpected error occurred' : error.message;
 
-  return sendError(
-    res,
-    'INTERNAL_ERROR',
-    message,
-    500
-  );
+  return sendError(res, 'INTERNAL_ERROR', message, 500);
 }
 
 /**
  * 404 handler for undefined routes.
  */
 export function notFoundHandler(req: Request, res: Response): Response {
-  return sendError(
-    res,
-    'NOT_FOUND',
-    `Route ${req.method} ${req.path} not found`,
-    404
-  );
+  return sendError(res, 'NOT_FOUND', `Route ${req.method} ${req.path} not found`, 404);
 }
 
 /**
  * Async handler wrapper to catch promise rejections.
- * 
+ *
  * @example
  * ```typescript
  * router.get('/users', asyncHandler(async (req, res) => {

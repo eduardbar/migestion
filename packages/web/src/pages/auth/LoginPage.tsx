@@ -24,7 +24,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setAuth = useAuthStore(state => state.setAuth);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,11 +91,7 @@ export function LoginPage() {
                   className="focus:outline-none"
                   tabIndex={-1}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               }
               error={errors.password?.message}
@@ -111,19 +107,12 @@ export function LoginPage() {
                 <span className="text-neutral-600">Recordarme</span>
               </label>
 
-              <Link
-                to="/forgot-password"
-                className="text-neutral-600 hover:text-neutral-900"
-              >
+              <Link to="/forgot-password" className="text-neutral-600 hover:text-neutral-900">
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              loading={isSubmitting}
-            >
+            <Button type="submit" className="w-full" loading={isSubmitting}>
               Iniciar sesión
             </Button>
           </form>
@@ -131,10 +120,7 @@ export function LoginPage() {
 
         <p className="text-center text-sm text-neutral-600 mt-6">
           ¿No tienes una cuenta?{' '}
-          <Link
-            to={ROUTES.REGISTER}
-            className="font-medium text-neutral-900 hover:underline"
-          >
+          <Link to={ROUTES.REGISTER} className="font-medium text-neutral-900 hover:underline">
             Regístrate gratis
           </Link>
         </p>

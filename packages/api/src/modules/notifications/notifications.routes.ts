@@ -34,11 +34,7 @@ router.use(authenticate);
  * GET /notifications
  * List current user's notifications
  */
-router.get(
-  '/',
-  validateQuery(listNotificationsQuerySchema),
-  notificationController.list
-);
+router.get('/', validateQuery(listNotificationsQuerySchema), notificationController.list);
 
 /**
  * GET /notifications/count
@@ -72,11 +68,7 @@ router.delete('/read', notificationController.removeReadNotifications);
  * GET /notifications/:id
  * Get a specific notification
  */
-router.get(
-  '/:id',
-  validateParams(notificationIdParamSchema),
-  notificationController.getById
-);
+router.get('/:id', validateParams(notificationIdParamSchema), notificationController.getById);
 
 /**
  * PATCH /notifications/:id/read
@@ -92,11 +84,7 @@ router.patch(
  * DELETE /notifications/:id
  * Delete a notification
  */
-router.delete(
-  '/:id',
-  validateParams(notificationIdParamSchema),
-  notificationController.remove
-);
+router.delete('/:id', validateParams(notificationIdParamSchema), notificationController.remove);
 
 // ─────────────────────────────────────────
 // Admin Routes (create notifications for others)

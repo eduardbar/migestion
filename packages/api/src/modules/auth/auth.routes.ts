@@ -2,21 +2,17 @@ import { Router } from 'express';
 import * as authController from './auth.controller.js';
 import { asyncHandler, authenticate, validateBody } from '../../shared/middlewares/index.js';
 import { authRateLimiter } from '../../shared/middlewares/rate-limit.middleware.js';
-import {
-  registerSchema,
-  loginSchema,
-  refreshTokenSchema,
-} from './auth.validator.js';
+import { registerSchema, loginSchema, refreshTokenSchema } from './auth.validator.js';
 
 /**
  * Auth routes configuration.
- * 
+ *
  * @remarks
  * Public routes:
  * - POST /register - Create new tenant + owner
  * - POST /login - Authenticate user
  * - POST /refresh - Refresh access token
- * 
+ *
  * Protected routes:
  * - POST /logout - Revoke refresh token
  * - POST /logout-all - Revoke all tokens
@@ -171,11 +167,7 @@ router.post(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post(
-  '/logout',
-  authenticate,
-  asyncHandler(authController.logout)
-);
+router.post('/logout', authenticate, asyncHandler(authController.logout));
 
 /**
  * @swagger
@@ -204,11 +196,7 @@ router.post(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.post(
-  '/logout-all',
-  authenticate,
-  asyncHandler(authController.logoutAll)
-);
+router.post('/logout-all', authenticate, asyncHandler(authController.logoutAll));
 
 /**
  * @swagger
@@ -239,10 +227,6 @@ router.post(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/me',
-  authenticate,
-  asyncHandler(authController.me)
-);
+router.get('/me', authenticate, asyncHandler(authController.me));
 
 export default router;

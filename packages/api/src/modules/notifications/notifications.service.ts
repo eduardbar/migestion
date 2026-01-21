@@ -19,9 +19,7 @@ import {
   sendNotificationCount,
   type NotificationPayload,
 } from '../../infrastructure/socket/index.js';
-import {
-  invalidateNotificationCache,
-} from '../../infrastructure/redis/index.js';
+import { invalidateNotificationCache } from '../../infrastructure/redis/index.js';
 import type {
   CreateNotificationInput,
   BulkCreateNotificationsInput,
@@ -104,7 +102,7 @@ export async function createBulkNotifications(
   tenantId: string,
   input: BulkCreateNotificationsInput
 ): Promise<{ count: number }> {
-  const notifications = input.userIds.map((userId) => ({
+  const notifications = input.userIds.map(userId => ({
     tenantId,
     userId,
     type: input.type,
@@ -226,11 +224,7 @@ export async function markMultipleAsRead(
   userId: string,
   ids: string[]
 ): Promise<MarkReadResultDto> {
-  const result = await notificationRepository.markManyNotificationsAsRead(
-    tenantId,
-    userId,
-    ids
-  );
+  const result = await notificationRepository.markManyNotificationsAsRead(tenantId, userId, ids);
 
   // Update real-time count
   const unreadCount = await notificationRepository.countUnreadNotifications(tenantId, userId);
@@ -244,14 +238,8 @@ export async function markMultipleAsRead(
  * Mark all notifications as read for the current user.
  * Updates real-time notification count.
  */
-export async function markAllAsRead(
-  tenantId: string,
-  userId: string
-): Promise<MarkReadResultDto> {
-  const result = await notificationRepository.markAllNotificationsAsRead(
-    tenantId,
-    userId
-  );
+export async function markAllAsRead(tenantId: string, userId: string): Promise<MarkReadResultDto> {
+  const result = await notificationRepository.markAllNotificationsAsRead(tenantId, userId);
 
   // Update real-time count (will be 0)
   sendNotificationCount(userId, 0);

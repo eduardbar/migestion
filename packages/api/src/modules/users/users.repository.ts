@@ -1,7 +1,7 @@
 /**
  * User repository - data access layer.
  * Handles all Prisma operations for users within a tenant.
- * 
+ *
  * @remarks
  * All queries are scoped by tenantId for multi-tenant isolation.
  * Never expose passwordHash in queries that return data to service layer.
@@ -193,8 +193,8 @@ export async function getTeamStats(tenantId: string) {
 
   return {
     totalUsers,
-    byRole: byRole.map((r) => ({ role: r.role, count: r._count.role })),
-    byStatus: byStatus.map((s) => ({ status: s.status, count: s._count.status })),
+    byRole: byRole.map(r => ({ role: r.role, count: r._count.role })),
+    byStatus: byStatus.map(s => ({ status: s.status, count: s._count.status })),
     recentlyActive,
   };
 }
@@ -293,7 +293,7 @@ export async function updatePassword(userId: string, passwordHash: string) {
  * Uses a transaction to ensure data integrity.
  */
 export async function remove(tenantId: string, userId: string) {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async tx => {
     // Unassign all clients from this user
     await tx.client.updateMany({
       where: {

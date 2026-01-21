@@ -1,7 +1,7 @@
 /**
  * Audit Controller.
  * HTTP handlers for audit log endpoints.
- * 
+ *
  * Access: Admin and Owner roles only.
  */
 
@@ -43,11 +43,7 @@ export async function listAuditLogs(
  * GET /audit/:id
  * Get a single audit log entry.
  */
-export async function getAuditLog(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function getAuditLog(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const tenantId = req.tenantId!;
     const id = req.params.id!;
@@ -105,12 +101,8 @@ export async function getAuditStats(
 ): Promise<void> {
   try {
     const tenantId = req.tenantId!;
-    const startDate = req.query.startDate
-      ? new Date(req.query.startDate as string)
-      : undefined;
-    const endDate = req.query.endDate
-      ? new Date(req.query.endDate as string)
-      : undefined;
+    const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
+    const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
 
     const result = await auditService.getAuditStats(tenantId, startDate, endDate);
 

@@ -61,10 +61,7 @@ export async function getById(req: Request, res: Response): Promise<Response> {
  * GET /clients/:clientId/interactions
  * Get interaction timeline for a specific client.
  */
-export async function getClientTimeline(
-  req: Request,
-  res: Response
-): Promise<Response> {
+export async function getClientTimeline(req: Request, res: Response): Promise<Response> {
   const tenantId = req.tenantId!;
   const { clientId } = req.params;
   const query = req.query as unknown as ClientTimelineQuery;
@@ -114,7 +111,10 @@ export async function update(req: Request, res: Response): Promise<Response> {
   const interaction = await interactionsService.update(tenantId, id!, input);
 
   // Audit: interaction updated
-  auditService.logUpdate(getAuditContext(req), 'interaction', id!,
+  auditService.logUpdate(
+    getAuditContext(req),
+    'interaction',
+    id!,
     { type: oldInteraction.type, notes: oldInteraction.notes?.substring(0, 100) },
     { type: interaction.type, notes: interaction.notes?.substring(0, 100) }
   );

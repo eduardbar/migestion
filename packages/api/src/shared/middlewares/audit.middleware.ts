@@ -53,11 +53,7 @@ function getClientIp(req: Request): string | undefined {
  * Middleware that attaches audit context to the request.
  * Use this when you want to access audit context in controllers.
  */
-export function attachAuditContext(
-  req: Request,
-  _res: Response,
-  next: NextFunction
-): void {
+export function attachAuditContext(req: Request, _res: Response, next: NextFunction): void {
   // Attach a getter function to the request
   (req as Request & { getAuditContext: () => AuditContext }).getAuditContext = () =>
     getAuditContext(req);

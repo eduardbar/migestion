@@ -86,7 +86,7 @@ export async function findMany(params: FindManyParams) {
 
   // Get client counts for each segment
   const segmentsWithCounts = await Promise.all(
-    segments.map(async (segment) => {
+    segments.map(async segment => {
       const clientCount = await prisma.client.count({
         where: {
           tenantId,
@@ -135,8 +135,8 @@ export async function exists(tenantId: string, segmentId: string): Promise<boole
  * Check if segment name is already used in the tenant.
  */
 export async function nameExists(
-  tenantId: string, 
-  name: string, 
+  tenantId: string,
+  name: string,
   excludeId?: string
 ): Promise<boolean> {
   const count = await prisma.segment.count({
@@ -201,7 +201,7 @@ export async function getStats(tenantId: string) {
   });
 
   const stats = await Promise.all(
-    segments.map(async (segment) => {
+    segments.map(async segment => {
       const count = await prisma.client.count({
         where: {
           tenantId,

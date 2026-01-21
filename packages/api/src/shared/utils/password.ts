@@ -4,7 +4,7 @@ import { env } from '../../config/index.js';
 /**
  * Password utility functions.
  * Handles secure hashing and comparison.
- * 
+ *
  * @remarks
  * Uses bcrypt with configurable rounds for production flexibility.
  */

@@ -1,7 +1,7 @@
 /**
  * User DTOs - Data Transfer Objects.
  * Transform database entities to API responses.
- * 
+ *
  * @remarks
  * DTOs decouple internal data structures from API contracts,
  * ensuring we never expose sensitive fields like passwordHash.
@@ -59,11 +59,10 @@ type UserWithClientCount = User & {
 
 export function toUserWithStatsDto(user: UserWithClients | UserWithClientCount): UserWithStatsDto {
   const base = toUserDto(user);
-  
+
   // Handle both relation include and count select patterns
-  const clientCount = '_count' in user 
-    ? user._count.assignedClients 
-    : user.assignedClients?.length ?? 0;
+  const clientCount =
+    '_count' in user ? user._count.assignedClients : (user.assignedClients?.length ?? 0);
 
   return {
     ...base,
@@ -92,7 +91,7 @@ export function toUserListDto(
   total: number
 ): UserListDto {
   const totalPages = Math.ceil(total / limit);
-  
+
   return {
     data: users.map(toUserWithStatsDto),
     pagination: {

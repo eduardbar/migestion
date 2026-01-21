@@ -29,9 +29,7 @@ export const inviteUserSchema = z.object({
     .max(LIMITS.NAME_MAX, `Last name must be at most ${LIMITS.NAME_MAX} characters`)
     .trim(),
 
-  role: z
-    .enum([ROLES.ADMIN, ROLES.MANAGER, ROLES.USER])
-    .default(ROLES.USER),
+  role: z.enum([ROLES.ADMIN, ROLES.MANAGER, ROLES.USER]).default(ROLES.USER),
 });
 
 export type InviteUserInput = z.infer<typeof inviteUserSchema>;
@@ -87,9 +85,7 @@ export type UpdateUserStatusInput = z.infer<typeof updateUserStatusSchema>;
 // Change Password Schema
 // ─────────────────────────────────────────
 export const changePasswordSchema = z.object({
-  currentPassword: z
-    .string()
-    .min(1, 'Current password is required'),
+  currentPassword: z.string().min(1, 'Current password is required'),
 
   newPassword: z
     .string()
@@ -107,40 +103,21 @@ export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 // Query Parameters Schema
 // ─────────────────────────────────────────
 export const listUsersQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
-  search: z
-    .string()
-    .max(100)
-    .trim()
-    .optional(),
+  search: z.string().max(100).trim().optional(),
 
-  status: z
-    .enum([USER_STATUS.ACTIVE, USER_STATUS.INACTIVE, USER_STATUS.PENDING])
-    .optional(),
+  status: z.enum([USER_STATUS.ACTIVE, USER_STATUS.INACTIVE, USER_STATUS.PENDING]).optional(),
 
-  role: z
-    .enum([ROLES.OWNER, ROLES.ADMIN, ROLES.MANAGER, ROLES.USER])
-    .optional(),
+  role: z.enum([ROLES.OWNER, ROLES.ADMIN, ROLES.MANAGER, ROLES.USER]).optional(),
 
   sortBy: z
     .enum(['firstName', 'lastName', 'email', 'createdAt', 'lastLoginAt', 'role'])
     .default('createdAt'),
 
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('desc'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
 export type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;

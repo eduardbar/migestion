@@ -69,32 +69,15 @@ export type UpdateSegmentInput = z.infer<typeof updateSegmentSchema>;
 // Query Parameters Schema
 // ─────────────────────────────────────────
 export const listSegmentsQuerySchema = z.object({
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(PAGINATION.DEFAULT_PAGE),
+  page: z.coerce.number().int().min(1).default(PAGINATION.DEFAULT_PAGE),
 
-  limit: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(PAGINATION.MAX_LIMIT)
-    .default(PAGINATION.DEFAULT_LIMIT),
+  limit: z.coerce.number().int().min(1).max(PAGINATION.MAX_LIMIT).default(PAGINATION.DEFAULT_LIMIT),
 
-  search: z
-    .string()
-    .max(100)
-    .trim()
-    .optional(),
+  search: z.string().max(100).trim().optional(),
 
-  sortBy: z
-    .enum(['name', 'createdAt', 'updatedAt'])
-    .default('name'),
+  sortBy: z.enum(['name', 'createdAt', 'updatedAt']).default('name'),
 
-  sortOrder: z
-    .enum(['asc', 'desc'])
-    .default('asc'),
+  sortOrder: z.enum(['asc', 'desc']).default('asc'),
 });
 
 export type ListSegmentsQuery = z.infer<typeof listSegmentsQuerySchema>;

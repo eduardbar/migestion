@@ -44,7 +44,7 @@ export async function getNotifications(
   params: NotificationListParams = {}
 ): Promise<NotificationListResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.page) searchParams.set('page', String(params.page));
   if (params.limit) searchParams.set('limit', String(params.limit));
   if (params.unreadOnly) searchParams.set('unreadOnly', 'true');
@@ -53,7 +53,7 @@ export async function getNotifications(
 
   const query = searchParams.toString();
   const endpoint = `/notifications${query ? `?${query}` : ''}`;
-  
+
   return api.get<NotificationListResponse>(endpoint);
 }
 

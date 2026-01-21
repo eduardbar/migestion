@@ -1,7 +1,7 @@
 /**
  * Interaction repository - database access layer.
  * Handles all Prisma operations for interactions.
- * 
+ *
  * @remarks
  * Repository functions are pure database operations without business logic.
  * All queries are scoped by tenantId for multi-tenant isolation.
@@ -72,18 +72,8 @@ export async function findById(
 export async function findMany(
   options: FindManyOptions
 ): Promise<{ interactions: InteractionWithRelations[]; total: number }> {
-  const {
-    tenantId,
-    page,
-    limit,
-    clientId,
-    userId,
-    type,
-    startDate,
-    endDate,
-    sortBy,
-    sortOrder,
-  } = options;
+  const { tenantId, page, limit, clientId, userId, type, startDate, endDate, sortBy, sortOrder } =
+    options;
 
   // Build where clause
   const where: Prisma.InteractionWhereInput = {
@@ -173,16 +163,14 @@ export async function findByClient(
 /**
  * Count interactions by type for a tenant.
  */
-export async function countByType(
-  tenantId: string
-): Promise<{ type: string; count: number }[]> {
+export async function countByType(tenantId: string): Promise<{ type: string; count: number }[]> {
   const results = await prisma.interaction.groupBy({
     by: ['type'],
     where: { tenantId },
     _count: { type: true },
   });
 
-  return results.map((r) => ({
+  return results.map(r => ({
     type: r.type,
     count: r._count.type,
   }));
@@ -191,16 +179,14 @@ export async function countByType(
 /**
  * Count interactions by user for a tenant.
  */
-export async function countByUser(
-  tenantId: string
-): Promise<{ userId: string; count: number }[]> {
+export async function countByUser(tenantId: string): Promise<{ userId: string; count: number }[]> {
   const results = await prisma.interaction.groupBy({
     by: ['userId'],
     where: { tenantId },
     _count: { userId: true },
   });
 
-  return results.map((r) => ({
+  return results.map(r => ({
     userId: r.userId,
     count: r._count.userId,
   }));
@@ -209,10 +195,7 @@ export async function countByUser(
 /**
  * Count interactions in the last N days.
  */
-export async function countSince(
-  tenantId: string,
-  since: Date
-): Promise<number> {
+export async function countSince(tenantId: string, since: Date): Promise<number> {
   return prisma.interaction.count({
     where: {
       tenantId,
@@ -275,10 +258,7 @@ export async function update(
 /**
  * Delete an interaction.
  */
-export async function remove(
-  tenantId: string,
-  interactionId: string
-): Promise<Interaction> {
+export async function remove(tenantId: string, interactionId: string): Promise<Interaction> {
   return prisma.interaction.delete({
     where: {
       id: interactionId,
@@ -294,10 +274,7 @@ export async function remove(
 /**
  * Check if interaction exists in tenant.
  */
-export async function exists(
-  tenantId: string,
-  interactionId: string
-): Promise<boolean> {
+export async function exists(tenantId: string, interactionId: string): Promise<boolean> {
   const interaction = await prisma.interaction.findFirst({
     where: {
       id: interactionId,
@@ -312,10 +289,7 @@ export async function exists(
 /**
  * Check if client exists in tenant.
  */
-export async function clientExists(
-  tenantId: string,
-  clientId: string
-): Promise<boolean> {
+export async function clientExists(tenantId: string, clientId: string): Promise<boolean> {
   const client = await prisma.client.findFirst({
     where: {
       id: clientId,
@@ -330,10 +304,7 @@ export async function clientExists(
 /**
  * Check if user exists in tenant.
  */
-export async function userExists(
-  tenantId: string,
-  userId: string
-): Promise<boolean> {
+export async function userExists(tenantId: string, userId: string): Promise<boolean> {
   const user = await prisma.user.findFirst({
     where: {
       id: userId,

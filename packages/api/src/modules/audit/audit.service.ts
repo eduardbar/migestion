@@ -1,7 +1,7 @@
 /**
  * Audit Service.
  * Business logic for audit logging.
- * 
+ *
  * Design principles:
  * - Fire-and-forget: Audit logging should never block main operations
  * - Fail silently: Audit errors should not affect business operations
@@ -16,11 +16,7 @@ import {
   type AuditLogListDto,
 } from './audit.dto.js';
 import { NotFoundError } from '../../shared/errors/index.js';
-import type {
-  AuditActionType,
-  AuditEntityType,
-  ListAuditLogsQuery,
-} from './audit.validator.js';
+import type { AuditActionType, AuditEntityType, ListAuditLogsQuery } from './audit.validator.js';
 import { AUDIT } from '../../config/constants.js';
 
 // ─────────────────────────────────────────
@@ -64,7 +60,7 @@ export function log(context: AuditContext, input: AuditLogInput): void {
       ipAddress: context.ipAddress,
       userAgent: context.userAgent,
     })
-    .catch((error) => {
+    .catch(error => {
       // Log error but don't throw - audit should never break main flow
       console.error('Audit log failed:', error);
     });
@@ -74,10 +70,7 @@ export function log(context: AuditContext, input: AuditLogInput): void {
  * Log an audit event and wait for completion.
  * Use this when you need to ensure the audit log is written.
  */
-export async function logAsync(
-  context: AuditContext,
-  input: AuditLogInput
-): Promise<void> {
+export async function logAsync(context: AuditContext, input: AuditLogInput): Promise<void> {
   try {
     await auditRepository.createAuditLog({
       tenantId: context.tenantId,
@@ -205,10 +198,7 @@ export async function listAuditLogs(
 /**
  * Get a single audit log by ID.
  */
-export async function getAuditLogById(
-  tenantId: string,
-  id: string
-): Promise<AuditLogDto> {
+export async function getAuditLogById(tenantId: string, id: string): Promise<AuditLogDto> {
   const auditLog = await auditRepository.findAuditLogById(tenantId, id);
 
   if (!auditLog) {
@@ -226,11 +216,7 @@ export async function getEntityHistory(
   entity: AuditEntityType,
   entityId: string
 ): Promise<AuditLogDto[]> {
-  const auditLogs = await auditRepository.getEntityAuditHistory(
-    tenantId,
-    entity,
-    entityId
-  );
+  const auditLogs = await auditRepository.getEntityAuditHistory(tenantId, entity, entityId);
 
   return auditLogs.map(toAuditLogDto);
 }

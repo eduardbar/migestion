@@ -3,7 +3,7 @@ import { Tenant, User, RefreshToken } from '@prisma/client';
 
 /**
  * Auth repository - handles database operations for authentication.
- * 
+ *
  * @remarks
  * Following Repository Pattern:
  * - Encapsulates data access logic
@@ -15,10 +15,7 @@ import { Tenant, User, RefreshToken } from '@prisma/client';
 // Tenant Operations
 // ─────────────────────────────────────────
 
-export async function createTenant(data: {
-  name: string;
-  slug: string;
-}): Promise<Tenant> {
+export async function createTenant(data: { name: string; slug: string }): Promise<Tenant> {
   return prisma.tenant.create({
     data: {
       name: data.name,
@@ -65,10 +62,7 @@ export async function createUser(data: {
   });
 }
 
-export async function findUserByEmail(
-  tenantId: string,
-  email: string
-): Promise<User | null> {
+export async function findUserByEmail(tenantId: string, email: string): Promise<User | null> {
   return prisma.user.findUnique({
     where: {
       tenantId_email: {
@@ -94,9 +88,7 @@ export async function findUserById(id: string): Promise<User | null> {
   });
 }
 
-export async function findUserWithTenant(
-  id: string
-): Promise<(User & { tenant: Tenant }) | null> {
+export async function findUserWithTenant(id: string): Promise<(User & { tenant: Tenant }) | null> {
   return prisma.user.findUnique({
     where: { id },
     include: { tenant: true },
@@ -128,9 +120,7 @@ export async function createRefreshToken(data: {
   });
 }
 
-export async function findRefreshTokenByHash(
-  tokenHash: string
-): Promise<RefreshToken | null> {
+export async function findRefreshTokenByHash(tokenHash: string): Promise<RefreshToken | null> {
   return prisma.refreshToken.findUnique({
     where: { tokenHash },
   });
@@ -156,10 +146,7 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
 export async function deleteExpiredRefreshTokens(): Promise<number> {
   const result = await prisma.refreshToken.deleteMany({
     where: {
-      OR: [
-        { expiresAt: { lt: new Date() } },
-        { revokedAt: { not: null } },
-      ],
+      OR: [{ expiresAt: { lt: new Date() } }, { revokedAt: { not: null } }],
     },
   });
   return result.count;
@@ -177,7 +164,7 @@ export async function createTenantWithOwner(data: {
   firstName: string;
   lastName: string;
 }): Promise<{ tenant: Tenant; user: User }> {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async tx => {
     const tenant = await tx.tenant.create({
       data: {
         name: data.tenantName,

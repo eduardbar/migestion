@@ -5,11 +5,11 @@ import { Role, ROLE_HIERARCHY } from '../../config/constants.js';
 /**
  * Role-based authorization middleware.
  * Checks if user has required role or higher.
- * 
+ *
  * @remarks
  * Uses role hierarchy for flexible permission checking.
  * Higher roles automatically have lower role permissions.
- * 
+ *
  * @example
  * ```typescript
  * router.delete('/users/:id', authorize('admin'), deleteUser);

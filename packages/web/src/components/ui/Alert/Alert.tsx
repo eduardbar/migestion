@@ -30,30 +30,18 @@ const icons: Record<AlertVariant, typeof Info> = {
   error: AlertCircle,
 };
 
-export function Alert({
-  variant = 'info',
-  title,
-  children,
-  onClose,
-  className,
-}: AlertProps) {
+export function Alert({ variant = 'info', title, children, onClose, className }: AlertProps) {
   const Icon = icons[variant];
 
   return (
     <div
-      className={cn(
-        'flex gap-3 p-4 rounded-lg border',
-        variantStyles[variant],
-        className
-      )}
+      className={cn('flex gap-3 p-4 rounded-lg border', variantStyles[variant], className)}
       role="alert"
     >
       <Icon className="h-5 w-5 shrink-0 mt-0.5" />
-      
+
       <div className="flex-1 min-w-0">
-        {title && (
-          <h5 className="font-medium mb-1">{title}</h5>
-        )}
+        {title && <h5 className="font-medium mb-1">{title}</h5>}
         <div className="text-sm">{children}</div>
       </div>
 

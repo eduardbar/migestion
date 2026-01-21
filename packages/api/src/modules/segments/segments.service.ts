@@ -26,10 +26,7 @@ import { NotFoundError, BadRequestError } from '../../shared/errors/app-error.js
  * Get a single segment by ID.
  * @throws NotFoundError if segment doesn't exist
  */
-export async function getById(
-  tenantId: string,
-  segmentId: string
-): Promise<SegmentDto> {
+export async function getById(tenantId: string, segmentId: string): Promise<SegmentDto> {
   const segment = await segmentsRepository.findById(tenantId, segmentId);
 
   if (!segment) {
@@ -42,10 +39,7 @@ export async function getById(
 /**
  * List segments with filtering and pagination.
  */
-export async function list(
-  tenantId: string,
-  query: ListSegmentsQuery
-): Promise<SegmentListDto> {
+export async function list(tenantId: string, query: ListSegmentsQuery): Promise<SegmentListDto> {
   const { segments, total } = await segmentsRepository.findMany({
     tenantId,
     page: query.page,
@@ -80,10 +74,7 @@ export async function getStats(tenantId: string) {
  * Create a new segment.
  * @throws BadRequestError if name already exists
  */
-export async function create(
-  tenantId: string,
-  input: CreateSegmentInput
-): Promise<SegmentDto> {
+export async function create(tenantId: string, input: CreateSegmentInput): Promise<SegmentDto> {
   // Check if name is already used
   const nameExists = await segmentsRepository.nameExists(tenantId, input.name);
   if (nameExists) {
@@ -125,7 +116,7 @@ export async function update(
   }
 
   const data: { name?: string; color?: string | null; criteria?: Prisma.InputJsonValue } = {};
-  
+
   if (input.name !== undefined) data.name = input.name;
   if (input.color !== undefined) data.color = input.color;
   if (input.criteria !== undefined) data.criteria = input.criteria as Prisma.InputJsonValue;

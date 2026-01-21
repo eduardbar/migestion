@@ -69,6 +69,4 @@ export interface BaseEntity {
 /**
  * Service result pattern for operations that can fail.
  */
-export type ServiceResult<T, E = Error> =
-  | { success: true; data: T }
-  | { success: false; error: E };
+export type ServiceResult<T, E = Error> = { success: true; data: T } | { success: false; error: E };

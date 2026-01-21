@@ -103,7 +103,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           </div>
         ) : (
           <ul className="divide-y divide-neutral-100">
-            {notifications.map((notification) => (
+            {notifications.map(notification => (
               <li
                 key={notification.id}
                 className={cn(
@@ -120,9 +120,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                     <p
                       className={cn(
                         'text-sm',
-                        notification.read
-                          ? 'text-neutral-600'
-                          : 'text-neutral-900 font-medium'
+                        notification.read ? 'text-neutral-600' : 'text-neutral-900 font-medium'
                       )}
                     >
                       {notification.title}
@@ -144,7 +142,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   <div className="flex items-start gap-1">
                     {!notification.read && (
                       <button
-                        onClick={(e) => handleMarkAsRead(notification.id, e)}
+                        onClick={e => handleMarkAsRead(notification.id, e)}
                         className="p-1 rounded hover:bg-neutral-200 text-neutral-400 hover:text-neutral-600"
                         title="Marcar como leída"
                       >
@@ -152,7 +150,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                       </button>
                     )}
                     <button
-                      onClick={(e) => handleDelete(notification.id, e)}
+                      onClick={e => handleDelete(notification.id, e)}
                       className="p-1 rounded hover:bg-neutral-200 text-neutral-400 hover:text-error-600"
                       title="Eliminar"
                     >

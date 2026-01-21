@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 import * as socketService from '@/services/socket.service';
 import { useAuthStore } from '@/stores';
 
@@ -80,11 +73,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
     reconnect,
   };
 
-  return (
-    <SocketContext.Provider value={value}>
-      {children}
-    </SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 }
 
 // ─────────────────────────────────────────
@@ -96,10 +85,10 @@ export function SocketProvider({ children }: SocketProviderProps) {
  */
 export function useSocket(): SocketContextValue {
   const context = useContext(SocketContext);
-  
+
   if (!context) {
     throw new Error('useSocket must be used within a SocketProvider');
   }
-  
+
   return context;
 }

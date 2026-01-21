@@ -9,14 +9,14 @@ import { api } from './api';
 // Types
 // ─────────────────────────────────────────
 
-export type DatePeriod = 
-  | 'today' 
-  | 'yesterday' 
-  | 'last7days' 
-  | 'last30days' 
-  | 'thisMonth' 
-  | 'lastMonth' 
-  | 'thisYear' 
+export type DatePeriod =
+  | 'today'
+  | 'yesterday'
+  | 'last7days'
+  | 'last30days'
+  | 'thisMonth'
+  | 'lastMonth'
+  | 'thisYear'
   | 'custom';
 
 export interface DateRangeParams {
@@ -120,11 +120,11 @@ export interface TopClientsResponse {
 
 function buildDateParams(params: DateRangeParams): URLSearchParams {
   const searchParams = new URLSearchParams();
-  
+
   if (params.period) searchParams.set('period', params.period);
   if (params.startDate) searchParams.set('startDate', params.startDate);
   if (params.endDate) searchParams.set('endDate', params.endDate);
-  
+
   return searchParams;
 }
 
@@ -141,7 +141,7 @@ export async function getDashboardOverview(
   const searchParams = buildDateParams(params);
   const query = searchParams.toString();
   const endpoint = `/reports/dashboard${query ? `?${query}` : ''}`;
-  
+
   return api.get<DashboardOverview>(endpoint);
 }
 
@@ -153,10 +153,10 @@ export async function getClientStats(
 ): Promise<StatsResponse> {
   const searchParams = buildDateParams(params);
   if (params.groupBy) searchParams.set('groupBy', params.groupBy);
-  
+
   const query = searchParams.toString();
   const endpoint = `/reports/clients${query ? `?${query}` : ''}`;
-  
+
   return api.get<StatsResponse>(endpoint);
 }
 
@@ -168,10 +168,10 @@ export async function getInteractionStats(
 ): Promise<StatsResponse> {
   const searchParams = buildDateParams(params);
   if (params.groupBy) searchParams.set('groupBy', params.groupBy);
-  
+
   const query = searchParams.toString();
   const endpoint = `/reports/interactions${query ? `?${query}` : ''}`;
-  
+
   return api.get<StatsResponse>(endpoint);
 }
 
@@ -183,10 +183,10 @@ export async function getTeamPerformance(
 ): Promise<TeamPerformanceResponse> {
   const searchParams = buildDateParams(params);
   if (params.userId) searchParams.set('userId', params.userId);
-  
+
   const query = searchParams.toString();
   const endpoint = `/reports/team${query ? `?${query}` : ''}`;
-  
+
   return api.get<TeamPerformanceResponse>(endpoint);
 }
 
@@ -197,13 +197,13 @@ export async function getActivityTimeline(
   params: { days?: number; type?: 'all' | 'clients' | 'interactions' | 'users' } = {}
 ): Promise<ActivityTimelineResponse> {
   const searchParams = new URLSearchParams();
-  
+
   if (params.days) searchParams.set('days', String(params.days));
   if (params.type) searchParams.set('type', params.type);
-  
+
   const query = searchParams.toString();
   const endpoint = `/reports/activity${query ? `?${query}` : ''}`;
-  
+
   return api.get<ActivityTimelineResponse>(endpoint);
 }
 
@@ -215,9 +215,9 @@ export async function getTopClients(
 ): Promise<TopClientsResponse> {
   const searchParams = buildDateParams(params);
   if (params.limit) searchParams.set('limit', String(params.limit));
-  
+
   const query = searchParams.toString();
   const endpoint = `/reports/top-clients${query ? `?${query}` : ''}`;
-  
+
   return api.get<TopClientsResponse>(endpoint);
 }

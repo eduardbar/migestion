@@ -57,7 +57,7 @@ export async function createManyNotifications(
   notifications: CreateNotificationData[]
 ): Promise<{ count: number }> {
   return prisma.notification.createMany({
-    data: notifications.map((n) => ({
+    data: notifications.map(n => ({
       tenantId: n.tenantId,
       userId: n.userId,
       type: n.type,
@@ -150,10 +150,7 @@ export async function countNotifications(
 /**
  * Count unread notifications for a user.
  */
-export async function countUnreadNotifications(
-  tenantId: string,
-  userId: string
-): Promise<number> {
+export async function countUnreadNotifications(tenantId: string, userId: string): Promise<number> {
   return prisma.notification.count({
     where: {
       tenantId,
@@ -172,7 +169,7 @@ export async function markNotificationAsRead(
   id: string
 ): Promise<Notification | null> {
   const notification = await findNotificationByIdAndUser(tenantId, userId, id);
-  
+
   if (!notification) {
     return null;
   }
@@ -227,7 +224,7 @@ export async function deleteNotification(
   id: string
 ): Promise<Notification | null> {
   const notification = await findNotificationByIdAndUser(tenantId, userId, id);
-  
+
   if (!notification) {
     return null;
   }

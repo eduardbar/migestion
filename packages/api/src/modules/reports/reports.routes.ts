@@ -5,10 +5,7 @@
 
 import { Router } from 'express';
 import * as reportsController from './reports.controller.js';
-import {
-  authenticate,
-  validateQuery,
-} from '../../shared/middlewares/index.js';
+import { authenticate, validateQuery } from '../../shared/middlewares/index.js';
 import {
   dashboardQuerySchema,
   clientStatsQuerySchema,
@@ -59,11 +56,7 @@ router.use(authenticate);
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/dashboard',
-  validateQuery(dashboardQuerySchema),
-  reportsController.getDashboard
-);
+router.get('/dashboard', validateQuery(dashboardQuerySchema), reportsController.getDashboard);
 
 /**
  * @swagger
@@ -94,11 +87,7 @@ router.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/clients',
-  validateQuery(clientStatsQuerySchema),
-  reportsController.getClientStats
-);
+router.get('/clients', validateQuery(clientStatsQuerySchema), reportsController.getClientStats);
 
 /**
  * @swagger
@@ -288,10 +277,6 @@ router.get(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get(
-  '/top-clients',
-  validateQuery(dateRangeSchema),
-  reportsController.getTopClients
-);
+router.get('/top-clients', validateQuery(dateRangeSchema), reportsController.getTopClients);
 
 export { router as reportsRoutes };
