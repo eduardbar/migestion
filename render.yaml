@@ -4,8 +4,8 @@ services:
     name: migestion-api
     env: node
     plan: free
-    buildCommand: npm install && cd packages/api && npx prisma migrate deploy && npm run build
-    startCommand: cd packages/api && npx prisma migrate deploy && npm start
+    buildCommand: npm install && cd packages/api && npx prisma generate && npx prisma migrate deploy && npm run build
+    startCommand: cd packages/api && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
