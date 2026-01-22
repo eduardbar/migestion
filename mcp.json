@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "render": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "RENDER_API_KEY=rnd_7dYDyvRxRvY9AP1YWfZRyft9dNwJ",
+        "-v",
+        "render-mcp-server-config:/config",
+        "ghcr.io/render-oss/render-mcp-server"
+      ]
+    }
+  }
+}

@@ -137,7 +137,7 @@ export async function findDistinctSegments(tenantId: string): Promise<string[]> 
 
   return results
     .map((r: { segment: string | null }) => r.segment)
-    .filter((s): s is string => s !== null);
+    .filter((s: string | null): s is string => s !== null);
 }
 
 /**

@@ -121,7 +121,7 @@ export async function getClientsByAssignedUser(
   // Fetch user names for assigned users
   const userIds = results
     .map((r: { assignedToId: string | null; _count: number }) => r.assignedToId)
-    .filter((id): id is string => id !== null);
+    .filter((id: string | null): id is string => id !== null);
 
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
@@ -157,7 +157,7 @@ export async function getClientsByCreatedMonth(
   });
 
   const grouped = clients.reduce(
-    (acc, client: { createdAt: Date }) => {
+    (acc: Record<string, number>, client: { createdAt: Date }) => {
       const month = client.createdAt.toISOString().slice(0, 7); // YYYY-MM
       acc[month] = (acc[month] || 0) + 1;
       return acc;
@@ -199,9 +199,9 @@ export async function getInteractionsByUser(
     select: { id: true, firstName: true, lastName: true },
   });
 
-  const userMap = new Map(users.map(u => [u.id, u]));
+  const userMap = new Map(users.map((u: { id: string; firstName: string; lastName: string }) => [u.id, u]));
 
-  return results.map(r => ({
+  return results.map((r: { userId: string; [key: string]: any }) => ({
     ...r,
     user: userMap.get(r.userId) || { firstName: 'Unknown', lastName: 'User' },
   }));
@@ -226,7 +226,7 @@ export async function getInteractionsByDay(
   });
 
   const grouped = interactions.reduce(
-    (acc, interaction: { createdAt: Date }) => {
+    (acc: Record<string, number>, interaction: { createdAt: Date }) => {
       const date = interaction.createdAt.toISOString().slice(0, 10); // YYYY-MM-DD
       acc[date] = (acc[date] || 0) + 1;
       return acc;
@@ -258,7 +258,7 @@ export async function getClientsByDay(
   });
 
   const grouped = clients.reduce(
-    (acc, client: { createdAt: Date }) => {
+    (acc: Record<string, number>, client: { createdAt: Date }) => {
       const date = client.createdAt.toISOString().slice(0, 10);
       acc[date] = (acc[date] || 0) + 1;
       return acc;
@@ -405,7 +405,7 @@ export async function getTopClientsByInteractions(
     take: limit,
   });
 
-  return clients.map(client => ({
+  return clients.map((client: { id: string; companyName: string; contactName: string; status: string; _count: { interactions: number } }) => ({
     id: client.id,
     companyName: client.companyName,
     contactName: client.contactName,

@@ -234,7 +234,7 @@ export async function getStats(tenantId: string) {
     segments: stats,
     unassigned: unassignedCount,
     total:
-      stats.reduce((sum, s: { segment: string; count: number }) => sum + s.count, 0) +
+      stats.reduce((sum: number, s: { segment: string; count: number }) => sum + s.count, 0) +
       unassignedCount,
   };
 }

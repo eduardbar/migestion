@@ -299,9 +299,9 @@ export async function updatePassword(userId: string, passwordHash: string) {
  * Uses a transaction to ensure data integrity.
  */
 export async function remove(tenantId: string, userId: string) {
-  return prisma.$transaction(async tx => {
+  return prisma.$transaction(async (tx) => {
     // Unassign all clients from this user
-    await tx.client.updateMany({
+    await (tx as any).client.updateMany({
       where: {
         tenantId,
         assignedToId: userId,
@@ -312,12 +312,12 @@ export async function remove(tenantId: string, userId: string) {
     });
 
     // Delete refresh tokens
-    await tx.refreshToken.deleteMany({
+    await (tx as any).refreshToken.deleteMany({
       where: { userId },
     });
 
     // Delete the user
-    return tx.user.delete({
+    return (tx as any).user.delete({
       where: { id: userId },
     });
   });
