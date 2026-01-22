@@ -14,7 +14,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "og:convert": "node scripts/convert-og-image.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.37.1",
@@ -52,6 +53,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.4.38",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.3",
     "ts-jest": "^29.1.4",
     "typescript": "^5.4.5",
