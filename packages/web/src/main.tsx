@@ -22,6 +22,14 @@ const queryClient = new QueryClient({
   },
 });
 
+// Wake up Render backend on page load
+fetch('https://migestion-api.onrender.com', {
+  method: 'GET',
+  mode: 'no-cors',
+}).catch(() => {
+  // Silently ignore errors - the backend may already be awake
+});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
