@@ -1,0 +1,42 @@
+services:
+  # API Backend
+  - type: pserv
+    name: migestion-api
+    env: node
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: node scripts/migrate-production.js && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: migestion-db
+          property: connectionString
+      - key: REDIS_URL
+        value: redis://migestion-redis:6379
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+    disk:
+      name: data
+      mountPath: /app/packages/api
+      sizeGB: 1
+
+  # PostgreSQL Database
+  - type: postgres
+    name: migestion-db
+    plan: free
+    maxConnections: 10
+    databases:
+      - name: migestion
+        databaseName: migestion
+
+  # Redis Cache
+  - type: redis
+    name: migestion-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+    ipAllowList: [] # Allow connections from API service only
