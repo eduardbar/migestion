@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import pg from 'pg';
 import { isDevelopment } from '../../config/index.js';
 
 /**
@@ -9,9 +11,18 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// Create PostgreSQL connection pool
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// Create Prisma adapter
+const adapter = new PrismaPg(pool);
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    adapter,
     log: isDevelopment ? ['query', 'error', 'warn'] : ['error'],
   });
 
