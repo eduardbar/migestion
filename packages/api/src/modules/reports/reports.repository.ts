@@ -41,6 +41,31 @@ export async function getNewClientsCount(tenantId: string, dateRange: DateRange)
 }
 
 /**
+ * Get new interactions in date range.
+ */
+export async function getNewInteractionsCount(
+  tenantId: string,
+  dateRange: DateRange
+): Promise<number> {
+  return prisma.interaction.count({
+    where: {
+      tenantId,
+      createdAt: {
+        gte: dateRange.start,
+        lte: dateRange.end,
+      },
+    },
+  });
+}
+
+/**
+ * Get total interaction count for tenant.
+ */
+export async function getInteractionCount(tenantId: string): Promise<number> {
+  return prisma.interaction.count({ where: { tenantId } });
+}
+
+/**
  * Get clients grouped by status.
  */
 export async function getClientsByStatus(
@@ -53,7 +78,7 @@ export async function getClientsByStatus(
     orderBy: { _count: { status: 'desc' } },
   });
 
-  return results.map(r => ({
+  return results.map((r: { status: string; _count: { _all: number } }) => ({
     status: r.status,
     _count: r._count._all,
   }));
@@ -72,7 +97,7 @@ export async function getClientsBySegment(
     orderBy: { _count: { segment: 'desc' } },
   });
 
-  return results.map(r => ({
+  return results.map((r: { segment: string | null; _count: { _all: number } }) => ({
     segment: r.segment,
     _count: r._count._all,
   }));
@@ -94,16 +119,20 @@ export async function getClientsByAssignedUser(
   });
 
   // Fetch user names for assigned users
-  const userIds = results.map(r => r.assignedToId).filter((id): id is string => id !== null);
+  const userIds = results
+    .map((r: { assignedToId: string | null; _count: number }) => r.assignedToId)
+    .filter((id): id is string => id !== null);
 
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
     select: { id: true, firstName: true, lastName: true },
   });
 
-  const userMap = new Map(users.map(u => [u.id, u]));
+  const userMap = new Map(
+    users.map((u: { id: string; firstName: string; lastName: string }) => [u.id, u])
+  );
 
-  return results.map(r => ({
+  return results.map((r: { assignedToId: string | null; _count: number }) => ({
     ...r,
     user: r.assignedToId ? userMap.get(r.assignedToId) : undefined,
   }));
@@ -128,7 +157,7 @@ export async function getClientsByCreatedMonth(
   });
 
   const grouped = clients.reduce(
-    (acc, client) => {
+    (acc, client: { createdAt: Date }) => {
       const month = client.createdAt.toISOString().slice(0, 7); // YYYY-MM
       acc[month] = (acc[month] || 0) + 1;
       return acc;
@@ -136,65 +165,9 @@ export async function getClientsByCreatedMonth(
     {} as Record<string, number>
   );
 
-  return Object.entries(grouped)
-    .map(([month, count]) => ({ month, count }))
-    .sort((a, b) => a.month.localeCompare(b.month));
-}
-
-// ─────────────────────────────────────────
-// Interaction Stats Queries
-// ─────────────────────────────────────────
-
-/**
- * Get total interaction count for tenant.
- */
-export async function getInteractionCount(tenantId: string): Promise<number> {
-  return prisma.interaction.count({ where: { tenantId } });
-}
-
-/**
- * Get new interactions in date range.
- */
-export async function getNewInteractionsCount(
-  tenantId: string,
-  dateRange: DateRange
-): Promise<number> {
-  return prisma.interaction.count({
-    where: {
-      tenantId,
-      createdAt: {
-        gte: dateRange.start,
-        lte: dateRange.end,
-      },
-    },
-  });
-}
-
-/**
- * Get interactions grouped by type.
- */
-export async function getInteractionsByType(
-  tenantId: string,
-  dateRange?: DateRange
-): Promise<{ type: string; _count: number }[]> {
-  const results = await prisma.interaction.groupBy({
-    by: ['type'],
-    where: {
-      tenantId,
-      ...(dateRange && {
-        createdAt: {
-          gte: dateRange.start,
-          lte: dateRange.end,
-        },
-      }),
-    },
-    _count: { _all: true },
-    orderBy: { _count: { type: 'desc' } },
-  });
-
-  return results.map(r => ({
-    type: r.type,
-    _count: r._count._all,
+  return Object.entries(grouped).map(([month, count]) => ({
+    month,
+    count: count as number,
   }));
 }
 
@@ -220,7 +193,7 @@ export async function getInteractionsByUser(
     orderBy: { _count: { userId: 'desc' } },
   });
 
-  const userIds = results.map(r => r.userId);
+  const userIds = results.map((r: { userId: string }) => r.userId);
   const users = await prisma.user.findMany({
     where: { id: { in: userIds } },
     select: { id: true, firstName: true, lastName: true },
@@ -253,7 +226,7 @@ export async function getInteractionsByDay(
   });
 
   const grouped = interactions.reduce(
-    (acc, interaction) => {
+    (acc, interaction: { createdAt: Date }) => {
       const date = interaction.createdAt.toISOString().slice(0, 10); // YYYY-MM-DD
       acc[date] = (acc[date] || 0) + 1;
       return acc;
@@ -262,7 +235,7 @@ export async function getInteractionsByDay(
   );
 
   return Object.entries(grouped)
-    .map(([date, count]) => ({ date, count }))
+    .map(([date, count]) => ({ date, count: count as number }))
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
@@ -285,7 +258,7 @@ export async function getClientsByDay(
   });
 
   const grouped = clients.reduce(
-    (acc, client) => {
+    (acc, client: { createdAt: Date }) => {
       const date = client.createdAt.toISOString().slice(0, 10);
       acc[date] = (acc[date] || 0) + 1;
       return acc;
@@ -294,7 +267,7 @@ export async function getClientsByDay(
   );
 
   return Object.entries(grouped)
-    .map(([date, count]) => ({ date, count }))
+    .map(([date, count]) => ({ date, count: count as number }))
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
@@ -362,16 +335,26 @@ export async function getTeamPerformance(
     _count: true,
   });
 
-  const interactionMap = new Map(interactionCounts.map(i => [i.userId, i._count]));
+  const interactionMap = new Map(
+    interactionCounts.map((i: { userId: string; _count: number }) => [i.userId, i._count])
+  );
 
-  return users.map(user => ({
-    userId: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    clientsAssigned: user._count.assignedClients,
-    interactionsCreated: interactionMap.get(user.id) || 0,
-  }));
+  return users.map(
+    (user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      _count: { assignedClients: number };
+    }) => ({
+      userId: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      clientsAssigned: user._count.assignedClients,
+      interactionsCreated: interactionMap.get(user.id) || 0,
+    })
+  );
 }
 
 // ─────────────────────────────────────────

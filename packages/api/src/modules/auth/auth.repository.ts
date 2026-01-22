@@ -164,27 +164,34 @@ export async function createTenantWithOwner(data: {
   firstName: string;
   lastName: string;
 }): Promise<{ tenant: Tenant; user: User }> {
-  return prisma.$transaction(async tx => {
-    const tenant = await tx.tenant.create({
-      data: {
-        name: data.tenantName,
-        slug: data.tenantSlug,
-        status: 'active',
-      },
-    });
+  return prisma.$transaction(
+    async (
+      tx: Omit<
+        typeof prisma,
+        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+      >
+    ) => {
+      const tenant = await tx.tenant.create({
+        data: {
+          name: data.tenantName,
+          slug: data.tenantSlug,
+          status: 'active',
+        },
+      });
 
-    const user = await tx.user.create({
-      data: {
-        tenantId: tenant.id,
-        email: data.email,
-        passwordHash: data.passwordHash,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: 'owner',
-        status: 'active',
-      },
-    });
+      const user = await tx.user.create({
+        data: {
+          tenantId: tenant.id,
+          email: data.email,
+          passwordHash: data.passwordHash,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: 'owner',
+          status: 'active',
+        },
+      });
 
-    return { tenant, user };
-  });
+      return { tenant, user };
+    }
+  );
 }

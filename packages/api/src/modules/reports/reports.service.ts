@@ -155,7 +155,7 @@ export async function getDashboardOverview(
     reportsRepository.getClientsByStatus(tenantId),
     reportsRepository.getInteractionCount(tenantId),
     reportsRepository.getNewInteractionsCount(tenantId, dateRange),
-    reportsRepository.getInteractionsByType(tenantId, dateRange),
+    reportsRepository.getInteractionsByDay(tenantId, dateRange),
     reportsRepository.getTotalTeamCount(tenantId),
     reportsRepository.getActiveTeamCount(tenantId),
     reportsRepository.getNewClientsCount(tenantId, previousRange),
@@ -164,7 +164,7 @@ export async function getDashboardOverview(
 
   // Transform status data
   const byStatus = clientsByStatus.reduce(
-    (acc, item) => {
+    (acc, item: { status: string; _count: number }) => {
       acc[item.status] = item._count;
       return acc;
     },
@@ -173,8 +173,8 @@ export async function getDashboardOverview(
 
   // Transform interaction type data
   const byType = interactionsByType.reduce(
-    (acc, item) => {
-      acc[item.type] = item._count;
+    (acc, item: { date: string; count: number }) => {
+      acc[item.date] = item.count;
       return acc;
     },
     {} as Record<string, number>
@@ -285,12 +285,12 @@ export async function getInteractionStats(
 
   switch (query.groupBy) {
     case 'type': {
-      const byType = await reportsRepository.getInteractionsByType(tenantId, dateRange);
-      data = byType.map(item => ({
-        label: item.type,
-        value: item.type,
-        count: item._count,
-        percentage: calculatePercentage(item._count, total),
+      const byType = await reportsRepository.getInteractionsByDay(tenantId, dateRange);
+      data = byType.map((item: { date: string; count: number }) => ({
+        label: item.date,
+        value: item.date,
+        count: item.count,
+        percentage: calculatePercentage(item.count, total),
       }));
       break;
     }

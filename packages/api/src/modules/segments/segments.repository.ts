@@ -86,18 +86,28 @@ export async function findMany(params: FindManyParams) {
 
   // Get client counts for each segment
   const segmentsWithCounts = await Promise.all(
-    segments.map(async segment => {
-      const clientCount = await prisma.client.count({
-        where: {
-          tenantId,
-          segment: segment.name,
-        },
-      });
-      return {
-        ...segment,
-        _count: { clients: clientCount },
-      };
-    })
+    segments.map(
+      async (segment: {
+        id: string;
+        tenantId: string;
+        name: string;
+        criteria: any;
+        color: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+      }) => {
+        const clientCount = await prisma.client.count({
+          where: {
+            tenantId,
+            segment: segment.name,
+          },
+        });
+        return {
+          ...segment,
+          _count: { clients: clientCount },
+        };
+      }
+    )
   );
 
   return { segments: segmentsWithCounts, total };
@@ -201,7 +211,7 @@ export async function getStats(tenantId: string) {
   });
 
   const stats = await Promise.all(
-    segments.map(async segment => {
+    segments.map(async (segment: { name: string }) => {
       const count = await prisma.client.count({
         where: {
           tenantId,
@@ -223,6 +233,8 @@ export async function getStats(tenantId: string) {
   return {
     segments: stats,
     unassigned: unassignedCount,
-    total: stats.reduce((sum, s) => sum + s.count, 0) + unassignedCount,
+    total:
+      stats.reduce((sum, s: { segment: string; count: number }) => sum + s.count, 0) +
+      unassignedCount,
   };
 }

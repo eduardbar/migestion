@@ -193,8 +193,14 @@ export async function getTeamStats(tenantId: string) {
 
   return {
     totalUsers,
-    byRole: byRole.map(r => ({ role: r.role, count: r._count.role })),
-    byStatus: byStatus.map(s => ({ status: s.status, count: s._count.status })),
+    byRole: byRole.map((r: { role: string; _count: { role: number } }) => ({
+      role: r.role,
+      count: r._count.role,
+    })),
+    byStatus: byStatus.map((s: { status: string; _count: { status: number } }) => ({
+      status: s.status,
+      count: s._count.status,
+    })),
     recentlyActive,
   };
 }

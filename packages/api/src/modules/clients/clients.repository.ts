@@ -135,7 +135,9 @@ export async function findDistinctSegments(tenantId: string): Promise<string[]> 
     distinct: ['segment'],
   });
 
-  return results.map(r => r.segment).filter((s): s is string => s !== null);
+  return results
+    .map((r: { segment: string | null }) => r.segment)
+    .filter((s): s is string => s !== null);
 }
 
 /**
@@ -150,7 +152,7 @@ export async function countByStatus(
     _count: { status: true },
   });
 
-  return results.map(r => ({
+  return results.map((r: { status: string; _count: { status: number } }) => ({
     status: r.status,
     count: r._count.status,
   }));

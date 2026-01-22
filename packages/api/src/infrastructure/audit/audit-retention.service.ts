@@ -31,7 +31,7 @@ export class AuditRetentionService {
       });
 
       await Promise.all(
-        tenants.map(async tenant => {
+        tenants.map(async (tenant: { id: string }) => {
           const result = await this.cleanupTenantLogs(tenant.id, days);
           results.push(result);
         })

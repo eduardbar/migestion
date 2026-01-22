@@ -170,7 +170,7 @@ export async function countByType(tenantId: string): Promise<{ type: string; cou
     _count: { type: true },
   });
 
-  return results.map(r => ({
+  return results.map((r: { type: string; _count: { type: number } }) => ({
     type: r.type,
     count: r._count.type,
   }));
@@ -186,7 +186,7 @@ export async function countByUser(tenantId: string): Promise<{ userId: string; c
     _count: { userId: true },
   });
 
-  return results.map(r => ({
+  return results.map((r: { userId: string; _count: { userId: number } }) => ({
     userId: r.userId,
     count: r._count.userId,
   }));

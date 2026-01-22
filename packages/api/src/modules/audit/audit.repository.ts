@@ -193,7 +193,7 @@ export async function getAuditStats(
     _count: { action: true },
   });
 
-  return result.map(r => ({
+  return result.map((r: { action: string; _count: { action: number } }) => ({
     action: r.action,
     count: r._count.action,
   }));
