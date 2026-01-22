@@ -201,8 +201,9 @@ export async function getInteractionsByUser(
 
   const userMap = new Map(users.map((u: { id: string; firstName: string; lastName: string }) => [u.id, u]));
 
-  return results.map((r: { userId: string; [key: string]: any }) => ({
-    ...r,
+  return results.map((r) => ({
+    userId: r.userId,
+    _count: r._count as number,
     user: userMap.get(r.userId) || { firstName: 'Unknown', lastName: 'User' },
   }));
 }
