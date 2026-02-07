@@ -1,51 +1,51 @@
-# 📊 MiGestion: CRM SaaS Multi-Tenant de Nivel Empresarial
+# 📊 MiGestion: Enterprise-Level Multi-Tenant SaaS CRM
 
 ![MiGestion Preview](packages/web/public/og-image.png)
 
-**MiGestion** es una plataforma CRM (Customer Relationship Management) de nivel empresarial, diseñada para negocios locales que buscan profesionalizar la gestión de sus clientes. Con arquitectura multi-tenant, autenticación segura y análisis en tiempo real, MiGestion ofrece todas las herramientas necesarias para convertir datos de clientes en decisiones estratégicas.
+**MiGestion** is an enterprise-level CRM (Customer Relationship Management) platform, designed for local businesses seeking to professionalize their customer management. With multi-tenant architecture, secure authentication, and real-time analytics, MiGestion offers all the necessary tools to transform customer data into strategic decisions.
 
-## 🚀 Características Principales
+## 🚀 Key Features
 
-- 🏢 **Multi-Tenant**: Aislamiento completo de datos por inquilino. Cada empresa opera en su propio espacio seguro.
-- 🔐 **Autenticación JWT**: Sistema de tokens con refresh automático, rotación y revocación para máxima seguridad.
-- 👥 **Control de Acceso por Roles**: 4 roles jerárquicos (Owner, Admin, Manager, User) con permisos granulares.
-- 📇 **Gestión de Clientes**: CRUD completo con búsqueda avanzada, filtros dinámicos, paginación y operaciones masivas.
-- 📞 **Seguimiento de Interacciones**: Registra llamadas, emails, reuniones, notas y tareas vinculadas a clientes.
-- 🎯 **Segmentación de Clientes**: Organiza clientes con segmentos personalizados y criterios dinámicos.
-- 📊 **Reportes Avanzados**: Dashboard con KPIs en tiempo real, gráficos interactivos y análisis de tendencias.
-- 🔔 **Notificaciones en Tiempo Real**: Integración con Socket.IO para actualizaciones instantáneas.
-- 📋 **Auditoría Completa**: Registro detallado de todas las operaciones con redacción de campos sensibles.
+- 🏢 **Multi-Tenant**: Complete data isolation per tenant. Each company operates in its own secure space.
+- 🔐 **JWT Authentication**: Token system with automatic refresh, rotation, and revocation for maximum security.
+- 👥 **Role-Based Access Control**: 4 hierarchical roles (Owner, Admin, Manager, User) with granular permissions.
+- 📇 **Client Management**: Complete CRUD with advanced search, dynamic filters, pagination, and bulk operations.
+- 📞 **Interaction Tracking**: Records calls, emails, meetings, notes, and tasks linked to clients.
+- 🎯 **Client Segmentation**: Organize clients with custom segments and dynamic criteria.
+- 📊 **Advanced Reports**: Dashboard with real-time KPIs, interactive charts, and trend analysis.
+- 🔔 **Real-Time Notifications**: Socket.IO integration for instant updates.
+- 📋 **Complete Audit**: Detailed logging of all operations with redaction of sensitive fields.
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
-| Capa | Tecnologías |
+| Layer | Technologies |
 |------|-------------|
 | **Frontend** | React 18, TypeScript 5, Vite 5, TailwindCSS, Zustand 4, TanStack Query 5 |
 | **Backend** | Node.js 20, Express 4, TypeScript 5, Prisma ORM |
-| **Base de Datos** | MySQL 8, Redis 7 |
+| **Database** | MySQL 8, Redis 7 |
 | **Testing** | Jest (114 tests), Playwright (44 E2E tests) |
 | **Real-time** | Socket.IO 4 |
-| **Infraestructura** | Docker, Docker Compose, GitHub Actions |
-| **Documentación** | OpenAPI 3.0, Swagger UI |
+| **Infrastructure** | Docker, Docker Compose, GitHub Actions |
+| **Documentation** | OpenAPI 3.0, Swagger UI |
 
-## ⚙️ Configuración del Entorno
+## ⚙️ Environment Setup
 
 ### Backend (`packages/api/.env`)
 
 ```env
-# Base de datos
+# Database
 DATABASE_URL="mysql://user:password@localhost:3306/migestion"
 
 # Redis
 REDIS_URL="redis://localhost:6379"
 
 # JWT
-JWT_SECRET="tu_secreto_ultra_seguro_cambiame"
-JWT_REFRESH_SECRET="otro_secreto_diferente"
+JWT_SECRET="your_ultra_secure_secret_change_me"
+JWT_REFRESH_SECRET="another_different_secret"
 JWT_EXPIRES_IN="15m"
 JWT_REFRESH_EXPIRES_IN="7d"
 
-# Aplicación
+# Application
 NODE_ENV="development"
 PORT=3000
 CORS_ORIGIN="http://localhost:5173"
@@ -61,34 +61,34 @@ VITE_API_URL="http://localhost:3000/api"
 VITE_WS_URL="http://localhost:3000"
 ```
 
-## 📦 Instalación y Despliegue
+## 📦 Installation and Deployment
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/tu-usuario/migestion.git
+git clone https://github.com/your-username/migestion.git
 cd migestion
 ```
 
-### 2. Instalar dependencias
+### 2. Install dependencies
 
-Instala todas las dependencias del monorepo:
+Install all monorepo dependencies:
 
 ```bash
 npm install
 ```
 
-Esto instalará automáticamente las dependencias de ambos paquetes (`api` y `web`).
+This will automatically install dependencies for both packages (`api` and `web`).
 
-### 3. Configurar la base de datos
+### 3. Configure the database
 
-Inicia la infraestructura (MySQL y Redis) con Docker:
+Start the infrastructure (MySQL and Redis) with Docker:
 
 ```bash
 docker-compose up -d
 ```
 
-Genera el cliente de Prisma y ejecuta las migraciones:
+Generate Prisma client and run migrations:
 
 ```bash
 npm run db:generate
@@ -96,15 +96,15 @@ npm run db:migrate
 npm run db:seed
 ```
 
-### 4. Desarrollo Local
+### 4. Local Development
 
-Para correr ambos servidores simultáneamente:
+To run both servers simultaneously:
 
 ```bash
 npm run dev
 ```
 
-O de forma individual:
+Or individually:
 
 **Terminal 1 - Backend:**
 ```bash
@@ -116,180 +116,180 @@ npm run dev:api
 npm run dev:web
 ```
 
-**URLs disponibles:**
+**Available URLs:**
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:3000/api`
 - Swagger Docs: `http://localhost:3000/api/docs`
 - Socket.IO: `http://localhost:3000`
 
-### 5. Construcción para Producción
+### 5. Production Build
 
 ```bash
-# Build completo (API + Web)
+# Complete build (API + Web)
 npm run build
 
-# Build individual
+# Individual build
 npm run build:api
 npm run build:web
 ```
 
-## 📂 Estructura del Proyecto
+## 📂 Project Structure
 
 ```
 migestion/
 ├── packages/
 │   ├── api/                     # Backend Node.js + Express
 │   │   ├── src/
-│   │   │   ├── config/          # Configuración y constantes
+│   │   │   ├── config/          # Configuration and constants
 │   │   │   ├── infrastructure/  # Prisma, Redis, Socket.IO
-│   │   │   ├── modules/         # Lógica de negocio modularizada
-│   │   │   │   ├── auth/        # Autenticación y autorización
-│   │   │   │   ├── tenants/     # Gestión multi-tenant
-│   │   │   │   ├── users/       # Usuarios y roles
-│   │   │   │   ├── clients/     # CRUD de clientes
-│   │   │   │   ├── interactions/ # Interacciones con clientes
-│   │   │   │   ├── segments/    # Segmentación
-│   │   │   │   ├── reports/     # Reportes y analytics
-│   │   │   │   └── notifications/ # Sistema de notificaciones
-│   │   │   └── shared/          # Middlewares, utils, errores
-│   │   ├── prisma/              # Schema y migraciones
-│   │   ├── tests/               # Tests unitarios (Jest)
+│   │   │   ├── modules/         # Modularized business logic
+│   │   │   │   ├── auth/        # Authentication and authorization
+│   │   │   │   ├── tenants/     # Multi-tenant management
+│   │   │   │   ├── users/       # Users and roles
+│   │   │   │   ├── clients/     # Client CRUD
+│   │   │   │   ├── interactions/ # Client interactions
+│   │   │   │   ├── segments/    # Segmentation
+│   │   │   │   ├── reports/     # Reports and analytics
+│   │   │   │   └── notifications/ # Notification system
+│   │   │   └── shared/          # Middlewares, utils, errors
+│   │   ├── prisma/              # Schema and migrations
+│   │   ├── tests/               # Unit tests (Jest)
 │   │   └── .env.example
 │   │
 │   └── web/                     # Frontend React + Vite
 │       ├── src/
-│       │   ├── components/      # Componentes UI reutilizables
-│       │   │   ├── ui/          # Componentes base (Button, Input, etc.)
-│       │   │   ├── features/    # Componentes de features
-│       │   │   └── notifications/ # Sistema de notificaciones
-│       │   ├── pages/           # Páginas de la aplicación
+│       │   ├── components/      # Reusable UI components
+│       │   │   ├── ui/          # Base components (Button, Input, etc.)
+│       │   │   ├── features/    # Feature components
+│       │   │   └── notifications/ # Notification system
+│       │   ├── pages/           # Application pages
 │       │   │   ├── auth/        # Login, Register
-│       │   │   ├── dashboard/   # Dashboard principal
-│       │   │   ├── clients/     # Gestión de clientes
-│       │   │   ├── interactions/ # Interacciones
-│       │   │   ├── reports/     # Reportes
-│       │   │   └── settings/    # Configuración
-│       │   ├── stores/          # Estado global (Zustand)
-│       │   ├── services/        # Clientes API
+│       │   │   ├── dashboard/   # Main dashboard
+│       │   │   ├── clients/     # Client management
+│       │   │   ├── interactions/ # Interactions
+│       │   │   ├── reports/     # Reports
+│       │   │   └── settings/    # Settings
+│       │   ├── stores/          # Global state (Zustand)
+│       │   ├── services/        # API clients
 │       │   ├── hooks/           # Custom hooks
 │       │   ├── contexts/        # React contexts
-│       │   └── lib/             # Utilidades y constantes
-│       ├── e2e/                 # Tests E2E (Playwright)
-│       ├── public/              # Assets estáticos
+│       │   └── lib/             # Utilities and constants
+│       ├── e2e/                 # E2E tests (Playwright)
+│       ├── public/              # Static assets
 │       └── .env.example
 │
 ├── docker/                      # Dockerfiles
 ├── .github/workflows/           # CI/CD pipelines
-├── docker-compose.yml           # Orquestación local
-└── skills/                      # Documentación de patrones
+├── docker-compose.yml           # Local orchestration
+└── skills/                      # Pattern documentation
 ```
 
 ## 📡 API Endpoints
 
-### Autenticación (`/api/auth`)
-| Método | Endpoint | Descripción | Autenticación |
+### Authentication (`/api/auth`)
+| Method | Endpoint | Description | Authentication |
 |--------|----------|-------------|---------------|
-| `POST` | `/register` | Registrar nuevo tenant y usuario owner | No |
-| `POST` | `/login` | Iniciar sesión (retorna access + refresh token) | No |
-| `POST` | `/refresh` | Renovar access token con refresh token | No |
-| `POST` | `/logout` | Cerrar sesión y revocar tokens | Sí |
-| `GET` | `/me` | Obtener usuario autenticado | Sí |
+| `POST` | `/register` | Register new tenant and owner user | No |
+| `POST` | `/login` | Login (returns access + refresh token) | No |
+| `POST` | `/refresh` | Renew access token with refresh token | No |
+| `POST` | `/logout` | Logout and revoke tokens | Yes |
+| `GET` | `/me` | Get authenticated user | Yes |
 
-### Clientes (`/api/clients`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Clients (`/api/clients`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `POST` | `/` | Crear nuevo cliente | User |
-| `GET` | `/` | Listar clientes con filtros y paginación | User |
-| `GET` | `/:id` | Obtener detalles de un cliente | User |
-| `PUT` | `/:id` | Actualizar cliente | User |
-| `DELETE` | `/:id` | Eliminar cliente (soft delete) | Manager |
-| `POST` | `/bulk` | Operación masiva (actualizar/eliminar) | Manager |
+| `POST` | `/` | Create new client | User |
+| `GET` | `/` | List clients with filters and pagination | User |
+| `GET` | `/:id` | Get client details | User |
+| `PUT` | `/:id` | Update client | User |
+| `DELETE` | `/:id` | Delete client (soft delete) | Manager |
+| `POST` | `/bulk` | Bulk operation (update/delete) | Manager |
 
-### Interacciones (`/api/interactions`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Interactions (`/api/interactions`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `POST` | `/` | Registrar nueva interacción | User |
-| `GET` | `/` | Listar interacciones (filtros por cliente, tipo, fecha) | User |
-| `GET` | `/:id` | Obtener detalles de interacción | User |
-| `PUT` | `/:id` | Actualizar interacción | User |
-| `DELETE` | `/:id` | Eliminar interacción | Manager |
+| `POST` | `/` | Register new interaction | User |
+| `GET` | `/` | List interactions (filters by client, type, date) | User |
+| `GET` | `/:id` | Get interaction details | User |
+| `PUT` | `/:id` | Update interaction | User |
+| `DELETE` | `/:id` | Delete interaction | Manager |
 
-### Segmentos (`/api/segments`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Segments (`/api/segments`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `POST` | `/` | Crear segmento personalizado | Manager |
-| `GET` | `/` | Listar segmentos del tenant | User |
-| `GET` | `/:id/clients` | Obtener clientes del segmento | User |
-| `PUT` | `/:id` | Actualizar criterios del segmento | Manager |
-| `DELETE` | `/:id` | Eliminar segmento | Manager |
+| `POST` | `/` | Create custom segment | Manager |
+| `GET` | `/` | List tenant segments | User |
+| `GET` | `/:id/clients` | Get segment clients | User |
+| `PUT` | `/:id` | Update segment criteria | Manager |
+| `DELETE` | `/:id` | Delete segment | Manager |
 
-### Reportes (`/api/reports`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Reports (`/api/reports`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `GET` | `/dashboard` | KPIs del dashboard principal | User |
-| `GET` | `/clients-by-status` | Distribución de clientes por estado | User |
-| `GET` | `/interactions-timeline` | Timeline de interacciones | User |
-| `GET` | `/user-performance` | Rendimiento por usuario | Manager |
+| `GET` | `/dashboard` | Main dashboard KPIs | User |
+| `GET` | `/clients-by-status` | Client distribution by status | User |
+| `GET` | `/interactions-timeline` | Interactions timeline | User |
+| `GET` | `/user-performance` | User performance | Manager |
 
-### Notificaciones (`/api/notifications`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Notifications (`/api/notifications`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `GET` | `/` | Listar notificaciones del usuario | User |
-| `PUT` | `/:id/read` | Marcar como leída | User |
-| `PUT` | `/read-all` | Marcar todas como leídas | User |
+| `GET` | `/` | List user notifications | User |
+| `PUT` | `/:id/read` | Mark as read | User |
+| `PUT` | `/read-all` | Mark all as read | User |
 
-### Auditoría (`/api/audit`)
-| Método | Endpoint | Descripción | Rol Mínimo |
+### Audit (`/api/audit`)
+| Method | Endpoint | Description | Minimum Role |
 |--------|----------|-------------|------------|
-| `GET` | `/` | Listar logs de auditoría | Admin |
-| `GET` | `/export` | Exportar logs (CSV/JSON) | Owner |
+| `GET` | `/` | List audit logs | Admin |
+| `GET` | `/export` | Export logs (CSV/JSON) | Owner |
 
 ## 🧪 Testing
 
-### Tests Unitarios (Backend)
+### Unit Tests (Backend)
 
 ```bash
-# Ejecutar todos los tests
+# Run all tests
 npm run test:api
 
-# Tests en modo watch
+# Watch mode tests
 npm run test:api -- --watch
 
-# Tests con cobertura
+# Tests with coverage
 npm run test:api -- --coverage
 ```
 
-**Cobertura actual:** 114 tests, >80% en rutas críticas
+**Current coverage:** 114 tests, >80% on critical routes
 
-### Tests E2E (Frontend)
+### E2E Tests (Frontend)
 
 ```bash
-# Ejecutar tests E2E
+# Run E2E tests
 npm run test:e2e
 
-# Modo interactivo
+# Interactive mode
 npm run test:e2e:ui
 
-# Tests específicos
+# Specific tests
 npm run test:e2e -- auth.spec.ts
 ```
 
-**Suite completa:** 44 tests cubriendo:
-- Autenticación (register, login, logout)
-- Navegación completa
-- CRUD de clientes
-- Interacciones
-- Dashboard y reportes
+**Complete suite:** 44 tests covering:
+- Authentication (register, login, logout)
+- Complete navigation
+- Client CRUD
+- Interactions
+- Dashboard and reports
 
-### Tests de Componentes (Frontend)
+### Component Tests (Frontend)
 
 ```bash
 npm run test:web
 ```
 
-## 🏗️ Arquitectura
+## 🏗️ Architecture
 
-MiGestion implementa **Clean Architecture** con separación clara de responsabilidades:
+MiGestion implements **Clean Architecture** with clear separation of concerns:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -325,101 +325,101 @@ MiGestion implementa **Clean Architecture** con separación clara de responsabil
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Patrones de Diseño Implementados
+### Implemented Design Patterns
 
-- ✅ **Repository Pattern**: Abstracción de acceso a datos
-- ✅ **Service Layer**: Lógica de negocio desacoplada
-- ✅ **DTO Pattern**: Transferencia de datos tipada
-- ✅ **Middleware Pattern**: Concerns transversales (auth, audit, RBAC)
-- ✅ **Factory Pattern**: Creación de errores y respuestas
+- ✅ **Repository Pattern**: Data access abstraction
+- ✅ **Service Layer**: Decoupled business logic
+- ✅ **DTO Pattern**: Typed data transfer
+- ✅ **Middleware Pattern**: Cross-cutting concerns (auth, audit, RBAC)
+- ✅ **Factory Pattern**: Error and response creation
 - ✅ **Singleton Pattern**: Prisma client, Redis connection
-- ✅ **Observer Pattern**: Sistema de eventos con Socket.IO
-- ✅ **Dependency Injection**: Inyección de repositorios en servicios
+- ✅ **Observer Pattern**: Event system with Socket.IO
+- ✅ **Dependency Injection**: Repository injection into services
 
-### Principios SOLID
+### SOLID Principles
 
-- **S**ingle Responsibility: Cada módulo tiene una responsabilidad clara
-- **O**pen/Closed: Extensible sin modificar código existente
-- **L**iskov Substitution: Interfaces consistentes y reemplazables
-- **I**nterface Segregation: Interfaces específicas y mínimas
-- **D**ependency Inversion: Dependencias hacia abstracciones
+- **S**ingle Responsibility: Each module has a clear responsibility
+- **O**pen/Closed: Extensible without modifying existing code
+- **L**iskov Substitution: Consistent and replaceable interfaces
+- **I**nterface Segregation: Specific and minimal interfaces
+- **D**ependency Inversion: Dependencies towards abstractions
 
-## 🎨 Sistema de Diseño
+## 🎨 Design System
 
-**Estética Profesional Minimalista**
+**Professional Minimalist Aesthetic**
 
-### Paleta de Colores
-- **Neutral**: Escala de grises (50-950) para UI base
-- **Primary**: Azul profesional (#2563EB) para acciones principales
-- **Success**: Verde (#22C55E) para estados positivos
-- **Warning**: Amarillo (#EAB308) para alertas
-- **Error**: Rojo (#EF4444) para errores
+### Color Palette
+- **Neutral**: Grayscale (50-950) for base UI
+- **Primary**: Professional blue (#2563EB) for main actions
+- **Success**: Green (#22C55E) for positive states
+- **Warning**: Yellow (#EAB308) for alerts
+- **Error**: Red (#EF4444) for errors
 
-### Tipografía
-- **Familia**: Inter (Google Fonts)
-- **Pesos**: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
-- **Escalas**: xs (0.75rem) → 3xl (2rem)
+### Typography
+- **Family**: Inter (Google Fonts)
+- **Weights**: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
+- **Scales**: xs (0.75rem) → 3xl (2rem)
 
-### Componentes
-- Diseño basado en bordes (no sombras pesadas)
-- Border radius consistente (6px)
-- Espaciado en múltiplos de 4px
-- Transiciones suaves (150ms)
-- Responsive first con breakpoints Tailwind
+### Components
+- Border-based design (no heavy shadows)
+- Consistent border radius (6px)
+- Spacing in multiples of 4px
+- Smooth transitions (150ms)
+- Responsive first with Tailwind breakpoints
 
-### Gráficos
-- Recharts para visualizaciones
-- Colores neutros con acentos azules
-- Tooltips interactivos
-- Responsive y accesible
+### Charts
+- Recharts for visualizations
+- Neutral colors with blue accents
+- Interactive tooltips
+- Responsive and accessible
 
-## 🔐 Seguridad
+## 🔐 Security
 
-| Categoría | Implementación |
+| Category | Implementation |
 |-----------|----------------|
-| **Autenticación** | JWT con access (15min) y refresh tokens (7d) |
-| **Passwords** | bcrypt con 10 salt rounds, validación de complejidad |
-| **Autorización** | RBAC jerárquico con 4 roles y permisos granulares |
-| **Multi-tenant** | Aislamiento por `tenantId` en todas las queries |
-| **Validación** | Zod schemas en todos los endpoints |
-| **Rate Limiting** | Límites configurables por ruta |
-| **Auditoría** | Logs completos con redacción de campos sensibles |
-| **Headers** | Helmet.js para headers HTTP seguros |
-| **CORS** | Configuración estricta por entorno |
+| **Authentication** | JWT with access (15min) and refresh tokens (7d) |
+| **Passwords** | bcrypt with 10 salt rounds, complexity validation |
+| **Authorization** | Hierarchical RBAC with 4 roles and granular permissions |
+| **Multi-tenant** | Isolation by `tenantId` in all queries |
+| **Validation** | Zod schemas on all endpoints |
+| **Rate Limiting** | Configurable limits per route |
+| **Audit** | Complete logs with redaction of sensitive fields |
+| **Headers** | Helmet.js for secure HTTP headers |
+| **CORS** | Strict configuration per environment |
 
 ## 📈 Performance
 
-### Optimizaciones Implementadas
+### Implemented Optimizations
 
-- **Code Splitting**: Lazy loading de páginas React
-- **Vendor Chunks**: Separación de librerías (React, Charts)
-- **Redis Caching**: Cache de notificaciones y sesiones
-- **Database Indexing**: Índices en columnas frecuentes
-- **Pagination**: Cursor-based para datasets grandes
-- **Query Optimization**: Selección de campos necesarios
-- **Connection Pooling**: Prisma con pool de conexiones
-- **Compression**: Gzip en respuestas HTTP
+- **Code Splitting**: Lazy loading of React pages
+- **Vendor Chunks**: Library separation (React, Charts)
+- **Redis Caching**: Notification and session caching
+- **Database Indexing**: Indexes on frequent columns
+- **Pagination**: Cursor-based for large datasets
+- **Query Optimization**: Selection of necessary fields only
+- **Connection Pooling**: Prisma with connection pool
+- **Compression**: Gzip on HTTP responses
 
-### Métricas
+### Metrics
 
 - **Build Size**: ~600KB (gzipped)
-- **First Load**: <2s con cache
-- **API Response**: <100ms (queries simples)
-- **Lighthouse Score**: 90+ en Performance
+- **First Load**: <2s with cache
+- **API Response**: <100ms (simple queries)
+- **Lighthouse Score**: 90+ on Performance
 
 ## 🚢 Deployment
 
-### Docker Compose (Recomendado)
+### Docker Compose (Recommended)
 
 ```bash
-# Variables de entorno
+# Environment variables
 cp packages/api/.env.example packages/api/.env
 cp packages/web/.env.example packages/web/.env
 
-# Build y start
+# Build and start
 docker-compose up --build -d
 
-# Ver logs
+# View logs
 docker-compose logs -f
 
 # Stop
@@ -434,53 +434,53 @@ cd packages/api
 npm run build
 npm run start
 
-# Frontend (servir dist/)
+# Frontend (serve dist/)
 cd packages/web
 npm run build
-# Servir carpeta dist/ con nginx o servidor estático
+# Serve dist/ folder with nginx or static server
 ```
 
-## 📚 Documentación
+## 📚 Documentation
 
 ### Swagger UI
-Documentación interactiva disponible en `http://localhost:3000/api/docs`
+Interactive documentation available at `http://localhost:3000/api/docs`
 
-### Skills (Patrones del Proyecto)
-Consulta la carpeta `/skills` para patrones específicos:
-- `migestion.md`: Overview del proyecto
-- `migestion-api.md`: Patrones del backend
-- `migestion-web.md`: Patrones del frontend
-- `migestion-prisma.md`: Patrones de Prisma
-- Y más...
+### Skills (Project Patterns)
+Check the `/skills` folder for specific patterns:
+- `migestion.md`: Project overview
+- `migestion-api.md`: Backend patterns
+- `migestion-web.md`: Frontend patterns
+- `migestion-prisma.md`: Prisma patterns
+- And more...
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-Este es un proyecto de portfolio, pero las sugerencias son bienvenidas:
+This is a portfolio project, but suggestions are welcome:
 
-1. Fork el repositorio
-2. Crea una rama (`git checkout -b feature/amazing-feature`)
-3. Commit tus cambios (`git commit -m 'feat: add amazing feature'`)
-4. Push a la rama (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Convención de Commits
+### Commit Convention
 
-Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
-- `feat:` Nueva funcionalidad
-- `fix:` Corrección de bug
-- `refactor:` Mejora de código sin cambio funcional
-- `test:` Añadir o actualizar tests
-- `docs:` Cambios en documentación
-- `chore:` Tareas de mantenimiento
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` New functionality
+- `fix:` Bug fix
+- `refactor:` Code improvement without functional change
+- `test:` Add or update tests
+- `docs:` Documentation changes
+- `chore:` Maintenance tasks
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT. Ver archivo `LICENSE` para más detalles.
+This project is under the MIT License. See `LICENSE` file for more details.
 
 ---
 
 <div align="center">
-  <sub>Desarrollado con ❤️ por <a href="https://github.com/tu-usuario">Eduard Barrera</a></sub>
+  <sub>Developed with ❤️ by <a href="https://github.com/your-username">Eduard Barrera</a></sub>
   <br>
-  <sub>Demostrando arquitectura empresarial, clean code y mejores prácticas de desarrollo full-stack</sub>
+  <sub>Demonstrating enterprise architecture, clean code, and full-stack development best practices</sub>
 </div>

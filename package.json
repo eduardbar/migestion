@@ -1,7 +1,7 @@
 {
   "name": "migestion",
   "version": "1.0.0",
-  "description": "SaaS CRM multi-empresa para negocios locales",
+  "description": "Multi-tenant SaaS CRM for local businesses",
   "private": true,
   "workspaces": [
     "packages/*"
